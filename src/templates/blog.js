@@ -2,7 +2,7 @@ import React from 'react'
 import { graphql } from 'gatsby';
 import Img from 'gatsby-image';
 import Layout from '../components/layout';
-import Link from '../components/Link';
+import Link from '../components/link';
 
 const Blog = ({
   data: { allMdx },
