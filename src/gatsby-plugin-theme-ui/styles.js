@@ -1,3 +1,5 @@
+import prism from './prism'
+
 const heading = {
   fontFamily: 'heading',
   fontWeight: 'heading',
@@ -61,11 +63,15 @@ export default {
     overflowX: 'auto',
   },
   code: {
+    ...prism,
     fontFamily: 'monospace',
+    float: 'left',
+    minWidth: '100%'
   },
   inlineCode: {
     fontFamily: 'monospace',
     color: 'secondary',
+    backgroundColor: 'muted'
   },
   strong: {
     fontWeight: 'bold',

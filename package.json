@@ -14,7 +14,8 @@
     "@emotion/core": "^10.0.27",
     "@mdx-js/mdx": "^1.5.5",
     "@mdx-js/react": "^1.5.5",
-    "gatsby": "^2.18.25",
+    "@theme-ui/prism": "^0.3.0",
+    "gatsby": "^2.19.12",
     "gatsby-image": "^2.2.39",
     "gatsby-plugin-mdx": "^1.0.67",
     "gatsby-plugin-react-helmet": "^3.1.21",
@@ -23,9 +24,11 @@
     "gatsby-remark-images": "^3.1.42",
     "gatsby-source-filesystem": "^2.1.46",
     "gatsby-transformer-sharp": "^2.3.13",
+    "prism-react-renderer": "^1.0.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-helmet": "^5.2.1",
+    "react-live": "^2.2.2",
     "theme-ui": "^0.2.52"
   },
   "devDependencies": {
