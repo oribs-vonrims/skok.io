@@ -1,37 +1,15 @@
 /** @jsx jsx */
-/* eslint react/jsx-key: 0 */
 
 import Highlight, { defaultProps } from 'prism-react-renderer'
 import { jsx, Styled } from 'theme-ui'
+import calculateLinesToHighlight from '../utils/calculate-lines-to-highlight'
 
 const aliases = {
   js: 'javascript',
   sh: 'bash',
 }
 
-const RE = /{([\d,-]+)}/
-
-function calculateLinesToHighlight(meta) {
-  if (RE.test(meta)) {
-    const lineNumbers = RE.exec(meta)[1]
-      .split(',')
-      .map(v => v.split('-')
-      .map(y => parseInt(y, 10)))
-    return index => {
-      const lineNumber = index + 1
-      const inRange = lineNumbers.some(([start, end]) =>
-        end ?
-        lineNumber >= start && lineNumber <= end :
-        lineNumber === start
-      )
-      return inRange
-    }
-  } else {
-    return () => false
-  }
-}
-
-export default ({
+const Code = ({
   children,
   className: outerClassName,
   title,
@@ -46,7 +24,7 @@ export default ({
     <Highlight
       {...defaultProps}
       {...props}
-      code={children.trim()}
+      code={children.props.children.trim()}
       language={lang}
       theme={undefined}
     >
@@ -57,7 +35,6 @@ export default ({
         getLineProps,
         getTokenProps
       }) => (
-        <Styled.pre>
           <Styled.code
             className={`${outerClassName} ${className}`}
             style={style}
@@ -90,8 +67,9 @@ export default ({
               )
             })}
           </Styled.code>
-        </Styled.pre>
       )}
     </Highlight>
   )
 }
+
+export default Code
