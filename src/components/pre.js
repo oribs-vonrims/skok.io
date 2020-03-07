@@ -1,22 +1,36 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui'
-import Code from './code'
+import { jsx, Styled } from 'theme-ui'
+import CodeBlock from './code-block'
 import isPreWithCodeBlock from '../utils/is-pre-with-code-block'
 
 const Pre = props => {
+  const { isLiveError, children } = props
+
   if (isPreWithCodeBlock(props)) {
     return (
-      <pre {...props}>
-        <Code {...props.children.props}>
-          {props.children}
-        </Code>
-      </pre>
+      <Styled.pre {...props}>
+        <CodeBlock {...children.props}>
+          {children}
+        </CodeBlock>
+      </Styled.pre>
+    )
+  } else if (isLiveError) {
+    return (
+      <Styled.pre
+        {...props}
+        sx={{ padding: 20 }}
+      >
+        {children}
+      </Styled.pre>
     )
   } else {
     return (
-      <pre {...props}>
-        {props.children.props.children}
-      </pre>
+      <Styled.pre
+        {...props}
+        sx={{ padding: 20 }}
+      >
+        {children.props.children}
+      </Styled.pre>
     )
   }
 }

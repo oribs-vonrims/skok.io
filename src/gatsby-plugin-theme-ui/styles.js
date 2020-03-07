@@ -1,5 +1,3 @@
-import prism from './prism'
-
 const heading = {
   fontFamily: 'heading',
   fontWeight: 'heading',
@@ -9,6 +7,31 @@ const heading = {
 }
 
 export default {
+  root: {
+    margin: 0,
+  },
+  pre: {
+    fontSize: 3,
+    lineHeight: 1.5,
+    fontFamily: 'monospace',
+    color: 'secondary',
+    bg: 'muted',
+    overflowX: 'auto',
+  },
+  code: {
+    fontFamily: 'inherit',
+    float: 'left',
+    minWidth: '100%',
+    whiteSpace: `pre`,
+    paddingY: 0
+  },
+  inlineCode: {
+    fontSize: 3,
+    lineHeight: 1.5,
+    fontFamily: 'monospace',
+    color: 'secondary',
+    backgroundColor: 'muted'
+  },
   h1: {
     ...heading,
     fontSize: [5, 6],
@@ -53,25 +76,6 @@ export default {
     mb: 5,
     border: 0,
     borderBottom: '1px solid',
-  },
-  pre: {
-    fontFamily: 'monospace',
-    p: 3,
-    color: 'secondary',
-    bg: 'muted',
-    borderRadius: 4,
-    overflowX: 'auto',
-  },
-  code: {
-    ...prism,
-    fontFamily: 'monospace',
-    float: 'left',
-    minWidth: '100%'
-  },
-  inlineCode: {
-    fontFamily: 'monospace',
-    color: 'secondary',
-    backgroundColor: 'muted'
   },
   strong: {
     fontWeight: 'bold',
