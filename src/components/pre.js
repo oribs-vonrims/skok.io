@@ -8,11 +8,9 @@ const Pre = props => {
 
   if (isPreWithCodeBlock(props)) {
     return (
-      <Styled.pre {...props}>
-        <CodeBlock {...children.props}>
-          {children}
-        </CodeBlock>
-      </Styled.pre>
+      <CodeBlock {...children.props}>
+        {children}
+      </CodeBlock>
     )
   } else if (isLiveError) {
     return (
