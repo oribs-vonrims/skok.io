@@ -2,12 +2,17 @@ import colors from './colors'
 import styles from './styles'
 
 const theme = {
-  initialColorMode: 'light',
   colors,
+  styles,
   fonts: {
-    body: 'system-ui, sans-serif',
-    heading: 'system-ui, sans-serif',
-    monospace: 'Menlo, monospace',
+    body: `'Inter var'`,
+    heading: `'Inter var'`,
+    monospace: `'Fira Code VF'`,
+    safe: {
+      body: `-apple-system, system-ui, sans-serif`,
+      heading: `-apple-system, system-ui, sans-serif`,
+      monospace: `monospace`,
+    }
   },
   lineHeights: {
     body: 1.5,
@@ -19,10 +24,6 @@ const theme = {
     heading: 700,
     bold: 700,
   },
-  sizes: {
-    container: 768,
-  },
-  styles,
 }
 
 export default theme

@@ -37,9 +37,8 @@ module.exports = {
         useMozJpeg: true
       }
     },
-    'gatsby-transformer-sharp',
-    'gatsby-plugin-theme-ui',
-    'gatsby-plugin-react-helmet',
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-react-helmet`,
     `gatsby-plugin-webpack-size`,
   ]
 }
