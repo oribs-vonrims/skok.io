@@ -1,4 +1,5 @@
-import React from 'react'
+/** @jsx jsx */
+import { jsx, Styled } from 'theme-ui'
 import { graphql } from 'gatsby';
 import Img from 'gatsby-image';
 import Layout from '../components/layout';
@@ -16,7 +17,11 @@ const Blog = ({
 
   return (
     <Layout>
-      {posts.map(({ node: post }) => (
+      <Styled.h1 sx={{fontStyle: `italic`}}>
+        Blog
+      </Styled.h1>
+
+      { posts.map(({ node: post }) => (
         <div key={post.id}>
           {post.frontmatter.cover && (
             <Img
@@ -24,21 +29,21 @@ const Blog = ({
             />
           )}
 
-          <h2>
+          <Styled.h2>
             <Link to={post.fields.slug}>
               {post.frontmatter.title}
             </Link>
-          </h2>
+          </Styled.h2>
 
           <small>{post.frontmatter.date}</small>
 
-          <p>{post.excerpt}</p>
+          <Styled.p>{post.excerpt}</Styled.p>
 
           <Link to={post.fields.slug}>
             Continue Reading
           </Link>
         </div>
-      ))}
+      )) }
 
       <hr />
 

@@ -1,32 +1,27 @@
-import colors from './colors'
+import base from './tokens/base'
+import colors from './tokens/colors'
+import space from './tokens/space'
+import sizes from './tokens/sizes'
+import fonts from './tokens/fonts'
+import fontWeights from './tokens/font-weights'
+import fontSizes from './tokens/font-sizes'
+import lineHeights from './tokens/line-height-headings'
+import text from './variants/text'
+import buttons from './variants/buttons'
 import styles from './styles'
 
 const theme = {
   colors,
+  space,
+  sizes,
+  fontSizes,
+  fonts,
+  fontWeights,
+  lineHeights,
+  text,
+  buttons,
   styles,
-  fonts: {
-    body: `'Inter var'`,
-    heading: `'Inter var'`,
-    monospace: `'Fira Code VF'`,
-    safe: {
-      body: `-apple-system, system-ui, sans-serif`,
-      heading: `-apple-system, system-ui, sans-serif`,
-      monospace: `monospace`,
-    }
-  },
-  lineHeights: {
-    body: 1.5,
-    heading: 1.25,
-  },
-  fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 96],
-  fontWeights: {
-    body: 400,
-    heading: 700,
-    bold: 700,
-  },
-  sizes: {
-    container: 768,
-  },
 }
 
 export default theme
+export { base as baseThemeSettings }
