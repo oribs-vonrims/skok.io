@@ -1,28 +1,19 @@
 /** @jsx jsx */
 import Highlight, { Prism } from '@skok/prism-react-renderer'
-import { jsx, Styled, useThemeUI } from 'theme-ui'
+import { jsx, Styled } from 'theme-ui'
 import Line from './line'
 
 const HighlightCode = ({
   code,
   language,
-  theme,
   lineNumbers,
   shouldHighlightLine,
 }) => {
-  const {
-    theme: {
-      sizes: {
-        lineNumber: lineNumberWidth
-      }
-    }
-  } = useThemeUI()
-
   return (
     <Highlight
       Prism={Prism}
       code={code}
-      theme={theme}
+      theme={undefined}
       language={language}
     >
       {({
@@ -31,13 +22,7 @@ const HighlightCode = ({
         getTokenProps,
         style
       }) => (
-        <Styled.code
-          sx={{
-            ...style,
-            width: `calc(100% + ${lineNumberWidth + 'px'})`,
-            transition: 'background-color 400ms ease'
-          }}
-        >
+        <Styled.code sx={{ ...style }}>
           { tokens.map((line, i) => (
             <Line
               key={i}
