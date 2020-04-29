@@ -1,7 +1,7 @@
 const sizes = {
-  iconButton: 40,
-  lineNumber: 40,
   icon: 24,
+  iconButton: 40,
+  lineNumber: 64,
   container: 800,
 }
 

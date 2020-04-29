@@ -10,20 +10,17 @@ const buttons = {
     height: `iconButton`,
     width: `iconButton`,
     cursor: `pointer`,
-    color: `background`,
-    backgroundColor: `secondary`,
-    marginX: 2,
-    opacity: 0.75,
-    transition: `opacity 400ms ease`,
+    color: `primary`,
+    transition: `color 400ms ease`,
     '&:hover': {
-      opacity: 1
+      color: `secondary`
     }
   },
-  svgIcon: {
+  iconSvg: {
     height: `icon`,
     width: `icon`,
     fill: `currentColor`,
-  }
+  },
 }
 
 export default buttons

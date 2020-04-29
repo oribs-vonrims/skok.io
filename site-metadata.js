@@ -4,7 +4,11 @@ module.exports = {
   navigation: [
     {
       to: '/blog',
-      label: 'Blog'
+      label: 'blog'
+    },
+    {
+      to: '/about',
+      label: 'about'
     },
   ],
   codeBlock: {
@@ -14,4 +18,8 @@ module.exports = {
     copyButton: true,
     languageTab: true
   },
+  colorModes: [
+    `default`,
+    `dark`,
+  ]
 }

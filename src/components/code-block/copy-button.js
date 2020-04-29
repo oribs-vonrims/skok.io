@@ -13,7 +13,7 @@ const CopyButton = ({ code }) => {
     >
       <svg
         viewBox='0 0 14 16'
-        sx={{ variant: 'buttons.svgIcon' }}
+        sx={{ variant: 'buttons.iconSvg' }}
       >
         <path
           fillRule='evenodd'
