@@ -2,7 +2,9 @@
 import { jsx } from 'theme-ui'
 
 const Footer = () => (
-  <footer>
+  <footer sx={{
+    textAlign: `center`
+  }}>
     © Copyright { new Date().getFullYear() }
   </footer>
 )

@@ -9,7 +9,9 @@ const Layout = ({ children }) => (
   <Fragment>
     <Head />
     <Container sx={{
-      paddingX: 3
+      paddingX: 3,
+      display: 'flex',
+      flexDirection: 'column'
     }}>
       <Header />
       <main>

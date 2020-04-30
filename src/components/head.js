@@ -80,6 +80,8 @@ export default props => {
       <style type="text/css" name="font-loading">
         {`
           html {
+            position: relative;
+            height: 100%;
             font-size: 125%;
           }
 
