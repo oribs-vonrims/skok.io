@@ -81,6 +81,7 @@ export default props => {
         {`
           html {
             font-size: 125%;
+            height: 100%;
           }
 
           .font-loading-stage-1 body {
