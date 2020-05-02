@@ -37,7 +37,7 @@ const IndexPage = () => (
           text="pixels"
           duration="5000ms"
           keyframesNum={20}
-          limit={0.5}
+          limit={1}
           colors={['red', 'green', 'blue']}
           position={[-5, 5]}
           shadow={[-2, 2]}
