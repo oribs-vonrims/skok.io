@@ -39,7 +39,6 @@ export default {
     fontFamily: `body`,
     lineHeight: baseLineHeight,
     fontFeatureSettings: `'kern', 'calt', 'ss01', 'ss02', 'ss03'`,
-    transition: `color 400ms ease, background-color 400ms ease`,
     minHeight: `100%`
   },
   p: {
