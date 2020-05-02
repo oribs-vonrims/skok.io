@@ -3,56 +3,84 @@ import { jsx } from 'theme-ui'
 import { keyframes } from '@emotion/core'
 import getRandomInt from '../utils/get-random-int'
 
-const ANIMATION_DURATION = `5000ms`
-const KEYFRAMES_NUMBER = 20
-const GLITCH_COLORS = [`red`, `green`, `blue`]
+const maxClipPath = limit => 1 / (2 - (4 * (1 - limit)) ** 0.25) * 100
+const randClipPath = (maxClipPath, limit) => getRandomInt(1, maxClipPath(limit)) + `%`
 
-const limit = 0.2 // % of visible glitch
-const a = 1 / (2 - (4 * (1 - limit)) ** 0.25) * 100
-const randClipPath = () => getRandomInt(1, a) + `%`
-
-const randTextShadow = () => {
-  const shadow = getRandomInt(-1, 1)
+const randTextShadow = (minShadow, maxShadow) => {
+  const shadow = getRandomInt(minShadow, maxShadow)
   return shadow === 0 ?
     randPosition() :
     shadow + `px`
 }
 
-const randColor = () => GLITCH_COLORS[getRandomInt(0, 2)]
+const randColor = colors => colors[getRandomInt(0, colors.length - 1)]
 
-const randPosition = () => {
-  const pos = getRandomInt(-5, 5)
+const randPosition = (minPos, maxPos) => {
+  const pos = getRandomInt(minPos, maxPos)
   return pos === 0 ?
     randPosition() :
     pos + `px`
 }
 
-const clipPath = () => `inset(${randClipPath()} 0 ${randClipPath()} 0)`
-const textShadow = () => `${randTextShadow()} 0 ${randColor()}`
+const clipPath = (maxClipPath, limit) => `inset(${randClipPath(maxClipPath, limit)} 0 ${randClipPath(maxClipPath, limit)} 0)`
+const textShadow = (minShadow, maxShadow, colors) => `${randTextShadow(minShadow, maxShadow)} 0 ${randColor(colors)}`
 
-const keys = Array.from({ length: KEYFRAMES_NUMBER }).map((_, i) => i * 5 + '%')
+const keys = keyframesNum => Array.from({ length: keyframesNum + 1 }).map((_, i) => i * (100 / (keyframesNum + 1)) + '%')
 
-const keyframes1 = {}
-const keyframes2 = {}
+const getAnimation = (
+  keyframesNum,
+  limit,
+  minShadow,
+  maxShadow,
+  minPos,
+  maxPos,
+  colors
+) => {
+  const animation = {}
 
-keys.forEach(key => {
-  keyframes1[key] = {
-    clipPath: clipPath(),
-    textShadow: textShadow(),
-    left: randPosition(),
-  }
+  const animationKeys = keys(keyframesNum)
 
-  keyframes2[key] = {
-    clipPath: clipPath(),
-    textShadow: textShadow(),
-    left: randPosition(),
-  }
-})
+  animationKeys.forEach(key => {
+    animation[key] = {
+      clipPath: clipPath(maxClipPath, limit),
+      textShadow: textShadow(minShadow, maxShadow, colors),
+      left: randPosition(minPos, maxPos),
+    }
+  })
 
-const glitch1 = keyframes(keyframes1)
-const glitch2 = keyframes(keyframes2)
+  return keyframes(animation).toString()
+}
 
-const GlitchText = ({ children, text }) => {
+const GlitchText = ({
+  children,
+  text,
+  duration,
+  limit,
+  keyframesNum,
+  shadow,
+  position,
+  colors
+}) => {
+  const glitch1 = getAnimation(
+    keyframesNum,
+    limit,
+    shadow[0],
+    shadow[1],
+    position[0],
+    position[1],
+    colors
+  )
+
+  const glitch2 = getAnimation(
+    keyframesNum,
+    limit,
+    shadow[0],
+    shadow[1],
+    position[0],
+    position[1],
+    colors
+  )
+
   return (
     <span sx={{
       position: `relative`,
@@ -69,18 +97,18 @@ const GlitchText = ({ children, text }) => {
         left: `2px`,
         textShadow: `-1px 0 red`,
         backgroundColor: `background`,
-        animationName: glitch1.toString(),
+        animationName: glitch1,
         animationTimingFunction: `linear`,
-        animationDuration: ANIMATION_DURATION,
+        animationDuration: duration,
         animationIterationCount: `infinite`,
       },
       '&::after': {
         left: `-2px`,
         textShadow: `-1px 0 blue`,
         backgroundColor: `background`,
-        animationName: glitch2.toString(),
+        animationName: glitch2,
         animationTimingFunction: `linear`,
-        animationDuration: ANIMATION_DURATION,
+        animationDuration: duration,
         animationIterationCount: `infinite`,
       }
     }}>

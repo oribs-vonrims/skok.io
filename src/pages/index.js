@@ -31,7 +31,21 @@ const IndexPage = () => (
           wordSpacing: 4,
         }}
       >
-        I move <GlitchText text="pixels">pixels</GlitchText> on the web.
+        I move
+        {' '}
+        <GlitchText
+          text="pixels"
+          duration="5000ms"
+          keyframesNum={20}
+          limit={0.5}
+          colors={['red', 'green', 'blue']}
+          position={[-5, 5]}
+          shadow={[-2, 2]}
+        >
+          pixels
+        </GlitchText>
+        {' '}
+        on the web.
       </Styled.h2>
     </Flex>
   </Layout>
