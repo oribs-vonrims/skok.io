@@ -26,7 +26,9 @@ const Line = ({
         key: lineNumber,
       }) }
       sx={{
-        width: `calc(100% + ${lineNumberWidth + 1 + 'px'})`,
+        boxSizing: `content-box`,
+        paddingRight: lineNumberWidth + `px`,
+        width: `calc(100% + ${lineNumberWidth + 'px'})`,
         backgroundColor: highlight ? `codeHighlight` : `transparent`,
         transition: `transform 400ms ease`,
         border: highlight && 0,
