@@ -54,7 +54,7 @@ export default {
     '&:hover': {
       color: `secondary`,
       textDecoration: `none`,
-    }
+    },
   },
   h1: {
     variant: `text.display`,

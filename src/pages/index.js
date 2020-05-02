@@ -1,20 +1,39 @@
 /** @jsx jsx */
-import { jsx, Styled } from 'theme-ui'
+import { jsx, Flex, Styled } from 'theme-ui'
 import Layout from '../components/layout'
 import GlitchText from '../components/glitch-text'
 
 const IndexPage = () => (
   <Layout>
-    <Styled.h1 sx={{
-      fontSize: 8,
-      lineHeight: 1.2,
-    }}>
-      Hi! My name is <span sx={{ variant: `text.italicHeading` }}>Vladimir</span>.
-    </Styled.h1>
-    <Styled.h2>
-      I move <GlitchText text="pixels">pixels</GlitchText> 
-      on the web.
-    </Styled.h2>
+    <Flex
+      sx={{
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: `center`,
+        minHeight: `100%`
+      }}
+    >
+      <Styled.h1
+        sx={{
+          fontSize: 8,
+          lineHeight: 1.25
+        }}
+      >
+        Hi! My name is <span sx={{ variant: `text.italicHeading` }}>
+          Vladimir</span>.
+      </Styled.h1>
+
+      <Styled.h2
+        sx={{
+          color: `secondary`,
+          marginTop: 0
+        }}
+      >
+        I move <span sx={{
+          textDecoration: `underline`,
+        }}>pixels</span> on the web.
+      </Styled.h2>
+    </Flex>
   </Layout>
 )
 

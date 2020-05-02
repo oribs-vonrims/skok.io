@@ -10,12 +10,17 @@ const Layout = ({ children }) => (
     <Head />
     <Container sx={{
       paddingX: 3,
-      display: 'flex',
-      flexDirection: 'column'
+      minHeight: `100%`,
+      display: `flex`,
+      flexDirection: `column`,
     }}>
       <Header />
-      <main>
-        {children}
+      <main sx={{
+        display: `flex`,
+        flexDirection: `column`,
+        flex: 1
+      }}>
+        { children }
       </main>
       <Footer />
     </Container>
