@@ -7,7 +7,9 @@ const ANIMATION_DURATION = `5000ms`
 const KEYFRAMES_NUMBER = 20
 const GLITCH_COLORS = [`red`, `green`, `blue`]
 
-const randClipPath = () => getRandomInt(1, 100) + `%`
+const limit = 0.2 // % of visible glitch
+const a = 1 / (2 - (4 * (1 - limit)) ** 0.25) * 100
+const randClipPath = () => getRandomInt(1, a) + `%`
 
 const randTextShadow = () => {
   const shadow = getRandomInt(-1, 1)
