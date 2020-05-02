@@ -15,9 +15,9 @@ const IndexPage = () => (
     >
       <Styled.h1
         sx={{
-          fontSize: 8,
+          fontSize: 9,
           lineHeight: 1.25,
-          letterSpacing: -1
+          letterSpacing: 2
         }}
       >
         Hi! My name is <span sx={{ variant: `text.italicHeading` }}>Vladimir</span>.
@@ -27,6 +27,7 @@ const IndexPage = () => (
         sx={{
           color: `secondary`,
           marginTop: 0,
+          fontSize: 6,
           wordSpacing: 4,
         }}
       >
