@@ -18,6 +18,7 @@ const PaginationLink = ({ to, text }) => {
         fontWeight: `bold`,
         color: touchStart ? `secondary` : `text`,
         textDecoration: `none`,
+        transition: `color 400ms ease`,
       }}
     >
       { text }

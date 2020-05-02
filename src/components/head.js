@@ -1,5 +1,4 @@
 import React from 'react'
-import { graphql, useStaticQuery } from 'gatsby'
 import { Helmet } from 'react-helmet'
 import amstelvarRomanWoff2 from '../fonts/amstelvar/amstelvar-roman-subset.woff2'
 import amstelvarItalicWoff2 from '../fonts/amstelvar/amstelvar-italic-subset.woff2'
@@ -10,37 +9,25 @@ import interFontFace from '../fonts/inter'
 import firaCodeFontFace from '../fonts/fira-code'
 import fonts from '../theme/fonts'
 import fontObserver from '../utils/font-observer'
+import useSiteMetadata from '../hooks/use-site-metadata'
 
-const query = graphql`
-  query HeadQuery {
-    site {
-      siteMetadata {
-        title
-        description
-      }
-    }
-  }
-`
+const Head = props => {
+  const {
+    title,
+    description,
+    author
+  } = useSiteMetadata()
 
-const useMetadata = () => {
-  const data = useStaticQuery(query)
-  return data.site.siteMetadata
-}
-
-export default props => {
-  const meta = useMetadata()
-  const title = props.title || meta.title
-  const description = props.description || meta.description
   return (
     <Helmet>
       <title>{title}</title>
-      <meta name='description' content={description} />
-      <meta name='og:title' content={title} />
-      <meta name='og:description' content={description} />
+      <meta name='description' content={ description || props.description } />
+      <meta name='og:title' content={ title || props.title } />
+      <meta name='og:description' content={ description || props.description } />
       <meta name='twitter:card' content='summary' />
-      <meta name='twitter:title' content={title} />
-      <meta name='twitter:description' content={description} />
-      <meta name='twitter:creator' content={meta.author} />
+      <meta name='twitter:title' content={ title || props.title } />
+      <meta name='twitter:description' content={ description || props.description } />
+      <meta name='twitter:creator' content={ author || props.author } />
       <script>
         {` document.documentElement.classList.add('font-loading-stage-1') `}
       </script>
@@ -88,6 +75,18 @@ export default props => {
       <script name="font-face-observer">
         {` window.addEventListener('load', ${fontObserver}) `}
       </script>
+      <style>
+        {`
+          html,
+          body,
+          #___gatsby,
+          #gatsby-focus-wrapper {
+            height: 100%
+          }
+        `}
+      </style>
     </Helmet>
   )
 }
+
+export default Head

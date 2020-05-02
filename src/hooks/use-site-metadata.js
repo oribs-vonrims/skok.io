@@ -8,6 +8,7 @@ const useSiteMetadata = () => {
           siteMetadata {
             title
             description
+            author
             navigation {
               label
               to

@@ -15,7 +15,7 @@ const Pagination = ({ next, previous }) => (
     }}>
       { previous &&
         <Link
-          to={previous}
+          to={ previous }
           text="Previous"
         />
       }
