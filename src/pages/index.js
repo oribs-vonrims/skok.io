@@ -16,22 +16,21 @@ const IndexPage = () => (
       <Styled.h1
         sx={{
           fontSize: 8,
-          lineHeight: 1.25
+          lineHeight: 1.25,
+          letterSpacing: -1
         }}
       >
-        Hi! My name is <span sx={{ variant: `text.italicHeading` }}>
-          Vladimir</span>.
+        Hi! My name is <span sx={{ variant: `text.italicHeading` }}>Vladimir</span>.
       </Styled.h1>
 
       <Styled.h2
         sx={{
           color: `secondary`,
-          marginTop: 0
+          marginTop: 0,
+          wordSpacing: 4,
         }}
       >
-        I move <span sx={{
-          textDecoration: `underline`,
-        }}>pixels</span> on the web.
+        I move <GlitchText text="pixels">pixels</GlitchText> on the web.
       </Styled.h2>
     </Flex>
   </Layout>
