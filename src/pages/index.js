@@ -41,6 +41,7 @@ const IndexPage = () => (
           colors={['red', 'green', 'blue']}
           position={[-5, 5]}
           shadow={[-2, 2]}
+          backgroundColor="background"
         >
           pixels
         </GlitchText>

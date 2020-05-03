@@ -54,12 +54,14 @@ const getAnimation = (
 const GlitchText = ({
   children,
   text,
-  duration,
-  limit,
-  keyframesNum,
-  shadow,
-  position,
-  colors
+  duration = `5000ms`,
+  limit = 0.5,
+  keyframesNum = 20,
+  shadow = [-2, 2],
+  position = [-5, 5],
+  colors = [`red`, `green`, `blue`],
+  backgroundColor = `#fff`,
+  ...props
 }) => {
   const glitch1 = getAnimation(
     keyframesNum,
@@ -82,37 +84,38 @@ const GlitchText = ({
   )
 
   return (
-    <span sx={{
-      position: `relative`,
-      display: `inline-block`,
-      '&::before, &::after': {
-        content: `"${text}"`,
-        position: `absolute`,
-        top: 0,
-        left: 0,
-        width: `100%`,
-        height: `100%`,
-      },
-      '&::before': {
-        left: `2px`,
-        textShadow: `-1px 0 red`,
-        backgroundColor: `background`,
-        animationName: glitch1,
-        animationTimingFunction: `linear`,
-        animationDuration: duration,
-        animationIterationCount: `infinite`,
-      },
-      '&::after': {
-        left: `-2px`,
-        textShadow: `-1px 0 blue`,
-        backgroundColor: `background`,
-        animationName: glitch2,
-        animationTimingFunction: `linear`,
-        animationDuration: duration,
-        animationIterationCount: `infinite`,
-      }
-    }}>
-      { children }
+    <span
+      sx={{
+        '@media not screen and (prefers-reduced-motion: reduce)': {
+          position: `relative`,
+          display: `inline-block`,
+          '&::before, &::after': {
+            content: `"${text}"`,
+            position: `absolute`,
+            top: 0,
+            left: 0,
+            width: `100%`,
+            height: `100%`,
+          },
+          '&::before': {
+            backgroundColor,
+            animationName: glitch1,
+            animationTimingFunction: `linear`,
+            animationDuration: duration,
+            animationIterationCount: `infinite`,
+          },
+          '&::after': {
+            backgroundColor,
+            animationName: glitch2,
+            animationTimingFunction: `linear`,
+            animationDuration: duration,
+            animationIterationCount: `infinite`,
+          }
+        }
+      }}
+      {...props}
+    >
+      {children}
     </span>
   )
 }
