@@ -1,41 +1,24 @@
 /** @jsx jsx */
-import { jsx, Styled } from 'theme-ui'
-import { graphql } from 'gatsby'
-import Layout from '../components/layout'
-import Pagination from '../components/pagination'
-import BlogPostCard from '../components/blog-post-card'
+import { jsx, Styled } from "theme-ui"
+import { graphql } from "gatsby"
+import Layout from "../components/layout"
+import Pagination from "../components/pagination"
+import BlogPostCard from "../components/blog-post-card"
 
-const Blog = ({
-  data: { allMdx },
-  pageContext: { pagination },
-}) => {
-  const {
-    page,
-    nextPagePath,
-    previousPagePath
-  } = pagination
+const Blog = ({ data: { allMdx }, pageContext: { pagination } }) => {
+  const { page, nextPagePath, previousPagePath } = pagination
 
-  const posts = page.map(id =>
-    allMdx.edges.find(edge => edge.node.id === id)
-  )
+  const posts = page.map(id => allMdx.edges.find(edge => edge.node.id === id))
 
   return (
     <Layout>
-      <Styled.h1>
-        Blog
-      </Styled.h1>
+      <Styled.h1>Blog</Styled.h1>
 
-      { posts.map(({ node: post }) => (
-        <BlogPostCard
-          key={ post.id }
-          post={ post }
-        />
-      )) }
+      {posts.map(({ node: post }) => (
+        <BlogPostCard key={post.id} post={post} />
+      ))}
 
-      <Pagination
-        previous={ previousPagePath }
-        next={ nextPagePath }
-      />
+      <Pagination previous={previousPagePath} next={nextPagePath} />
     </Layout>
   )
 }

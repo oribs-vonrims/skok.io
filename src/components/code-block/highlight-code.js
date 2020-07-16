@@ -1,7 +1,7 @@
 /** @jsx jsx */
-import Highlight, { Prism } from '@skok/prism-react-renderer'
-import { jsx, Styled, useThemeUI } from 'theme-ui'
-import Line from './line'
+import Highlight, { Prism } from "@skok/prism-react-renderer"
+import { jsx, Styled, useThemeUI } from "theme-ui"
+import Line from "./line"
 
 const HighlightCode = ({
   code,
@@ -11,32 +11,22 @@ const HighlightCode = ({
 }) => {
   const {
     theme: {
-      sizes: {
-        lineNumber: lineNumberWidth
-      }
-    }
+      sizes: { lineNumber: lineNumberWidth },
+    },
   } = useThemeUI()
 
   return (
-    <Highlight
-      Prism={Prism}
-      code={code}
-      theme={undefined}
-      language={language}
-    >
-      {({
-        tokens,
-        getLineProps,
-        getTokenProps,
-      }) => (
+    <Highlight Prism={Prism} code={code} theme={undefined} language={language}>
+      {({ tokens, getLineProps, getTokenProps }) => (
         <Styled.code
           sx={{
             transition: `transform 400ms ease`,
-            transform: lineNumbers ?
-              `translate3d(0, 0, 0)` :
-              `translate3d(${-lineNumberWidth + 'px'}, 0, 0)`,
-        }}>
-          { tokens.map((line, i) => (
+            transform: lineNumbers
+              ? `translate3d(0, 0, 0)`
+              : `translate3d(${-lineNumberWidth + "px"}, 0, 0)`,
+          }}
+        >
+          {tokens.map((line, i) => (
             <Line
               key={i}
               line={line}
@@ -45,7 +35,7 @@ const HighlightCode = ({
               getTokenProps={getTokenProps}
               highlight={shouldHighlightLine(i)}
             />
-          )) }
+          ))}
         </Styled.code>
       )}
     </Highlight>

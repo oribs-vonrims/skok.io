@@ -1,14 +1,22 @@
 /** @jsx jsx */
-import { jsx, IconButton } from 'theme-ui'
+import { jsx, IconButton } from "theme-ui"
 
 const LineNumbersButton = ({ onClick, lineNumbers }) => {
   return (
     <IconButton
-      aria-label={`${lineNumbers ? 'Toggled' : 'Toggle'} code block line numbers`}
-      sx={{ variant: 'buttons.icon' }}
-      onClick={ onClick }
+      aria-label={`${
+        lineNumbers ? "Toggled" : "Toggle"
+      } code block line numbers`}
+      sx={{ variant: "buttons.icon" }}
+      onClick={onClick}
     >
-      <svg width="30" height="35" viewBox="0 0 30 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        width="30"
+        height="35"
+        viewBox="0 0 30 35"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path
           d="M3.04362 0H1.68831L0 1.29934V2.8537L1.56177 1.66365H1.60173V8.2899H3.04362V0Z"
           fill={lineNumbers ? `currentColor` : `rgba(0,0,0,0)`}

@@ -1,7 +1,7 @@
 /** @jsx jsx */
-import { useState } from 'react'
-import { jsx, IconButton } from 'theme-ui'
-import copyToClipboard from './copy-to-clipboard'
+import { useState } from "react"
+import { jsx, IconButton } from "theme-ui"
+import copyToClipboard from "./copy-to-clipboard"
 
 const CopyButton = ({ code }) => {
   const [copied, setCopied] = useState(false)
@@ -16,11 +16,17 @@ const CopyButton = ({ code }) => {
 
   return (
     <IconButton
-      aria-label={`${copied ? 'Copied' : 'Copy'} code block to clipboard`}
-      sx={{ variant: 'buttons.icon' }}
+      aria-label={`${copied ? "Copied" : "Copy"} code block to clipboard`}
+      sx={{ variant: "buttons.icon" }}
       onClick={handleClick}
     >
-      <svg width="23" height="36" viewBox="0 0 23 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        width="23"
+        height="36"
+        viewBox="0 0 23 36"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path
           fillRule="evenodd"
           clipRule="evenodd"
