@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, Styled, Box } from "theme-ui"
-import { useState } from "react"
+import React, { useState } from "react"
 import HighlightCode from "./highlight-code"
 import ReactLiveEditor from "./react-live-editor"
 import useSiteMetadata from "../../hooks/use-site-metadata"
@@ -56,7 +56,19 @@ const CodeBlock = ({
   const isFileName = !!fileName
 
   const [lineNumbersState, setLineNumbersState] = useState(isLineNumbers)
-  const toggleLineNumbers = () => setLineNumbersState(!lineNumbersState)
+  const [widthFix, setWidthFix] = useState(false)
+
+  const toggleLineNumbers = () => {
+    setLineNumbersState(!lineNumbersState)
+    if (lineNumbersState) {
+      setTimeout(() => {
+        setWidthFix(true)
+        setTimeout(() => {
+          setWidthFix(false)
+        }, 100)
+      }, 500)
+    }
+  }
 
   const [scrollbar, setScrollbar] = useState(false)
   const addScrollbar = () => {
@@ -71,6 +83,7 @@ const CodeBlock = ({
       sx={{
         marginBottom: rythm,
         position: "relative",
+        width: widthFix ? `calc(100% + 1px)` : `100%`,
       }}
     >
       {isLanguageTab && !isLive && (
