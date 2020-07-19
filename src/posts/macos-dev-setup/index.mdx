@@ -1,0 +1,198 @@
+---
+title: MacOS development setup
+date: 2020-07-18
+published: true
+---
+
+# MacOS development setup
+
+I'm starting a new job next week and today I got my MacBook Pro 13 delivered to my home 🎉.
+Now it's time to get ready for the next week and configure it for web development. The setup
+will consist out of several steps. Let's break it down:
+
+1. Install Homebrew package manager.
+2. Install CLI apps with `brew`.
+3. Install GUI apps with `brew cask`.
+4. Install and configure Oh My Zsh.
+5. Configure dotfiles.
+5. Install and configure VSCode.
+6. Install and configure Chrome.
+
+## Install Homebrew package manager
+
+First things first! Let's install MacOS package manager - [Homebrew](https://brew.sh).
+Homebrew will install packages to their own directory and then symlinks their files
+into `/usr/local`. 
+
+To install Homebrew simply paste this snippet in your termminal:
+
+```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+```
+
+The script will install several packages, create new directories, and install Xcode Command Line Tools.
+Don't forget to confirm the installation and enter your password. 
+
+```
+==> This script will install:`
+/usr/local/bin/brew
+/usr/local/share/doc/homebrew
+/usr/local/share/man/man1/brew.1
+/usr/local/share/zsh/site-functions/_brew
+/usr/local/etc/bash_completion.d/brew
+/usr/local/Homebrew
+==> The following new directories will be created:
+/usr/local/bin
+/usr/local/etc
+/usr/local/include
+/usr/local/lib
+/usr/local/sbin
+/usr/local/share
+/usr/local/var
+/usr/local/opt
+/usr/local/share/zsh
+/usr/local/share/zsh/site-functions
+/usr/local/var/homebrew
+/usr/local/var/homebrew/linked
+/usr/local/Cellar
+/usr/local/Caskroom
+/usr/local/Homebrew
+/usr/local/Frameworks
+==> The Xcode Command Line Tools will be installed.
+```
+
+Just to make sure that the installation went successfully let's run:
+
+```sh
+brew --version
+```
+
+And you should similar output:
+
+```sh
+Homebrew 2.4.7
+Homebrew/homebrew-core (git revision e9bb3; last commit 2020-07-18)
+Homebrew/homebrew-cask (git revision 7033a; last commit 2020-07-18)
+```
+
+Using package manager will automate the whole process of installing, upgrading, configuring, and
+removing programs using simple commands. Homebrew's API is pretty concise, here is the list of the
+most commonly used commands:
+
+| Command                  | Description                          |
+|--------------------------|--------------------------------------|
+| brew install git         | Install a package.                   |
+| brew uninstall git       | Uninstall a package.                 |
+| brew upgrade git         | Upgrade a package.                   |
+| brew list                | See all installed apps.              |
+| brew list --versions git | See what versions you installed.     |
+| brew unlink git          | Remove symlink to installation.      |
+| brew link git            | Creates symlinks to installations. This allows you to have the flexibility to install things on your own but still have those participate as dependencies in homebrew formulas. |
+| brew update              | Fetch latest version of homebrew.    |
+| brew doctor              | Check system for potential problems. |
+
+To learn more about Homebrew check out their [documentation](https://docs.brew.sh/) or use
+`brew help` / `brew help <sub-command>` to print help information.
+
+## Install CLI apps with Homebrew
+
+Once Homebrew is all set up we can install CLI packages. There are multiple ways to install Node and NPM,
+but I prefer to do it via `NVM`, which stands for [Node Version Manager](). It provides a command-line
+interface where you can install different versions with a single command, set a default, switch between
+them and much more.
+
+```sh
+brew install nvm
+```
+
+We are also required to create NVM's working directory by running `mkdir ~/.nvm`. If you have been attentive
+you probably saw the post installation message about shell configurations, but we are not goint to worry about
+it just yet.
+
+Next thing we are going to install is `yarn` package manager. It's a fast, reliable, and secure dependency management.
+
+```sh
+brew install yarn
+```
+
+Another handly tool is `tree`. It's a recursive directory listing program that produces a depth-indented listing of files.
+
+```sh
+brew install tree
+```
+
+`ccat` is command line similar to `cat`, but it displays the content of a file with syntax highlighting.
+
+```sh
+brew install ccat
+```
+
+`gh` is GitHub on the command line. It brings pull requests, issues, and other GitHub concepts to the terminal next to where you are already working with git and your code.
+
+```sh
+brew install github/gh/gh
+```
+
+One-liner for all of the above:
+
+```sh
+brew install tree yarn nvm ccat github/gh/gh && mkdir ~/.nvm
+```
+
+## Install GUI apps with Homebrew
+
+Homebrew-Cask is an extension to Homebrew to install GUI applications such as Google Chrome or VSCode.
+It started independently but its maintainers now work closely with Homebrew’s core team. It's commands
+exactly match the table from the above the only difference is that you have to write `brew cask` instead of 
+`brew`, e.g. to install Google Chrome the command will look as: `brew cask install google-chrome`.
+
+Here is the list of apps we are going to install and their corresponding brew package names (feel free
+to install any other apps, I'm just show-casing my preferences):
+
+* [Chrome]() `google-chrome`. Don't think that this one needs any intro. We are going to be looking in Chrome extensions further in the article.
+* [Firefox]() `firefox`. As well as this one.
+* [VScode]() `visiual-studio-code`. The best text editor ever created IMHO.
+* [iTerm2]() `iterm2` - more powerful and customizable version of the default terminal app.
+* [Authy]()
+* [Spectacle]()
+* [Telegram]()
+* [Notion]()
+* [Sourcetree]()
+* [Punto Switcher]() - `punto-switcher`
+* [Postman]() - 
+* [Flux]() - 
+* [Raindrop]()
+* [1Clipboard]() - 
+* [Sizzy]() -
+* [Alfred]()
+* [Skype]() - 
+* [Bartender]() -
+* [IINA]() -
+* [Lulu]() -
+* [Kap]() - 
+* [Figma]() - 
+
+And here is the one-liner to install all of these apps:
+
+```sh
+`brew cask install visual-studio-code sourcetree authy lastpass google-chrome chromium firefox opera postman spectacle telegram punto-switcher flux iterm2 notion skype raindropio 1clipboard sizzy alfred bartender iina lulu kap figma`
+```
+
+After running this script you can take a short break, because it might take a while.
+
+To check out the list of all available apps GUI apps you can visit the [formulae](https://formulae.brew.sh/cask/) page.
+
+Once we installed all the apps it's a good time to sort and organize your apps. I
+personally prefer to dump all of the default apps in the same folder and move them
+away from my eyes on the second page, because I don't use them anyways. And even
+you'll need them later you can always use Alfredo for a quick app launch (we are going
+to be talking about Alfredo later in the article). [Attach screenshot of your app's screen].
+
+## Install and configure Oh My Zsh
+
+
+
+
+
+
+Though some things never change - https://www.reddit.com/r/MacOS/comments/hpwcfu/year_2020_apple_engineers_no/.
