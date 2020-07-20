@@ -4,6 +4,8 @@ date: 2020-07-18
 published: true
 ---
 
+# MacOS development setup
+
 I'm starting a new job next week and today I got my MacBook Pro 13 delivered to my home 🎉.
 Now it's time to get ready for the next week and configure it for web development. The setup
 will consist out of several steps. Let's break it down:
@@ -437,6 +439,40 @@ plugins=(
 ```
 
 ### Add aliases
+
+Once we installed all the plugins there is still some room for improvement. Let's add a couple of usefull aliases.
+Do that let's create `.aliases` file by running `code ~/.aliases` folder. We can also add aliases directly in `.zshrc`,
+but having them is a separate file seems way cleaner.
+
+```sh
+alias zshrc='code ~/.zshrc'
+alias zshaliases='code ~/.aliases'
+alias zshfunctions='code ~/.functions'
+alias ohmyzsh="code ~/.oh-my-zsh"
+alias rmd="rm -rf"
+alias o="open"
+alias c="clear"
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias localip="ipconfig getifaddr en0"
+```
+
+| Alias                    | Description                             |
+|--------------------------|-----------------------------------------|
+| zshrc                    | Open `~/.zshrc` in VSCode               |
+| zshaliases               | Open `~/.aliases` in VSCode             |
+| zshfunctions             | Open `~/.functions` in VSCode           |
+| ohmyzsh                  | Open `~/.oh-my-zsh` directory in VSCode |
+| rmd                      | Remove directory                        |
+| o                        | Open file or directory                  |
+| c                        | Clear terminal                          |
+| ip                       | Show IP address                         |
+| localip                  | Show local IP address                   |
+
+Once we said the file open `code ~/.zshrc` and source `~/.aliases` file.
+
+```sh
+source $HOME/.aliases
+```
 
 ### Add functions
 
