@@ -17,7 +17,6 @@ const ThemeUIProvider = ({ element }) => {
   const [theme, setTheme] = useState(safeFontsTheme)
 
   const updateTheme = useCallback(() => {
-    console.log("updateTheme")
     setTheme(themeUI)
     document.documentElement.classList.remove(
       `font-loading-stage-1`,
@@ -36,7 +35,6 @@ const ThemeUIProvider = ({ element }) => {
     sessionStorage.getItem("fontsLoaded")
   }, [updateTheme])
 
-  console.log("ThemeUIProvider")
   return (
     <Fragment>
       {jsx(
