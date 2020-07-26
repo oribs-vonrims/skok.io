@@ -35,6 +35,7 @@ const ThemeUIProvider = ({ element }) => {
     sessionStorage.getItem("fontsLoaded")
   }, [updateTheme])
 
+  console.log("ThemeUIProvider")
   return (
     <Fragment>
       {jsx(

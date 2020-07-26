@@ -14,7 +14,7 @@ import useSiteMetadata from "../../hooks/useSiteMetadata"
 
 const Head = props => {
   const { title, description, author } = useSiteMetadata()
-
+  console.log("HEAD")
   return (
     <Helmet>
       <title>{title}</title>
