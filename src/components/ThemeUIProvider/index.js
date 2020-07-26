@@ -17,6 +17,7 @@ const ThemeUIProvider = ({ element }) => {
   const [theme, setTheme] = useState(safeFontsTheme)
 
   const updateTheme = useCallback(() => {
+    console.log("updateTheme")
     setTheme(themeUI)
     document.documentElement.classList.remove(
       `font-loading-stage-1`,
