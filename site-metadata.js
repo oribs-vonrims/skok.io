@@ -19,4 +19,8 @@ module.exports = {
     languageTab: true,
   },
   colorModes: [`default`, `light`],
+  favicons: {
+    light: `/favicon-light.svg`,
+    dark: `/favicon-dark.svg`,
+  },
 }
