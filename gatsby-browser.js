@@ -1,15 +1,26 @@
+import debounce from "lodash.debounce"
+import updateBrowserTab from "./src/utils/update-browser-tab"
+import setThemeFavicon from "./src/utils/set-theme-favicon"
 import { wrapRootElement } from "./src/components/WrapRootElement"
-import setFavicon from "./src/utils/set-favicon"
-import { favicons } from "./site-metadata.js"
 
-const onClientEntry = () => {
-  const { light: faviconLight, dark: faviconDark } = favicons
+// TODO: Add dynamic title in templates.
+const title = document.querySelector(`title`).textContent
 
-  const theme = localStorage.getItem(`theme-ui-color-mode`)
+const onBlogPostScroll = debounce(() => {
+  updateBrowserTab(title)
+}, 200)
 
-  theme === `dark` || theme === `default` || theme === null
-    ? setFavicon(faviconDark)
-    : setFavicon(faviconLight)
+const onRouteUpdate = ({ location }) => {
+  const blogPostRegex = /\/blog\/.+/
+
+  if (blogPostRegex.test(location.pathname)) {
+    window.addEventListener(`scroll`, onBlogPostScroll)
+  } else {
+    window.removeEventListener(`scroll`, onBlogPostScroll)
+    setThemeFavicon()
+  }
 }
 
-export { wrapRootElement, onClientEntry }
+const onClientEntry = () => setThemeFavicon()
+
+export { wrapRootElement, onRouteUpdate, onClientEntry }
