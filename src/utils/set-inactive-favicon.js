@@ -10,7 +10,9 @@ const svg = value => `
 >
   <style>
     text {
+      -webkit-transform: rotate(${value}deg);
       transform: rotate(${value}deg);
+      -webkit-transform-origin: 50% 50%;
       transform-origin: 50% 50%;
     }
   </style>
