@@ -29,7 +29,7 @@ const setInactiveFavicon = () => {
   timer = setInterval(() => {
     counter += 1
     // Set SVG rotation step to 45 degree
-    setFavicon(svg(0 + 45 * (counter % 3)))
+    setFavicon(svg(0 + 45 * (counter % 2)))
   }, 1000)
 }
 
