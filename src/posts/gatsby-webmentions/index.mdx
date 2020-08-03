@@ -1,0 +1,17 @@
+---
+title: Gatsby Webmentions
+date: 2020-08-02
+published: true
+---
+
+1. In order to create webmentions.io account you have to own a domain. Netlify's subdomain won't work for this purpose. I bought the cheapest domain at the moment on NameCheap for just 2\$ -- skok.club (Yes, I know it sounds narcissistic)
+2. To confirm your identity use one of the provided social media networks. I chose twitter. Make sure that the domain name is used as your website in twitter bio.
+3. Add this markup to the head/footer of your website `<a href="https://twitter.com/iamskok" rel="me" class="h-card">Twitter</a>`.
+4. Go to webmentions.io and sign in using your domain name.
+5. Save webmentions API token `qPoS9TfHy78z4zlliYc5bi`
+6. Open `Head` component and add webmention link (optionally you can add pingback link)
+
+```
+<link rel="webmention" href="https://webmention.io/skok.club/webmention" />
+<link rel="pingback" href="https://webmention.io/skok.club/xmlrpc" />
+```
