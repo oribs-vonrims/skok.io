@@ -59,6 +59,10 @@ const Head = props => {
         rel="preload"
         crossOrigin="anonymous"
       />
+      <link
+        rel="webmention"
+        href="https://webmention.io/skok.club/webmention"
+      />
       <style type="text/css" name="font-faces">
         {`
           ${amstelvarFontFaces}

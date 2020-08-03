@@ -50,6 +50,22 @@ const Header = () => {
               </Link>
             </li>
           ))}
+          <li
+            sx={{
+              display: `inline-block`,
+            }}
+          >
+            <Link
+              to="https://twitter.com/iamskok"
+              sx={{
+                variant: `links.nav`,
+              }}
+              rel="me"
+              className="h-card"
+            >
+              Twitter
+            </Link>
+          </li>
         </ul>
       </Box>
       <ColorModeButton />
