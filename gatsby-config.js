@@ -1,6 +1,12 @@
 const path = require("path")
 const siteMetadata = require("./site-metadata")
 
+const activeEnv = process.env.NODE_ENV
+
+require("dotenv").config({
+  path: `.env.${activeEnv}`,
+})
+
 const gatsbyRemarkPlugins = [
   {
     resolve: `gatsby-remark-images`,
@@ -81,6 +87,7 @@ module.exports = {
           github: `iamskok`,
         },
         mentions: true,
+        pingbacks: true,
         forwardPingbacksAsWebmentions: `https://brid.gy`,
         domain: `skok.club`,
         fetchLimit: 10000,
