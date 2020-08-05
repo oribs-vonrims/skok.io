@@ -1,17 +1,19 @@
 /** @jsx jsx */
-import { useState } from "react"
+import { useState, useContext } from "react"
 import { jsx, IconButton } from "theme-ui"
 import useSound from "use-sound"
+import { SoundContext } from "../SoundProvider"
 import popUpOff from "../../sounds/pop-up-off.mp3"
 import popUpOn from "../../sounds/pop-up-on.mp3"
 
 const SoundModeButton = props => {
+  const [sound, setSound] = useContext(SoundContext)
+  const [playPopUpOff] = useSound(popUpOff)
+  const [playPopUpOn] = useSound(popUpOn)
+
   const [highlight, setHighlight] = useState(false)
   const addHighlight = () => setHighlight(true)
   const removeHighlight = () => setHighlight(false)
-  const [sound, setSound] = useState(true)
-  const [playPopUpOff] = useSound(popUpOff)
-  const [playPopUpOn] = useSound(popUpOn)
 
   const clickHandler = () => {
     setSound(!sound)
