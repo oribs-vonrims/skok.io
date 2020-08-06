@@ -2,7 +2,7 @@ const cards = {
   primary: {
     padding: 3,
     margin: 0,
-    borderWidth: 2,
+    borderWidth: 3,
     borderStyle: `solid`,
     boxShadow: `default`,
     borderRadius: 2,
