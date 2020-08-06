@@ -2,6 +2,7 @@ module.exports = {
   title: `skok.io`,
   description: `Vladimir Skok's development blog`,
   author: `Vladimir Skok`,
+  siteUrl: `https://skok.io`,
   navigation: [
     {
       to: `/blog`,

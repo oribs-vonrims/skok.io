@@ -15,7 +15,7 @@ const gatsbyRemarkPlugins = [
 ]
 
 module.exports = {
-  siteMetadata,
+  siteMetadata, // what's the point of this?
   plugins: [
     {
       resolve: `gatsby-source-filesystem`,
@@ -60,6 +60,16 @@ module.exports = {
         theme_color: `#11e`,
         display: `standalone`,
         icon: `static/favicon-dark.svg`,
+      },
+    },
+    {
+      resolve: "gatsby-plugin-robots-txt",
+      options: {
+        host: siteMetadata.siteUrl,
+        // generate sitemap after moving on `skok.io`
+        sitemap: null,
+        // allow all after moving on `skok.io domain`
+        policy: [{ userAgent: "*", disallow: ["/"] }],
       },
     },
     `gatsby-transformer-sharp`,
