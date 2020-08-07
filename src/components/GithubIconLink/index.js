@@ -16,6 +16,7 @@ const GithubIconLink = () => {
     <a
       href={githubURL}
       rel="noopener noreferrer me"
+      target="_blank"
       className="h-card"
       aria-label="Navigate to Vladimir's Github account"
       onFocus={addHighlight}
