@@ -15,7 +15,7 @@ const TwitterIconLink = () => {
   return (
     <a
       href={twitterURL}
-      rel="me"
+      rel="noopener noreferrer me"
       className="h-card"
       aria-label="Navigate to Vladimir's Twitter account"
       onFocus={addHighlight}
