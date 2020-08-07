@@ -10,6 +10,7 @@ const BlockQuote = props => (
       borderLeftWidth: 3,
       borderColor: `primary`,
       borderStyle: `solid`,
+      marginRight: 0,
 
       "& > p": {
         marginBottom: 0,
