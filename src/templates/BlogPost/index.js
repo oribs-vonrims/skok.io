@@ -9,7 +9,7 @@ import TweetableSelection from "../../components/TweetableSelection"
 import WebMentions from "../../components/WebMentions"
 
 const BlogPost = ({ pageContext, data }) => {
-  const { prev, next } = pageContext
+  const { prev, next, permalink } = pageContext
   const { mdx } = data
   const { title, date, cover, coverAlt } = mdx.frontmatter
   const allWebMentionEntry = data?.allWebMentionEntry
