@@ -113,18 +113,29 @@ export const pageQuery = graphql`
       edges {
         node {
           type
-          mentionOf
+          url
+          published
+          wmReceived
+          wmId
+          wmPrivate
           wmTarget
           wmSource
           wmProperty
-          wmPrivate
-          wmId
-          url
+          likeOf
+          mentionOf
+          inReplyTo
+          repostOf
+          bookmarkOf
+          rsvp
           author {
             name
             type
             photo
             url
+          }
+          content {
+            text
+            html
           }
         }
       }
