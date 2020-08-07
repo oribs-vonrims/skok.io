@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, Styled } from "theme-ui"
-import React from "react"
+import WebmentionTypeCounts from "./WebmentionTypeCounts"
 
 const CommentCount = ({ count }) => (
   <>
@@ -58,11 +58,23 @@ const WebMentions = ({ allWebmentionEntry: { edges } }) => {
     <div>
       <b>WebMentions section</b>
       <br />
-      {Boolean(likeCount) && <LikeCount count={likeCount} />}
+      {/* {Boolean(likeCount) && <LikeCount count={likeCount} />}
       {` `}
       {Boolean(commentCount) && <CommentCount count={commentCount} />}
       {` `}
-      {Boolean(repostCount) && <RepostCount count={repostCount} />}
+      {Boolean(repostCount) && <RepostCount count={repostCount} />} */}
+
+      <WebmentionTypeCounts
+        likeCount={likeCount}
+        likeSingular="like"
+        likePlural="likes"
+        commentCount={commentCount}
+        commentSingular="comment"
+        commentPlural="comments"
+        repostCount={repostCount}
+        repostSingular="repost"
+        repostPlural="reposts"
+      />
 
       {comments.map(({ author: { name, photo }, content: { text }, url }) => {
         return (
