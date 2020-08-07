@@ -22,12 +22,22 @@ const BlogPost = ({ pageContext, data }) => {
       <TweetableSelection />
 
       <article className="h-entry">
-        {cover && <Img sizes={cover.childImageSharp.sizes} alt={coverAlt} />}
+        {cover && (
+          <Img
+            alt={coverAlt}
+            className="u-photo"
+            sizes={cover.childImageSharp.sizes}
+          />
+        )}
 
         <Styled.h1 className="p-name">{title}</Styled.h1>
 
         <a href={siteUrl} sx={{ display: `none` }} className="p-author h-card">
           {author}
+        </a>
+
+        <a className="u-url" href={permalink} sx={{ display: `none` }}>
+          {title}
         </a>
 
         {date && <Date date={date} />}
