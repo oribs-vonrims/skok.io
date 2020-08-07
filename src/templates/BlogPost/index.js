@@ -6,11 +6,13 @@ import Img from "gatsby-image"
 import Layout from "../../components/Layout"
 import Pagination from "../../components/Pagination"
 import TweetableSelection from "../../components/TweetableSelection"
+import WebMentions from "../../components/WebMentions"
 
 const BlogPost = ({ pageContext, data }) => {
-  const { prev, next, permalink } = pageContext
+  const { prev, next } = pageContext
   const { mdx } = data
   const { title, date, cover, coverAlt } = mdx.frontmatter
+  const allWebMentionEntry = data?.allWebMentionEntry
 
   return (
     <Layout className="h-card">
@@ -29,6 +31,10 @@ const BlogPost = ({ pageContext, data }) => {
       {/* eslint react/no-children-prop: 0 */}
       <MDXRenderer children={mdx.body} />
 
+      {allWebMentionEntry?.edges?.length > 0 && (
+        <WebMentions allWebmentionEntry={allWebMentionEntry} />
+      )}
+
       <Pagination previous={prev?.fields?.slug} next={next?.fields?.slug} />
     </Layout>
   )
@@ -37,7 +43,7 @@ const BlogPost = ({ pageContext, data }) => {
 export default BlogPost
 
 export const pageQuery = graphql`
-  query($id: String!) {
+  query($id: String!, $permalink: String!) {
     mdx(id: { eq: $id }) {
       id
       body
@@ -53,6 +59,26 @@ export const pageQuery = graphql`
             fluid(maxWidth: 900, quality: 100) {
               ...GatsbyImageSharpFluid
             }
+          }
+        }
+      }
+    }
+    allWebMentionEntry(filter: { wmTarget: { eq: $permalink } }) {
+      edges {
+        node {
+          type
+          mentionOf
+          wmTarget
+          wmSource
+          wmProperty
+          wmPrivate
+          wmId
+          url
+          author {
+            name
+            type
+            photo
+            url
           }
         }
       }
