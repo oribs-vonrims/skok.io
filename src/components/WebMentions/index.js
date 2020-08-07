@@ -2,8 +2,23 @@
 import { jsx, Styled } from "theme-ui"
 import React from "react"
 
-const CommentCount = () => <>X comments</>
-const LikeCount = () => <>X likes</>
+const CommentCount = ({ count }) => (
+  <>
+    {count} {count === 1 ? `comment` : `comments`}
+  </>
+)
+
+const RepostCount = ({ count }) => (
+  <>
+    {count} {count === 1 ? `repost` : `reposts`}
+  </>
+)
+
+const LikeCount = ({ count }) => (
+  <>
+    {count} {count === 1 ? `like` : `likes`}
+  </>
+)
 
 // 1. Comments
 // repost-of + !null content
@@ -22,26 +37,46 @@ const Comment = () => (
   </>
 )
 
-const WebMentions = ({ allWebmentionEntry }) => {
-  // get all likes
-  // get all comments
-  // https://mxb.dev/blog/the-whimsical-web/#webmentions
+const WebMentions = ({ allWebmentionEntry: { edges } }) => {
+  const mentionsByType = (edges, type) =>
+    edges.filter(entry => entry.node[type] !== null)
+  const getFlatEntry = entry => entry.map(({ node }) => node)
 
-  const { edges } = allWebmentionEntry
+  const likes = getFlatEntry(mentionsByType(edges, `likeOf`))
+  // Reply on a tweet URL which contains your website URL
+  const mentions = getFlatEntry(mentionsByType(edges, `mentionOf`))
+  const replies = getFlatEntry(mentionsByType(edges, `inReplyTo`))
+  const reposts = getFlatEntry(mentionsByType(edges, `repostOf`))
 
-  const likes = edges.filter(({ likeOf }) => likeOf !== null).length
-  const comments = edges.filter(
-    ({ repostOf, mentionOf, inReplyTo, content }) => {
-      return (
-        (repostOf !== null || mentionOf !== null || inReplyTo !== null) &&
-        content?.text !== null
-      )
-    }
-  ).length
+  const comments = [...mentions, ...replies]
+
+  const likeCount = likes.length
+  const commentCount = comments.length
+  const repostCount = reposts.length
 
   return (
     <div>
-      <b>WebMentions</b>
+      <b>WebMentions section</b>
+      <br />
+      {Boolean(likeCount) && <LikeCount count={likeCount} />}
+      {` `}
+      {Boolean(commentCount) && <CommentCount count={commentCount} />}
+      {` `}
+      {Boolean(repostCount) && <RepostCount count={repostCount} />}
+
+      {comments.map(({ author: { name, photo }, content: { text }, url }) => {
+        return (
+          <div key={url}>
+            <a href={url} rel="noopener noreferrer" target="_blank">
+              <img src={photo} alt={`${name} twitter avatar`} />
+
+              <p>{name}</p>
+            </a>
+
+            <p>{text}</p>
+          </div>
+        )
+      })}
     </div>
   )
 }
