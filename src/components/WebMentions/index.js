@@ -1,41 +1,17 @@
 /** @jsx jsx */
-import { jsx, Styled } from "theme-ui"
+import { jsx } from "theme-ui"
 import WebmentionTypeCounts from "./WebmentionTypeCounts"
 
-const CommentCount = ({ count }) => (
-  <>
-    {count} {count === 1 ? `comment` : `comments`}
-  </>
-)
-
-const RepostCount = ({ count }) => (
-  <>
-    {count} {count === 1 ? `repost` : `reposts`}
-  </>
-)
-
-const LikeCount = ({ count }) => (
-  <>
-    {count} {count === 1 ? `like` : `likes`}
-  </>
-)
-
-// 1. Comments
-// repost-of + !null content
-// mention-of
-// in-reply-to
-// 2. Likes
-// likeOf
-const Comment = () => (
-  <>
-    <span>url</span>
-    <span>published</span>
-    <span>author.name</span>
-    <span>author.photo</span>
-    <span>author.url</span>
-    <span>content.text</span>
-  </>
-)
+// const Comment = () => (
+//   <>
+//     <span>url</span>
+//     <span>published</span>
+//     <span>author.name</span>
+//     <span>author.photo</span>
+//     <span>author.url</span>
+//     <span>content.text</span>
+//   </>
+// )
 
 const WebMentions = ({ allWebmentionEntry: { edges } }) => {
   const mentionsByType = (edges, type) =>
@@ -57,12 +33,6 @@ const WebMentions = ({ allWebmentionEntry: { edges } }) => {
   return (
     <div>
       <b>WebMentions section</b>
-      <br />
-      {/* {Boolean(likeCount) && <LikeCount count={likeCount} />}
-      {` `}
-      {Boolean(commentCount) && <CommentCount count={commentCount} />}
-      {` `}
-      {Boolean(repostCount) && <RepostCount count={repostCount} />} */}
 
       <WebmentionTypeCounts
         likeCount={likeCount}

@@ -9,11 +9,16 @@ import Pagination from "../../components/Pagination"
 import TweetableSelection from "../../components/TweetableSelection"
 import WebMentions from "../../components/WebMentions"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
+import {
+  TwitterLike,
+  TwitterReply,
+  TwitterRepost,
+} from "../../components/Twitter"
 
 const BlogPost = ({ pageContext, data }) => {
   const { prev, next, permalink } = pageContext
   const { mdx } = data
-  const { title, summary, date, cover, coverAlt } = mdx.frontmatter
+  const { title, summary, date, cover, coverAlt, tweet } = mdx.frontmatter
   const { siteUrl, author } = useSiteMetadata()
   const allWebMentionEntry = data?.allWebMentionEntry
 
@@ -56,6 +61,9 @@ const BlogPost = ({ pageContext, data }) => {
 
       {allWebMentionEntry?.edges?.length > 0 && (
         <aside>
+          {tweet && <TwitterLike tweet={tweet} />}
+          {tweet && <TwitterRepost tweet={tweet} />}
+          {tweet && <TwitterReply tweet={tweet} />}
           <WebMentions allWebmentionEntry={allWebMentionEntry} />
         </aside>
       )}
@@ -76,6 +84,7 @@ export const pageQuery = graphql`
         title
         summary
         date
+        tweet
         coverAlt
         cover {
           childImageSharp {
