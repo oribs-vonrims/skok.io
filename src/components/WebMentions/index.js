@@ -1,6 +1,8 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui"
+import React from "react"
 import WebmentionTypeCounts from "./WebmentionTypeCounts"
+import Comment from "../Comment"
 
 // const Comment = () => (
 //   <>
@@ -48,15 +50,14 @@ const WebMentions = ({ allWebmentionEntry: { edges } }) => {
 
       {comments.map(({ author: { name, photo }, content: { text }, url }) => {
         return (
-          <div key={url}>
-            <a href={url} rel="noopener noreferrer" target="_blank">
-              <img src={photo} alt={`${name} twitter avatar`} />
-
-              <p>{name}</p>
-            </a>
-
-            <p>{text}</p>
-          </div>
+          <Comment
+            key={url}
+            to={url}
+            src={photo}
+            alt={`${name} twitter avatar`}
+            name={name}
+            text={text}
+          />
         )
       })}
     </div>
