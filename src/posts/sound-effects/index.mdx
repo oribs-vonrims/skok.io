@@ -1,0 +1,47 @@
+---
+title: Amstelvar font family
+date: 2020-04-25
+published: true
+---
+
+import { Message } from "theme-ui"
+
+## Header ~~without~~ with _italics_, **bold** & **_italic+bold_** (Amstelvar)
+
+## 123456789
+
+> A blockquote with _some_ emphasis.
+
+> A blockquote with _some_ emphasis.
+> A blockquote with _some_ emphasis.
+>
+> <cite style="float: right">X</cite>
+
+Some random _italic_, **bold**, **_italic+bold_** (Inter var experimental).
+
+<Message variant="primary">Hello world</Message>
+
+```
+// Fira Code
+pyftsubset Amstelvar-Roman.woff2 \
+  --unicodes="U+20-7E" \
+  --layout-features="kern,pnum" \
+  --flavor="woff2" \
+  --no-subset-tables+="FFTM" \
+  --output-file="amstelvar.woff2"
+```
+
+```shell {3}
+pyftsubset Amstelvar-Roman.woff2 \
+  --unicodes="U+20-7E" \
+  --layout-features="kern,pnum" \
+  --flavor="woff2" \
+  --no-subset-tables+="FFTM" \
+  --output-file="amstelvar.woff2"
+```
+
+```jsx live {1}
+<h1>Hello</h1>
+<h1>Hello</h1>
+<h1>Hello</h1>
+```
