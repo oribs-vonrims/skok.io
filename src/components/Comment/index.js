@@ -1,24 +1,24 @@
 /** @jsx jsx */
-import React, { useState } from "react"
-import { jsx, Card, Flex, Styled } from "theme-ui"
-import Link from "../Link"
+import { jsx, Card, Styled } from "theme-ui"
+import { useState } from "react"
+import { format } from "date-fns"
 
 const Comment = ({ to, src, alt, name, text, published }) => {
-  const [active, setActive] = useState(false)
-  const addActiveState = () => setActive(true)
-  const removeActiveState = () => setActive(false)
+  const [highlight, setHighlight] = useState(false)
+  const addHighlight = () => setHighlight(true)
+  const removeHighlight = () => setHighlight(false)
 
   return (
     <Card
-      onFocus={addActiveState}
-      onBlur={removeActiveState}
-      onTouchStart={addActiveState}
-      onTouchEnd={removeActiveState}
-      onMouseEnter={addActiveState}
-      onMouseLeave={removeActiveState}
+      onFocus={addHighlight}
+      onBlur={removeHighlight}
+      onTouchStart={addHighlight}
+      onTouchEnd={removeHighlight}
+      onMouseEnter={addHighlight}
+      onMouseLeave={removeHighlight}
       sx={{
-        boxShadow: active ? `active` : `default`,
-        borderColor: active ? `secondary` : `primary`,
+        boxShadow: highlight ? `active` : `default`,
+        borderColor: highlight ? `secondary` : `primary`,
         marginBottom: 4,
         display: `flex`,
         flexDirection: `column`,
@@ -30,6 +30,8 @@ const Comment = ({ to, src, alt, name, text, published }) => {
           display: `flex`,
           alignItems: `center`,
           textDecoration: `none`,
+          position: `relative`,
+          zIndex: 1000,
         }}
       >
         <a
@@ -44,9 +46,8 @@ const Comment = ({ to, src, alt, name, text, published }) => {
         >
           <img
             src={src}
-            alt={`${name} twitter avatar`}
+            alt={alt}
             sx={{
-              display: `flex`,
               borderRadius: `100%`,
               width: `50px`,
               height: `50px`,
@@ -60,14 +61,18 @@ const Comment = ({ to, src, alt, name, text, published }) => {
           target="_blank"
           aria-label={`${name} twitter account`}
           sx={{
+            color: highlight ? `secondary` : `primary`,
             margin: 0,
             textDecoration: `none`,
+            transition: `color 400ms ease`,
           }}
         >
           {name}
         </a>
 
-        {/* <time>{published}</time> */}
+        <time dateTime={published}>
+          {format(new Date(published), `MM/dd/yyyy`)}
+        </time>
       </div>
 
       <Styled.p
