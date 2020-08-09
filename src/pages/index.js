@@ -14,31 +14,36 @@ const IndexPage = () => (
       }}
       className="h-card"
     >
-      <div className="p-note">
-        <Styled.h1
-          sx={{
-            fontSize: 9,
-            lineHeight: 1.25,
-            letterSpacing: 2,
-          }}
+      <Styled.h1
+        sx={{
+          fontSize: 9,
+          lineHeight: 1.25,
+          letterSpacing: 2,
+        }}
+      >
+        Hi! My name is{` `}
+        <div className="p-name">
+          <span sx={{ variant: `text.italicHeading` }}>Vladimir</span>
+          <span sx={{ display: `none` }}>Skok</span>.
+        </div>
+        <img
+          sx={{ display: `none` }}
+          src="https://pbs.twimg.com/profile_images/720846092531707905/fit8T8Xa_400x400.jpg"
+          className="u-photo"
+          alt="Vladimir Skok avatar"
+        />
+        <a
+          sx={{ display: `none` }}
+          className="p-name u-url"
+          href="https://skok.club"
         >
-          Hi! My name is{` `}
-          <div className="p-name">
-            <span sx={{ variant: `text.italicHeading` }}>Vladimir</span>
-            <span sx={{ display: `none` }}>Skok</span>.
-          </div>
-          <img
-            sx={{ display: `none` }}
-            src="https://pbs.twimg.com/profile_images/720846092531707905/fit8T8Xa_400x400.jpg"
-            className="u-photo"
-            alt="Vladimir Skok avatar"
-          />
-          <time className="dt-bday" dateTime="1990-9-28"></time>
-          <data className="p-locality" value="Atlanta"></data>
-          <data className="p-region" value="Georgia"></data>
-          <data className="p-country-name" value="USA"></data>
-        </Styled.h1>
-      </div>
+          Vladimir Skok
+        </a>
+        <time className="dt-bday" dateTime="1990-9-28"></time>
+        <data className="p-locality" value="Atlanta"></data>
+        <data className="p-region" value="Georgia"></data>
+        <data className="p-country-name" value="USA"></data>
+      </Styled.h1>
 
       <Styled.h2
         sx={{
