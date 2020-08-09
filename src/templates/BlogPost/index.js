@@ -3,8 +3,8 @@ import { jsx, Styled } from "theme-ui"
 import { graphql } from "gatsby"
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import Img from "gatsby-image"
+import { format, formatISO } from "date-fns"
 import Layout from "../../components/Layout"
-import Date from "../../components/Date"
 import Pagination from "../../components/Pagination"
 import TweetableSelection from "../../components/TweetableSelection"
 import WebMentions from "../../components/WebMentions"
@@ -46,7 +46,11 @@ const BlogPost = ({ pageContext, data }) => {
           {title}
         </a>
 
-        {date && <Date date={date} />}
+        {date && (
+          <time className="dt-published" dateTime={formatISO(new Date(date))}>
+            {date}
+          </time>
+        )}
 
         {summary && (
           <Styled.p sx={{ variant: `text.italic` }} className="p-summary">
