@@ -12,7 +12,6 @@ const IndexPage = () => (
         justifyContent: `center`,
         minHeight: `100%`,
       }}
-      className="h-card"
     >
       <Styled.h1
         sx={{
