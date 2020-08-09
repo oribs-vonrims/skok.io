@@ -38,6 +38,7 @@ const Comment = ({ to, src, alt, name, text, published }) => {
           target="_blank"
           aria-label={`${name} twitter account avatar`}
           sx={{
+            display: `flex`,
             marginRight: `25px`,
           }}
         >
