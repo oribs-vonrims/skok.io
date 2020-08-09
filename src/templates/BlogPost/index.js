@@ -11,7 +11,7 @@ import WebMentions from "../../components/WebMentions"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
 
 const BlogPost = ({ pageContext, data }) => {
-  const { prev, next } = pageContext
+  const { prev, next, permalink } = pageContext
   const { mdx } = data
   const { title, summary, date, cover, coverAlt } = mdx.frontmatter
   const { siteUrl, author } = useSiteMetadata()
