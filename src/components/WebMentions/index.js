@@ -48,18 +48,21 @@ const WebMentions = ({ allWebmentionEntry: { edges } }) => {
         repostPlural="reposts"
       />
 
-      {comments.map(({ author: { name, photo }, content: { text }, url }) => {
-        return (
-          <Comment
-            key={url}
-            to={url}
-            src={photo}
-            alt={`${name} twitter avatar`}
-            name={name}
-            text={text}
-          />
-        )
-      })}
+      {comments.map(
+        ({ author: { name, photo }, content: { text }, url, published }) => {
+          return (
+            <Comment
+              key={url}
+              to={url}
+              src={photo}
+              alt={`${name} twitter avatar`}
+              name={name}
+              text={text}
+              published={published}
+            />
+          )
+        }
+      )}
     </div>
   )
 }
