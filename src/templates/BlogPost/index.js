@@ -18,7 +18,7 @@ const BlogPost = ({ pageContext, data }) => {
   const allWebMentionEntry = data?.allWebMentionEntry
 
   return (
-    <Layout>
+    <Layout className="h-card">
       <TweetableSelection />
       {cover && (
         <Img
