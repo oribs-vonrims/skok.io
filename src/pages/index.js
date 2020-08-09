@@ -12,6 +12,7 @@ const IndexPage = () => (
         justifyContent: `center`,
         minHeight: `100%`,
       }}
+      className="h-card"
     >
       <Styled.h1
         sx={{
@@ -21,7 +22,14 @@ const IndexPage = () => (
         }}
       >
         Hi! My name is{` `}
-        <span sx={{ variant: `text.italicHeading` }}>Vladimir</span>.
+        <div className="p-name">
+          <span sx={{ variant: `text.italicHeading` }}>Vladimir</span>
+          <span sx={{ display: `none` }}>Skok</span>.
+        </div>
+        <time className="dt-bday" dateTime="1990-9-28"></time>
+        <data className="p-locality" value="Atlanta"></data>
+        <data className="p-region" value="Georgia"></data>
+        <data className="p-country-name" value="USA"></data>
       </Styled.h1>
 
       <Styled.h2
