@@ -42,6 +42,9 @@ const IndexPage = () => (
         <data className="p-locality" value="Atlanta"></data>
         <data className="p-region" value="Georgia"></data>
         <data className="p-country-name" value="USA"></data>
+        <div className="p-note" sx={{ display: `none` }}>
+          Software Engineer
+        </div>
       </Styled.h1>
 
       <Styled.h2
