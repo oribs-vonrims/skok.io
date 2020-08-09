@@ -4,18 +4,21 @@ import { graphql } from "gatsby"
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import Img from "gatsby-image"
 import Layout from "../../components/Layout"
+import Date from "../../components/Date"
 import Pagination from "../../components/Pagination"
 import TweetableSelection from "../../components/TweetableSelection"
 import WebMentions from "../../components/WebMentions"
+import useSiteMetadata from "../../hooks/useSiteMetadata"
 
 const BlogPost = ({ pageContext, data }) => {
   const { prev, next, permalink } = pageContext
   const { mdx } = data
-  const { title, date, cover, coverAlt } = mdx.frontmatter
+  const { title, summary, date, cover, coverAlt } = mdx.frontmatter
+  const { siteUrl, author } = useSiteMetadata()
   const allWebMentionEntry = data?.allWebMentionEntry
 
   return (
-    <Layout className="h-card">
+    <Layout>
       <TweetableSelection />
       {cover && (
         <Img
@@ -27,12 +30,33 @@ const BlogPost = ({ pageContext, data }) => {
       )}
       <Styled.h1>{title}</Styled.h1>
 
-      <time>{date}</time>
-      {/* eslint react/no-children-prop: 0 */}
-      <MDXRenderer children={mdx.body} />
+      <article className="h-entry">
+        {cover && <Img sizes={cover.childImageSharp.sizes} alt={coverAlt} />}
+
+        <Styled.h1 className="p-name">{title}</Styled.h1>
+
+        <a href={siteUrl} sx={{ display: `none` }} className="p-author h-card">
+          {author}
+        </a>
+
+        {date && <Date date={date} />}
+
+        {summary && (
+          <Styled.p sx={{ variant: `text.italic` }} className="p-summary">
+            {summary}
+          </Styled.p>
+        )}
+
+        <div className="e-content">
+          {/* eslint react/no-children-prop: 0 */}
+          <MDXRenderer children={mdx.body} />
+        </div>
+      </article>
 
       {allWebMentionEntry?.edges?.length > 0 && (
-        <WebMentions allWebmentionEntry={allWebMentionEntry} />
+        <aside>
+          <WebMentions allWebmentionEntry={allWebMentionEntry} />
+        </aside>
       )}
 
       <Pagination previous={prev?.fields?.slug} next={next?.fields?.slug} />
@@ -49,7 +73,8 @@ export const pageQuery = graphql`
       body
       frontmatter {
         title
-        date(formatString: "MMMM DD, YYYY")
+        summary
+        date
         coverAlt
         cover {
           childImageSharp {
