@@ -9,11 +9,6 @@ import Pagination from "../../components/Pagination"
 import TweetableSelection from "../../components/TweetableSelection"
 import WebMentions from "../../components/WebMentions"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
-import {
-  TwitterLike,
-  TwitterReply,
-  TwitterRepost,
-} from "../../components/Twitter"
 
 const BlogPost = ({ pageContext, data }) => {
   const { prev, next, permalink } = pageContext
@@ -38,11 +33,11 @@ const BlogPost = ({ pageContext, data }) => {
 
         <Styled.h1 className="p-name">{title}</Styled.h1>
 
-        <a href={siteUrl} sx={{ display: `none` }} className="p-author h-card">
+        <a href={siteUrl} className="p-author h-card" sx={{ display: `none` }}>
           {author}
         </a>
 
-        <a className="u-url" href={permalink} sx={{ display: `none` }}>
+        <a href={permalink} className="u-url" sx={{ display: `none` }}>
           {title}
         </a>
 
@@ -65,12 +60,7 @@ const BlogPost = ({ pageContext, data }) => {
       </article>
 
       {allWebMentionEntry?.edges?.length > 0 && (
-        <aside>
-          {tweet && <TwitterLike tweet={tweet} />}
-          {tweet && <TwitterRepost tweet={tweet} />}
-          {tweet && <TwitterReply tweet={tweet} />}
-          <WebMentions allWebmentionEntry={allWebMentionEntry} />
-        </aside>
+        <WebMentions allWebmentionEntry={allWebMentionEntry} tweet={tweet} />
       )}
 
       <Pagination previous={prev?.fields?.slug} next={next?.fields?.slug} />
