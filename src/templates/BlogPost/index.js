@@ -11,7 +11,7 @@ import WebMentions from "../../components/WebMentions"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
 
 const BlogPost = ({ pageContext, data }) => {
-  const { prev, next, permalink } = pageContext
+  const { prev, next } = pageContext
   const { mdx } = data
   const { title, summary, date, cover, coverAlt } = mdx.frontmatter
   const { siteUrl, author } = useSiteMetadata()
@@ -94,6 +94,26 @@ export const pageQuery = graphql`
             fluid(maxWidth: 900, quality: 100) {
               ...GatsbyImageSharpFluid
             }
+          }
+        }
+      }
+    }
+    allWebMentionEntry(filter: { wmTarget: { eq: $permalink } }) {
+      edges {
+        node {
+          type
+          mentionOf
+          wmTarget
+          wmSource
+          wmProperty
+          wmPrivate
+          wmId
+          url
+          author {
+            name
+            type
+            photo
+            url
           }
         }
       }
