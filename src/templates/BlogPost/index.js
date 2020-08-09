@@ -8,13 +8,12 @@ import Pagination from "../../components/Pagination"
 import TweetableSelection from "../../components/TweetableSelection"
 
 const BlogPost = ({ pageContext, data }) => {
-  const { prev, next } = pageContext
-
+  const { prev, next, permalink } = pageContext
   const { mdx } = data
   const { title, date, cover, coverAlt } = mdx.frontmatter
 
   return (
-    <Layout>
+    <Layout className="h-card">
       <TweetableSelection />
       {cover && (
         <Img

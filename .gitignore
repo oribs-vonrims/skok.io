@@ -6,3 +6,4 @@ TODO.md
 .eslintcache
 .netlify
 .DS_Store
+.env*

@@ -72,6 +72,21 @@ module.exports = {
         policy: [{ userAgent: "*", disallow: ["/"] }],
       },
     },
+    {
+      resolve: `gatsby-plugin-webmention`,
+      options: {
+        username: `https://skok.club`,
+        identity: {
+          twitter: `iamskok`,
+          github: `iamskok`,
+        },
+        mentions: true,
+        forwardPingbacksAsWebmentions: `https://brid.gy`,
+        domain: `skok.club`,
+        fetchLimit: 10000,
+        token: process.env.WEBMENTION_TOKEN,
+      },
+    },
     `gatsby-transformer-sharp`,
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-webpack-size`,
