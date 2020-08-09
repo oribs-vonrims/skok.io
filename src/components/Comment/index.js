@@ -1,17 +1,28 @@
 /** @jsx jsx */
-import { jsx, Card, Styled, Flex } from "theme-ui"
+import { jsx, Card, Styled, Flex, useThemeUI } from "theme-ui"
 import { useState } from "react"
-// import { format } from "date-fns"
+import { format } from "date-fns"
 
-const Comment = ({ to, src, alt, name, text, published }) => {
+const Comment = ({ to, src, name, text, published }) => {
   const [highlight, setHighlight] = useState(false)
   const addHighlight = () => setHighlight(true)
   const removeHighlight = () => setHighlight(false)
+  const [highlightLink, setHighlightLink] = useState(false)
+  const addHighlightLink = () => setHighlightLink(true)
+  const removeHighlightLink = () => setHighlightLink(false)
+
+  const {
+    theme: {
+      space,
+      sizes: { avatar },
+    },
+  } = useThemeUI()
+
+  // Calculate responsive `margin-left` values for `Styled.p`
+  const StyledPMarginLeft = [space[3] + avatar[0], space[4] + avatar[1]]
 
   return (
     <Card
-      onFocus={addHighlight}
-      onBlur={removeHighlight}
       onTouchStart={addHighlight}
       onTouchEnd={removeHighlight}
       onMouseEnter={addHighlight}
@@ -30,8 +41,6 @@ const Comment = ({ to, src, alt, name, text, published }) => {
           display: `flex`,
           alignItems: `center`,
           textDecoration: `none`,
-          position: `relative`,
-          zIndex: 1000,
         }}
       >
         <a
@@ -40,44 +49,63 @@ const Comment = ({ to, src, alt, name, text, published }) => {
           target="_blank"
           aria-label={`${name} twitter account avatar`}
           sx={{
-            marginRight: `25px`,
+            marginRight: [3, 4],
           }}
         >
           <img
             src={src}
-            alt={alt}
+            alt={`${name} twitter avatar`}
             sx={{
               borderRadius: `100%`,
-              width: `50px`,
-              height: `50px`,
+              width: [avatar[0], avatar[1]],
+              width: [avatar[0], avatar[1]],
             }}
           />
         </a>
 
-        <Flex sx={{ flexDirection: `column` }}>
+        <Flex>
           <a
             href={to}
             rel="noopener noreferrer"
             target="_blank"
             aria-label={`${name} twitter account`}
+            onFocus={addHighlightLink}
+            onBlur={removeHighlightLink}
+            onTouchStart={addHighlightLink}
+            onTouchEnd={removeHighlightLink}
+            onMouseEnter={addHighlightLink}
+            onMouseLeave={removeHighlightLink}
             sx={{
-              color: highlight ? `secondary` : `primary`,
+              color: highlightLink ? `secondary` : `primary`,
               margin: 0,
               textDecoration: `none`,
               transition: `color 400ms ease`,
+              fontSize: [`0.75rem`, `1rem`],
+              fontWeight: `bold`,
             }}
           >
             {name}
           </a>
 
-          {/* <time
-            dateTime={published}
+          <div
             sx={{
-              fontSize: 1,
+              marginX: 2,
+              fontSize: [`0.75rem`, `1rem`],
+              fontWeight: `light`,
             }}
           >
-            {format(new Date(published), `MM/dd/yyyy`)}
-          </time> */}
+            |
+          </div>
+
+          <time
+            dateTime={published}
+            sx={{
+              fontSize: [`0.75rem`, `1rem`],
+              fontWeight: `light`,
+            }}
+          >
+            {format(new Date(published), `MM/dd/yy`)}
+          </time>
         </Flex>
       </div>
 
@@ -86,7 +114,9 @@ const Comment = ({ to, src, alt, name, text, published }) => {
           color: `text`,
           transition: `color 400ms ease`,
           flex: 1,
-          marginLeft: `75px`,
+          fontSize: [`0.75rem`, `1rem`],
+          marginLeft: StyledPMarginLeft,
+          marginBottom: 0,
         }}
       >
         {text}

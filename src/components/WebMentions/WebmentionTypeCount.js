@@ -6,6 +6,7 @@ const WebmentionTypeCount = ({ count, singular, plural }) => (
     sx={{
       flex: 1,
       justifyContent: `center`,
+      fontSize: [`0.75rem`, `1rem`],
     }}
   >
     {count} {count === 1 ? singular : plural}

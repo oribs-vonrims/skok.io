@@ -1,52 +1,79 @@
 /** @jsx jsx */
 import { jsx, Flex } from "theme-ui"
 import WebmentionTypeCount from "./WebmentionTypeCount"
-// import LikeIcon from "../../icons/like.inline.svg"
-// import CommentIcon from "../../icons/comment.inline.svg"
-// import RepostIcon from "../../icons/repost.inline.svg"
+import { TwitterLike, TwitterReply, TwitterRepost } from "../Twitter"
 
 const WebmentionTypeCounts = ({
   likeCount,
   likeSingular,
   likePlural,
-  commentCount,
-  commentSingular,
-  commentPlural,
+  replyCount,
+  replySingular,
+  replyPlural,
   repostCount,
   repostSingular,
   repostPlural,
+  tweet,
 }) => (
   <Flex
     sx={{
       marginBottom: 4,
+      justifyContent: `space-between`,
     }}
   >
-    {Boolean(commentCount) && (
-      <WebmentionTypeCount
-        count={commentCount}
-        singular={commentSingular}
-        plural={commentPlural}
-        // icon={commentIcon}
+    <Flex
+      sx={{
+        alignItems: `center`,
+      }}
+    >
+      <TwitterReply
+        tweet={tweet}
+        sx={{
+          marginRight: 3,
+        }}
       />
-    )}
+      <WebmentionTypeCount
+        count={replyCount}
+        singular={replySingular}
+        plural={replyPlural}
+      />
+    </Flex>
     {` `}
-    {Boolean(repostCount) && (
+    <Flex
+      sx={{
+        alignItems: `center`,
+      }}
+    >
+      <TwitterRepost
+        tweet={tweet}
+        sx={{
+          marginRight: 3,
+        }}
+      />
       <WebmentionTypeCount
         count={repostCount}
         singular={repostSingular}
         plural={repostPlural}
-        // icon={repostIcon}
       />
-    )}
+    </Flex>
     {` `}
-    {Boolean(likeCount) && (
+    <Flex
+      sx={{
+        alignItems: `center`,
+      }}
+    >
+      <TwitterLike
+        tweet={tweet}
+        sx={{
+          marginRight: 3,
+        }}
+      />
       <WebmentionTypeCount
         count={likeCount}
         singular={likeSingular}
         plural={likePlural}
-        // icon={likeIcon}
       />
-    )}
+    </Flex>
   </Flex>
 )
 
