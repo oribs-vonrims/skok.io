@@ -32,6 +32,7 @@ const BlogPost = ({ pageContext, data }) => {
             alt={coverAlt}
             className="u-photo"
             sizes={cover.childImageSharp.sizes}
+            fluid={cover.childImageSharp.fluid}
           />
         )}
 
