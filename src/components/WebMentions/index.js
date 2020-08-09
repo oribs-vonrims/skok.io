@@ -37,20 +37,21 @@ const WebMentions = ({ allWebmentionEntry: { edges }, tweet }) => {
         replyPlural="replies"
       />
 
-      {replies.map(
-        ({ author: { name, photo }, content: { text }, url, published }) => {
-          return (
-            <Comment
-              key={url}
-              to={url}
-              src={photo}
-              name={name}
-              text={text}
-              published={published}
-            />
-          )
-        }
-      )}
+      {replies &&
+        replies.map(
+          ({ author: { name, photo }, content: { text }, url, published }) => {
+            return (
+              <Comment
+                key={url}
+                to={url}
+                src={photo}
+                name={name}
+                text={text}
+                published={published}
+              />
+            )
+          }
+        )}
     </aside>
   )
 }

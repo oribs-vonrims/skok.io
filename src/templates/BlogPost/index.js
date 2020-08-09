@@ -59,9 +59,7 @@ const BlogPost = ({ pageContext, data }) => {
         </div>
       </article>
 
-      {allWebMentionEntry?.edges?.length > 0 && (
-        <WebMentions allWebmentionEntry={allWebMentionEntry} tweet={tweet} />
-      )}
+      <WebMentions allWebmentionEntry={allWebMentionEntry} tweet={tweet} />
 
       <Pagination previous={prev?.fields?.slug} next={next?.fields?.slug} />
     </Layout>
