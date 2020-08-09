@@ -23,6 +23,7 @@ const IndexPage = () => (
         Hi! My name is{` `}
         <div className="p-name">
           <span sx={{ variant: `text.italicHeading` }}>Vladimir</span>
+          {` `}
           <span sx={{ display: `none` }}>Skok</span>.
         </div>
         <img
