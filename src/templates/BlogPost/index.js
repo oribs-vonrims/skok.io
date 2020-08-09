@@ -3,7 +3,7 @@ import { jsx, Styled } from "theme-ui"
 import { graphql } from "gatsby"
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import Img from "gatsby-image"
-import { format, formatISO } from "date-fns"
+import { formatISO } from "date-fns"
 import Layout from "../../components/Layout"
 import Pagination from "../../components/Pagination"
 import TweetableSelection from "../../components/TweetableSelection"
@@ -87,26 +87,6 @@ export const pageQuery = graphql`
             fluid(maxWidth: 900, quality: 100) {
               ...GatsbyImageSharpFluid
             }
-          }
-        }
-      }
-    }
-    allWebMentionEntry(filter: { wmTarget: { eq: $permalink } }) {
-      edges {
-        node {
-          type
-          mentionOf
-          wmTarget
-          wmSource
-          wmProperty
-          wmPrivate
-          wmId
-          url
-          author {
-            name
-            type
-            photo
-            url
           }
         }
       }

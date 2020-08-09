@@ -97,7 +97,7 @@ const Comment = ({ to, src, name, text, published }) => {
             |
           </div>
 
-          {/* <time
+          <time
             dateTime={published}
             sx={{
               fontSize: [`0.75rem`, `1rem`],
@@ -105,7 +105,7 @@ const Comment = ({ to, src, name, text, published }) => {
             }}
           >
             {format(new Date(published), `MM/dd/yy`)}
-          </time> */}
+          </time>
         </Flex>
       </div>
 
