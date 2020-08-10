@@ -62,20 +62,6 @@ const BlogPost = ({ pageContext, data }) => {
       <WebMentions allWebmentionEntry={allWebMentionEntry} tweet={tweet} />
 
       <Pagination previous={prev?.fields?.slug} next={next?.fields?.slug} />
-
-      <img
-        sx={{ display: `none` }}
-        src="https://pbs.twimg.com/profile_images/720846092531707905/fit8T8Xa_400x400.jpg"
-        className="u-photo"
-        alt="Vladimir Skok avatar"
-      />
-      <time className="dt-bday" dateTime="1990-9-28"></time>
-      <data className="p-locality" value="Atlanta"></data>
-      <data className="p-region" value="Georgia"></data>
-      <data className="p-country-name" value="USA"></data>
-      <div className="p-note" sx={{ display: `none` }}>
-        Software Engineer
-      </div>
     </Layout>
   )
 }
