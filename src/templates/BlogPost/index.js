@@ -20,7 +20,6 @@ const BlogPost = ({ pageContext, data }) => {
   return (
     <Layout>
       <TweetableSelection />
-
       <article className="h-entry">
         {cover && (
           <Img
