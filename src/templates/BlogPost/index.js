@@ -20,42 +20,25 @@ const BlogPost = ({ pageContext, data }) => {
   return (
     <Layout>
       <TweetableSelection />
-      <article className="h-entry">
+      <article>
         {cover && (
           <Img
             alt={coverAlt}
-            className="u-photo"
             sizes={cover.childImageSharp.sizes}
             fluid={cover.childImageSharp.fluid}
           />
         )}
 
-        <Styled.h1 className="p-name">{title}</Styled.h1>
+        <Styled.h1>{title}</Styled.h1>
 
-        <a href={siteUrl} className="p-author h-card" sx={{ display: `none` }}>
-          {author}
-        </a>
-
-        <a href={permalink} className="u-url" sx={{ display: `none` }}>
-          {title}
-        </a>
-
-        {date && (
-          <time className="dt-published" dateTime={formatISO(new Date(date))}>
-            {date}
-          </time>
-        )}
+        {date && <time dateTime={formatISO(new Date(date))}>{date}</time>}
 
         {summary && (
-          <Styled.p sx={{ variant: `text.italic` }} className="p-summary">
-            {summary}
-          </Styled.p>
+          <Styled.p sx={{ variant: `text.italic` }}>{summary}</Styled.p>
         )}
 
-        <div className="e-content">
-          {/* eslint react/no-children-prop: 0 */}
-          <MDXRenderer children={mdx.body} />
-        </div>
+        {/* eslint react/no-children-prop: 0 */}
+        <MDXRenderer children={mdx.body} />
       </article>
 
       <WebMentions allWebmentionEntry={allWebMentionEntry} tweet={tweet} />

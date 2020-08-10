@@ -2,7 +2,6 @@
 import { jsx, Flex, Styled } from "theme-ui"
 import Layout from "../components/Layout"
 import GlitchText from "../components/GlitchText"
-import Microformats2 from "../components/Microformats2"
 
 const IndexPage = () => (
   <Layout>
@@ -21,7 +20,8 @@ const IndexPage = () => (
           letterSpacing: 2,
         }}
       >
-        Hi! My name is{` `}
+        Hi! My name is
+        {` `}
         <span sx={{ variant: `text.italicHeading` }}>Vladimir.</span>
       </Styled.h1>
 
@@ -50,8 +50,6 @@ const IndexPage = () => (
         {` `}
         on the web.
       </Styled.h2>
-
-      <Microformats2 />
     </Flex>
   </Layout>
 )
