@@ -3,6 +3,7 @@ import { jsx, Flex, Box } from "theme-ui"
 import { Link } from "gatsby"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
 import ColorModeButton from "../ColorModeButton"
+import SoundModeButton from "../SoundModeButton"
 import TwitterIconLink from "../TwitterIconLink"
 import GithubIconLink from "../GithubIconLink"
 
@@ -70,6 +71,9 @@ const Header = () => {
         </li>
         <li>
           <ColorModeButton />
+        </li>
+        <li>
+          <SoundModeButton />
         </li>
       </ul>
     </Flex>

@@ -1,9 +1,11 @@
 /** @jsx jsx */
 import { jsx, Styled, Box } from "theme-ui"
-import { useState } from "react"
+import { useState, useContext } from "react"
+import useSound from "use-sound"
 import HighlightCode from "./highlight-code"
 import ReactLiveEditor from "./react-live-editor"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
+import { SoundContext } from "../SoundProvider"
 import calculateLinesToHighlight from "./calculate-lines-to-highlight"
 import isFeatureEnabled from "./is-feature-enabled"
 import getLanguage from "./get-language"
@@ -13,6 +15,7 @@ import FileName from "./file-name"
 import LanguageTab from "./language-tab"
 import scope from "./scope"
 import { baseThemeSettings } from "../../theme"
+import switchOn from "../../sounds/switch-on.mp3"
 
 const { rythm } = baseThemeSettings
 
@@ -55,8 +58,14 @@ const CodeBlock = ({
   const isLanguageTab = isFeatureEnabled(languageTab, globalLanguageTab)
   const isFileName = !!fileName
 
+  const [sound] = useContext(SoundContext)
+  const [playSwitchOn] = useSound(switchOn)
+
   const [lineNumbersState, setLineNumbersState] = useState(isLineNumbers)
-  const toggleLineNumbers = () => setLineNumbersState(!lineNumbersState)
+  const toggleLineNumbers = () => {
+    setLineNumbersState(!lineNumbersState)
+    sound && playSwitchOn()
+  }
 
   const [scrollbar, setScrollbar] = useState(false)
   const addScrollbar = () => {
@@ -98,7 +107,7 @@ const CodeBlock = ({
           >
             {isLineNumbersButton && (
               <LineNumbersButton
-                onClick={toggleLineNumbers}
+                handleClick={toggleLineNumbers}
                 lineNumbers={lineNumbersState}
               />
             )}
