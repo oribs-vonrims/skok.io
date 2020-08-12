@@ -20,11 +20,15 @@ const svg = value => `
 </svg>
 `
 
-const setInactiveFavicon = () => {
+const resetTimer = timer => {
   if (timer) {
     clearInterval(timer)
     timer = null
   }
+}
+
+const setInactiveFavicon = () => {
+  resetTimer(timer)
 
   timer = setInterval(() => {
     counter += 1
@@ -33,11 +37,6 @@ const setInactiveFavicon = () => {
   }, 1000)
 }
 
-setInactiveFavicon.clear = () => {
-  if (timer) {
-    clearInterval(timer)
-    timer = null
-  }
-}
+setInactiveFavicon.clear = () => resetTimer(timer)
 
 export default setInactiveFavicon
