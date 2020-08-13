@@ -4,6 +4,12 @@
     Cache-Control = "max-age=31536000, immutable"
 
 [[headers]]
+  for = "*.svg"
+  [headers.values]
+    Cache-Control = "max-age=31536000, immutable"
+
+[[headers]]
   for = "*.mp3"
   [headers.values]
     Cache-Control = "max-age=31536000, immutable"
+    
