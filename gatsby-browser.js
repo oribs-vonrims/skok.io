@@ -1,10 +1,7 @@
 import debounce from "lodash.debounce"
 import updateBrowserTab from "./src/utils/update-browser-tab"
 import setThemeFavicon from "./src/utils/set-theme-favicon"
-import setInactiveFavicon from "./src/utils/set-inactive-favicon"
 import { wrapRootElement } from "./src/components/WrapRootElement"
-import setFavicon from "./src/utils/set-favicon"
-import bustCache from "./src/utils/bust-cache"
 
 // TODO: Add dynamic title in templates.
 const title = document.querySelector(`title`).textContent
@@ -24,33 +21,6 @@ const onRouteUpdate = ({ location }) => {
   }
 }
 
-const onClientEntry = () => {
-  setThemeFavicon()
-
-  let visibilityTimer = null
-  let oldFavicon = null
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === `hidden`) {
-      oldFavicon = document.querySelector(`link[rel="icon"]`)
-
-      visibilityTimer = setTimeout(() => {
-        setInactiveFavicon()
-        visibilityTimer = null
-      }, 5000)
-    } else {
-      if (visibilityTimer) {
-        clearTimeout(visibilityTimer)
-        visibilityTimer = null
-      }
-
-      setInactiveFavicon.clear()
-
-      // Remove old URL params
-      const oldFaviconPath = oldFavicon.href.split(`?`)[0]
-      setFavicon(bustCache(oldFaviconPath))
-    }
-  })
-}
+const onClientEntry = () => setThemeFavicon()
 
 export { wrapRootElement, onRouteUpdate, onClientEntry }

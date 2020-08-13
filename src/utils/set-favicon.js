@@ -1,11 +1,10 @@
 const lineBreaksRegex = /\r?\n|\r/g
-const svgTagRegex = /^<\s*svg[^>]*>(.*?)<\s*\/\s*svg>$/i
+const svgTagRegex = /<\s*svg[^>]*>(.*?)<\s*\/\s*svg>/gi
 const quotesRegex = /\'|\"/g
 const dataURLPrefix = `data:image/svg+xml,`
 const encodedQuote = `%22`
 
-const normalizeSVG = str => str.replace(lineBreaksRegex, ``).trim()
-const isSvg = str => svgTagRegex.test(normalizeSVG(str))
+const isSvg = str => svgTagRegex.test(str.replace(lineBreaksRegex, ""))
 
 const setFavicon = favicon => {
   const links = document.querySelectorAll(`link[rel="icon"]`)
@@ -15,7 +14,8 @@ const setFavicon = favicon => {
 
   if (isSvg(favicon)) {
     const svg =
-      dataURLPrefix + normalizeSVG(favicon).replace(quotesRegex, encodedQuote)
+      dataURLPrefix +
+      favicon.replace(quotesRegex, encodedQuote).replace(lineBreaksRegex, "")
     link.href = svg
   } else {
     link.href = favicon
