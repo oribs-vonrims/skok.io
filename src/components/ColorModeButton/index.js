@@ -1,10 +1,16 @@
 /** @jsx jsx */
-import { useState } from "react"
+import { useState, useContext } from "react"
 import { jsx, IconButton, useColorMode } from "theme-ui"
+import useSound from "use-sound"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
+import { SoundContext } from "../SoundProvider"
+import switchOn from "../../sounds/switch-on.mp3"
 import setFavicon from "../../utils/set-favicon"
 
 const ColorModeButton = props => {
+  const [sound] = useContext(SoundContext)
+  const [playSwitchOn] = useSound(switchOn)
+
   const [highlight, setHighlight] = useState(false)
   const addHighlight = () => setHighlight(true)
   const removeHighlight = () => setHighlight(false)
@@ -24,6 +30,8 @@ const ColorModeButton = props => {
     turnButton()
 
     next === `default` ? setFavicon(faviconDark) : setFavicon(faviconLight)
+
+    sound && playSwitchOn()
   }
 
   return (
