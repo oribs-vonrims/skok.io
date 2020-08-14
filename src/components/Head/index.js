@@ -9,7 +9,6 @@ import interFontFace from "../../fonts/inter"
 import firaCodeFontFace from "../../fonts/fira-code"
 import fonts from "../../theme/styles/fonts"
 import pageHeight from "../../theme/styles/page-height"
-import fontObserver from "../../utils/font-observer"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
 
 const Head = props => {
@@ -28,9 +27,6 @@ const Head = props => {
         content={description || props.description}
       />
       <meta name="twitter:creator" content={author || props.author} />
-      <script>
-        {` document.documentElement.classList.add('font-loading-stage-1') `}
-      </script>
       <link
         href={amstelvarRomanWoff2}
         as="font"
@@ -69,13 +65,8 @@ const Head = props => {
       <style type="text/css" name="font-size">
         {` html { font-size: 125%; } `}
       </style>
-      <style type="text/css" name="font-loading-stage">
-        {` ${fonts} `}
-      </style>
-      <style name="page-height">{` ${pageHeight} `}</style>
-      <script name="font-face-observer">
-        {` window.addEventListener('load', ${fontObserver}) `}
-      </script>
+      <style type="text/css" name="font-loading-stage">{`${fonts}`}</style>
+      <style name="page-height">{`${pageHeight}`}</style>
     </Helmet>
   )
 }
