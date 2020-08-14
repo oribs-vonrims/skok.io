@@ -1,6 +1,6 @@
 const fontObserver = () => {
   if (sessionStorage.fontsLoaded) {
-    document.documentElement.classList.add(`fonts-stage-2`)
+    document.documentElement.classList.add(`font-loading-stage-2`)
     return
   } else {
     if (sessionStorage.fontsLoaded) {
