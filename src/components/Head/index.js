@@ -63,7 +63,11 @@ const Head = props => {
         `}
       </style>
       <style type="text/css" name="font-size">
-        {` html { font-size: 125%; } `}
+        {`
+          html {
+            font-size: 125%;
+          }
+        `}
       </style>
       <style type="text/css" name="font-loading-stage">{`${fonts}`}</style>
       <style name="page-height">{`${pageHeight}`}</style>

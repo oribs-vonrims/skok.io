@@ -5,7 +5,6 @@ import setInactiveFavicon from "./src/utils/set-inactive-favicon"
 import setFavicon from "./src/utils/set-favicon"
 import bustCache from "./src/utils/bust-cache"
 import fontObserver from "./src/utils/font-observer"
-import dispatchFontsLoadedEvent from "./src/utils/dispatch-fonts-loaded-event"
 import { wrapRootElement } from "./src/components/WrapRootElement"
 
 // TODO: Add dynamic title in templates.
@@ -27,9 +26,7 @@ const onRouteUpdate = ({ location }) => {
 }
 
 const onClientEntry = () => {
-  if (sessionStorage.fontsLoaded) {
-    dispatchFontsLoadedEvent()
-  } else {
+  if (!sessionStorage.fontsLoaded) {
     document.documentElement.classList.add(`font-loading-stage-1`)
 
     window.onload = () => fontObserver()
