@@ -1,11 +1,10 @@
 import React from "react"
 import { LivePreview, LiveProvider } from "react-live"
-import LiveEditor from "./live-editor"
-import LiveError from "./live-error"
+import LiveEditor from "./LiveEditor"
+import LiveError from "./LiveError"
 
 const ReactLiveEditor = ({
   code,
-  // theme,
   scope,
   noInline,
   disabled,
