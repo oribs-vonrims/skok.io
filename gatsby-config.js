@@ -72,6 +72,12 @@ module.exports = {
         policy: [{ userAgent: "*", disallow: ["/"] }],
       },
     },
+    {
+      resolve: `gatsby-plugin-offline`,
+      options: {
+        precachePages: [`/blog/*`, `/about/`],
+      },
+    },
     `gatsby-transformer-sharp`,
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-webpack-size`,
