@@ -2,9 +2,10 @@ import debounce from "lodash.debounce"
 import updateBrowserTab from "./src/utils/update-browser-tab"
 import setThemeFavicon from "./src/utils/set-theme-favicon"
 import setInactiveFavicon from "./src/utils/set-inactive-favicon"
-import { wrapRootElement } from "./src/components/WrapRootElement"
 import setFavicon from "./src/utils/set-favicon"
 import bustCache from "./src/utils/bust-cache"
+import fontObserver from "./src/utils/font-observer"
+import { wrapRootElement } from "./src/components/WrapRootElement"
 
 // TODO: Add dynamic title in templates.
 const title = document.querySelector(`title`).textContent
@@ -25,6 +26,12 @@ const onRouteUpdate = ({ location }) => {
 }
 
 const onClientEntry = () => {
+  if (!sessionStorage.fontsLoaded) {
+    document.documentElement.classList.add(`font-loading-stage-1`)
+
+    window.onload = () => fontObserver()
+  }
+
   setThemeFavicon()
 
   let visibilityTimer = null
