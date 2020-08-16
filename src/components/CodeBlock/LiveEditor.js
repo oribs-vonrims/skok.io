@@ -1,6 +1,6 @@
 import React from "react"
 import { LiveContext } from "react-live"
-import Editor from "./editor"
+import Editor from "./Editor"
 
 const LiveEditor = props => (
   <LiveContext.Consumer>

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import Highlight, { Prism } from "@skok/prism-react-renderer"
 import { jsx, Styled, useThemeUI } from "theme-ui"
-import Line from "./line"
+import Line from "./Line"
 
 const HighlightCode = ({
   code,

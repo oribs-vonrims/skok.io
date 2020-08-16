@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, useThemeUI, Box } from "theme-ui"
-import LineNumber from "./line-number"
-import LineTokens from "./line-tokens"
+import LineNumber from "./LineNumber"
+import LineTokens from "./LineTokens"
 
 const Line = ({
   line,

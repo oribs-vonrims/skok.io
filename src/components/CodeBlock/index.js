@@ -2,17 +2,17 @@
 import { jsx, Styled, Box } from "theme-ui"
 import { useState, useContext } from "react"
 import useSound from "use-sound"
-import HighlightCode from "./highlight-code"
-import ReactLiveEditor from "./react-live-editor"
+import HighlightCode from "./HighlightCode"
+import ReactLiveEditor from "./ReactLiveEditor"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
 import { SoundContext } from "../SoundProvider"
 import calculateLinesToHighlight from "./calculate-lines-to-highlight"
-import isFeatureEnabled from "./is-feature-enabled"
+import getConfig from "./get-config"
 import getLanguage from "./get-language"
-import CopyButton from "./copy-button"
-import LineNumbersButton from "./line-numbers-button"
-import FileName from "./file-name"
-import LanguageTab from "./language-tab"
+import CopyButton from "./CopyButton"
+import LineNumbersButton from "./LineNumbersButton"
+import FileName from "./FileName"
+import LanguageTab from "./LanguageTab"
 import scope from "./scope"
 import { baseThemeSettings } from "../../theme"
 import switchOn from "../../sounds/switch-on.mp3"
@@ -46,16 +46,16 @@ const CodeBlock = ({
   const shouldHighlightLine = calculateLinesToHighlight(metastring)
 
   // Get all enabled features
-  const isLive = isFeatureEnabled(live)
-  const isNoInline = isFeatureEnabled(noInline)
-  const isDisabled = isFeatureEnabled(disabled)
-  const isLineNumbers = isFeatureEnabled(lineNumbers, globalLineNumbers)
-  const isLineNumbersButton = isFeatureEnabled(
+  const isLive = getConfig(live)
+  const isNoInline = getConfig(noInline)
+  const isDisabled = getConfig(disabled)
+  const isLineNumbers = getConfig(lineNumbers, globalLineNumbers)
+  const isLineNumbersButton = getConfig(
     lineNumbersButton,
     globalLineNumbersButton
   )
-  const isCopyButton = isFeatureEnabled(copyButton, globalCopyButton)
-  const isLanguageTab = isFeatureEnabled(languageTab, globalLanguageTab)
+  const isCopyButton = getConfig(copyButton, globalCopyButton)
+  const isLanguageTab = getConfig(languageTab, globalLanguageTab)
   const isFileName = !!fileName
 
   const [sound] = useContext(SoundContext)
