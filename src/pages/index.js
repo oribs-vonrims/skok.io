@@ -50,17 +50,6 @@ const IndexPage = () => (
         {` `}
         on the web.
       </Styled.h2>
-
-      <a
-        className="h-card u-url"
-        href="https://skok.club"
-        rel="me"
-        sx={{
-          visibility: `hidden`,
-        }}
-      >
-        Vladimir Skok
-      </a>
     </Flex>
   </Layout>
 )

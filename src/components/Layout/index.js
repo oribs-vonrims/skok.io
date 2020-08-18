@@ -15,7 +15,6 @@ const Layout = ({ children }) => (
         display: `flex`,
         flexDirection: `column`,
       }}
-      className="h-card"
     >
       <Header />
       <main
