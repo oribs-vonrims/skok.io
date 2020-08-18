@@ -8,19 +8,19 @@ import Layout from "../../components/Layout"
 import Pagination from "../../components/Pagination"
 import TweetableSelection from "../../components/TweetableSelection"
 import WebMentions from "../../components/WebMentions"
-import useSiteMetadata from "../../hooks/useSiteMetadata"
+// import useSiteMetadata from "../../hooks/useSiteMetadata"
 
 const BlogPost = ({ pageContext, data }) => {
   const { prev, next, permalink } = pageContext
   const { mdx } = data
   const { title, summary, date, cover, coverAlt, tweet } = mdx.frontmatter
-  const { siteUrl, author } = useSiteMetadata()
+  // const { siteUrl, author } = useSiteMetadata()
   const allWebMentionEntry = data?.allWebMentionEntry
 
   return (
     <Layout>
       <TweetableSelection />
-      <article>
+      <article className="h-entry">
         {cover && (
           <Img
             alt={coverAlt}
@@ -29,9 +29,13 @@ const BlogPost = ({ pageContext, data }) => {
           />
         )}
 
-        <Styled.h1>{title}</Styled.h1>
+        <Styled.h1 className="e-content p-name">{title}</Styled.h1>
 
-        {date && <time dateTime={formatISO(new Date(date))}>{date}</time>}
+        {date && (
+          <a className="u-url" href={permalink}>
+            <time dateTime={formatISO(new Date(date))}>{date}</time>
+          </a>
+        )}
 
         {summary && (
           <Styled.p sx={{ variant: `text.italic` }}>{summary}</Styled.p>
