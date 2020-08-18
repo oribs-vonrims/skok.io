@@ -29,7 +29,7 @@ const BlogPost = ({ pageContext, data }) => {
           />
         )}
 
-        <Styled.h1 className="e-content p-name">{title}</Styled.h1>
+        <Styled.h1 className="p-name">{title}</Styled.h1>
 
         {date && (
           <a className="u-url" href={permalink}>
@@ -37,12 +37,20 @@ const BlogPost = ({ pageContext, data }) => {
           </a>
         )}
 
+        {/* {date && (
+          <a className="u-url" href={permalink}>
+            <time dateTime={formatISO(new Date(date))}>{date}</time>
+          </a>
+        )} */}
+
         {summary && (
           <Styled.p sx={{ variant: `text.italic` }}>{summary}</Styled.p>
         )}
 
         {/* eslint react/no-children-prop: 0 */}
-        <MDXRenderer children={mdx.body} />
+        <div className="e-content">
+          <MDXRenderer children={mdx.body} />
+        </div>
       </article>
 
       <WebMentions allWebmentionEntry={allWebMentionEntry} tweet={tweet} />

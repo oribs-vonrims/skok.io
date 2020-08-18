@@ -17,8 +17,8 @@ const TwitterIconLink = () => {
       href={twitterURL}
       rel="noopener noreferrer me"
       target="_blank"
-      className="h-card"
       aria-label="Navigate to Vladimir's Twitter account"
+      className="u-url"
       onFocus={addHighlight}
       onBlur={removeHighlight}
       onTouchStart={addHighlight}

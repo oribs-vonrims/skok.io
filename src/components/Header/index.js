@@ -54,24 +54,33 @@ const Header = () => {
           ))}
         </ul>
       </Box>
-      <ul
-        sx={{
-          padding: 0,
-          margin: 0,
-          listStyle: `none`,
-          display: `flex`,
-        }}
-      >
-        <li>
-          <TwitterIconLink />
-        </li>
-        <li>
-          <GithubIconLink />
-        </li>
-        <li>
-          <ColorModeButton />
-        </li>
-      </ul>
+      <div className="h-card">
+        <ul
+          sx={{
+            padding: 0,
+            margin: 0,
+            listStyle: `none`,
+            display: `flex`,
+          }}
+        >
+          <li>
+            <TwitterIconLink />
+          </li>
+          <li>
+            <GithubIconLink />
+          </li>
+          <li>
+            <ColorModeButton />
+          </li>
+        </ul>
+        <div sx={{ visibility: `hidden` }}>
+          <span className="p-name">Vladimir Skok</span>
+          <span className="p-note">Software Engineer</span>
+          <a href="https://skok.club" className="u-url" rel="me">
+            skok.club
+          </a>
+        </div>
+      </div>
     </Flex>
   )
 }
