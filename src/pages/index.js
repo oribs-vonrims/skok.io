@@ -56,7 +56,7 @@ const IndexPage = () => (
         href="https://skok.club"
         rel="me"
         sx={{
-          visually: `hidden`,
+          visibility: `hidden`,
         }}
       >
         Vladimir Skok
