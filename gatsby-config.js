@@ -81,7 +81,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-webmention`,
       options: {
-        username: `https://skok.club`,
+        username: `skok.club`,
         identity: {
           twitter: `iamskok`,
           github: `iamskok`,
