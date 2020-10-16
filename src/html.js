@@ -1,6 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
-import dispatchFontsLoadedEvent from "../src/utils/dispatch-fonts-loaded-event"
+import dispatchFontsLoadEndEvent from "../src/utils/dispatch-fonts-loaded-event"
 
 export default function HTML(props) {
   return (
@@ -15,8 +15,8 @@ export default function HTML(props) {
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if (sessionStorage.fontsLoaded) {
-                (${dispatchFontsLoadedEvent})()
+              if (sessionStorage.isEveryFontLoaded) {
+                (${dispatchFontsLoadEndEvent})()
               }
             `,
           }}

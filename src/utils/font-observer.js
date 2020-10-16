@@ -1,4 +1,4 @@
-import dispatchFontsLoadedEvent from "./dispatch-fonts-loaded-event"
+import dispatchFontsLoadEndEvent from "./dispatch-fonts-loaded-event"
 
 const fontObserver = () => {
   if (`fonts` in document) {
@@ -8,10 +8,10 @@ const fontObserver = () => {
       document.fonts.load(`400 1em "Inter var"`),
       document.fonts.load(`400 1em "Fira Code VF"`),
     ]).then(() => {
-      dispatchFontsLoadedEvent()
+      dispatchFontsLoadEndEvent()
 
       // Optimization for repeat views
-      sessionStorage.fontsLoaded = true
+      sessionStorage.isEveryFontLoaded = true
     })
   }
 }

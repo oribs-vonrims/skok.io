@@ -1,9 +1,9 @@
-const dispatchFontsLoadedEvent = () => {
+const dispatchFontsLoadEndEvent = () => {
   document.documentElement.classList.add(`font-loading-stage-2`)
 
   // Dispatch event to notify ThemeUIProvider component
-  const fontsLoadedEvent = new CustomEvent(`FONTS_LOADED`)
-  window.dispatchEvent(fontsLoadedEvent)
+  const fontsLoadEndEvent = new CustomEvent(`fontsloadend`)
+  window.dispatchEvent(fontsLoadEndEvent)
 }
 
-export default dispatchFontsLoadedEvent
+export default dispatchFontsLoadEndEvent

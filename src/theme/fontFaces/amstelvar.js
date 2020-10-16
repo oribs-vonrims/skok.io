@@ -1,5 +1,5 @@
-import amstelvarRomanWoff2 from "./amstelvar-roman-subset.woff2"
-import amstelvarItalicWoff2 from "./amstelvar-italic-subset.woff2"
+import amstelvarRomanWoff2 from "../../fonts/amstelvar-roman-subset.woff2"
+import amstelvarItalicWoff2 from "../../fonts/amstelvar-italic-subset.woff2"
 
 const amstelvarRomanFontFace = `
   @font-face {
@@ -23,6 +23,6 @@ const amstelvarItalicFontFace = `
   }
 `
 
-const amstelvarFontFaces = amstelvarRomanFontFace + amstelvarItalicFontFace
+const amstelvarFontFaces = amstelvarItalicFontFace + amstelvarRomanFontFace
 
 export default amstelvarFontFaces

@@ -4,9 +4,11 @@ import { jsx, Container } from "theme-ui"
 import Head from "../Head"
 import Header from "../Header"
 import Footer from "../Footer"
+import GlobalStyles from "../GlobalStyles"
 
 const Layout = ({ children }) => (
   <Fragment>
+    <GlobalStyles />
     <Head />
     <Container
       sx={{
