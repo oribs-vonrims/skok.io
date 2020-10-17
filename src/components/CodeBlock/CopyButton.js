@@ -4,7 +4,7 @@ import { jsx, IconButton } from "theme-ui"
 import useSound from "use-sound"
 import copyToClipboard from "./copy-to-clipboard"
 import { SoundContext } from "../SoundProvider"
-import switchOn from "../../sounds/switch-on.mp3"
+import switchOn from "../../assets/sounds/switch-on.mp3"
 
 const CopyButton = ({ code }) => {
   const [copied, setCopied] = useState(false)

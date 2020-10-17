@@ -4,7 +4,7 @@ import { jsx, IconButton, useColorMode } from "theme-ui"
 import useSound from "use-sound"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
 import { SoundContext } from "../SoundProvider"
-import switchOn from "../../sounds/switch-on.mp3"
+import switchOn from "../../assets/sounds/switch-on.mp3"
 import setFavicon from "../../utils/set-favicon"
 
 const ColorModeButton = props => {

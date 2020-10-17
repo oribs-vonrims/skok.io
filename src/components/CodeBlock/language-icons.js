@@ -1,19 +1,19 @@
-import ReactIcon from "../../icons/react.inline.svg"
-import ShellIcon from "../../icons/shell.inline.svg"
-import SassIcon from "../../icons/sass.inline.svg"
-import HtmlIcon from "../../icons/html.inline.svg"
-import CssIcon from "../../icons/css.inline.svg"
-import GraphqlIcon from "../../icons/graphql.inline.svg"
-import JsIcon from "../../icons/js.inline.svg"
-import TsIcon from "../../icons/ts.inline.svg"
-import TomlIcon from "../../icons/toml.inline.svg"
-import JsonIcon from "../../icons/json.inline.svg"
-// import VueIcon from '../../icons/vue.inline.svg'
-// import RustIcon from '../../icons/rust.inline.svg'
-// import PhpIcon from '../../icons/php.inline.svg'
-// import GoIcon from '../../icons/go.inline.svg'
-// import PythonIcon from '../../icons/python.inline.svg'
-// import RbIcon from '../../icons/rb.inline.svg'
+import ReactIcon from "../../assets/icons/react.inline.svg"
+import ShellIcon from "../../assets/icons/shell.inline.svg"
+import SassIcon from "../../assets/icons/sass.inline.svg"
+import HtmlIcon from "../../assets/icons/html.inline.svg"
+import CssIcon from "../../assets/icons/css.inline.svg"
+import GraphqlIcon from "../../assets/icons/graphql.inline.svg"
+import JsIcon from "../../assets/icons/js.inline.svg"
+import TsIcon from "../../assets/icons/ts.inline.svg"
+import TomlIcon from "../../assets/icons/toml.inline.svg"
+import JsonIcon from "../../assets/icons/json.inline.svg"
+// import VueIcon from '../../assets/icons/vue.inline.svg'
+// import RustIcon from '../../assets/icons/rust.inline.svg'
+// import PhpIcon from '../../assets/icons/php.inline.svg'
+// import GoIcon from '../../assets/icons/go.inline.svg'
+// import PythonIcon from '../../assets/icons/python.inline.svg'
+// import RbIcon from '../../assets/icons/rb.inline.svg'
 
 const languageIcons = {
   js: JsIcon,

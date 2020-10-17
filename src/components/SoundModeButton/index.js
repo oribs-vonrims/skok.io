@@ -3,8 +3,8 @@ import { useState, useContext } from "react"
 import { jsx, IconButton } from "theme-ui"
 import useSound from "use-sound"
 import { SoundContext } from "../SoundProvider"
-import popUpOff from "../../sounds/pop-up-off.mp3"
-import popUpOn from "../../sounds/pop-up-on.mp3"
+import popUpOff from "../../assets/sounds/pop-up-off.mp3"
+import popUpOn from "../../assets/sounds/pop-up-on.mp3"
 
 const SoundModeButton = props => {
   const [sound, setSound] = useContext(SoundContext)
