@@ -11,6 +11,7 @@ import { useState, useEffect } from "react"
 import localTheme from "../../../src/theme/index"
 import components from "../../../src/theme/components"
 import fontObserver from "../../../src/utils/font-observer"
+import isWindow from "../../../src/utils/is-window"
 
 // Create initial safe fonts theme.
 const {
@@ -35,7 +36,9 @@ const Root = ({ children }) => {
 
   useEffect(() => fontObserver(), [])
 
-  const isEveryFontLoaded = sessionStorage.getItem(`isEveryFontLoaded`)
+  const isEveryFontLoaded = isWindow()
+    ? sessionStorage.getItem(`isEveryFontLoaded`)
+    : false
 
   useEffect(() => {
     setTheme(localTheme)
