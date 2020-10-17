@@ -12,7 +12,7 @@ const Head = () => {
     <>
       <Title>{title}</Title>
       <PreloadLinks />
-      {/* <Script /> */}
+      <Script />
       <MetaTags title={title} description={description} author={author} />
     </>
   )
