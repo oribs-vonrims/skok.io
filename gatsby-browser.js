@@ -27,9 +27,11 @@ const onRouteUpdate = ({ location }) => {
 
 const onClientEntry = () => {
   if (!sessionStorage.isEveryFontLoaded) {
-    document.documentElement.classList.add(`font-loading-stage-1`)
-
-    window.onload = () => fontObserver()
+    window.onload = () => {
+      fontObserver().then(() => {
+        sessionStorage.isEveryFontLoaded = true
+      })
+    }
   }
 
   setThemeFavicon()

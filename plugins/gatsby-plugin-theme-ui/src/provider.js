@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import React, { useState, useEffect } from "react"
 import { ThemeProvider } from "theme-ui"
 import localTheme from "../../../src/theme/index"
@@ -13,19 +14,27 @@ const safeFontsTheme = {
   ...Object.assign({}, localTheme, { fonts: safeFonts }),
 }
 
-const isEveryFontLoaded = () =>
-  isWindow() ? sessionStorage.getItem(`isEveryFontLoaded`) : false
-
 const Root = ({ children }) => {
   const [theme, setTheme] = useState(() =>
-    isEveryFontLoaded() ? localTheme : safeFontsTheme
+    isWindow() && sessionStorage.getItem(`isEveryFontLoaded`)
+      ? localTheme
+      : safeFontsTheme
   )
 
   useEffect(() => {
-    fontObserver().then(() => {
-      setTheme(localTheme)
-      sessionStorage.isEveryFontLoaded = true
-    })
+    function checkSessionStorage(event) {
+      if (event.storageArea === sessionStorage) {
+        const isEveryFontLoaded = sessionStorage.getItem(`isEveryFontLoaded`)
+
+        if (isEveryFontLoaded) {
+          setTheme(localTheme)
+        }
+      }
+    }
+
+    window.addEventListener(`storage`, checkSessionStorage)
+
+    return () => window.removeEventListener(`storage`, checkSessionStorage)
   }, [])
 
   return (

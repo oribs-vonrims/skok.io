@@ -15,8 +15,5 @@
     "theme-ui"
   ],
   "repository": "system-ui/theme-ui",
-  "gitHead": "5681b24d36f81fddd0d1d82cbb85136cc15dcd4c",
-  "resolutions": {
-    "react": "16.13.1"
-  }
+  "gitHead": "5681b24d36f81fddd0d1d82cbb85136cc15dcd4c"
 }
