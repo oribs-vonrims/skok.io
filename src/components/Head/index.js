@@ -1,18 +1,18 @@
 import React from "react"
-import { Helmet } from "react-helmet"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
 import PreloadLinks from "./PreloadLinks"
 import MetaTags from "./MetaTags"
+import Title from "./Title"
 
 const Head = () => {
   const { title, description, author } = useSiteMetadata()
 
   return (
-    <Helmet>
-      <title>{title}</title>
+    <>
+      <Title>{title}</Title>
       <MetaTags title={title} description={description} author={author} />
       <PreloadLinks />
-    </Helmet>
+    </>
   )
 }
 

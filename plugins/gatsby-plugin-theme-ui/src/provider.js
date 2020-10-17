@@ -22,30 +22,17 @@ const safeFontsTheme = {
 }
 
 const Root = ({ children }) => {
-  // const themeUiConfig = useThemeUiConfig()
-  // const { preset, prismPreset } = themeUiConfig
-  // const theme = preset.default || preset
-  // const themeWithPrism = merge(theme, {
-  //   styles: {
-  //     pre: prismPreset,
-  //   },
-  // })
-  // const fullTheme = merge(themeWithPrism, localTheme)
-
-  const [theme, setTheme] = useState(safeFontsTheme)
-
   useEffect(() => fontObserver(), [])
 
   const isEveryFontLoaded = isWindow()
     ? sessionStorage.getItem(`isEveryFontLoaded`)
     : false
 
-  useEffect(() => {
-    setTheme(localTheme)
-  }, [isEveryFontLoaded])
-
   return (
-    <ThemeProvider theme={theme} components={components}>
+    <ThemeProvider
+      theme={isEveryFontLoaded ? localTheme : safeFontsTheme}
+      components={components}
+    >
       {children}
     </ThemeProvider>
   )
