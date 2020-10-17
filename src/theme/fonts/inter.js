@@ -1,4 +1,4 @@
-import interWoff2 from "./inter.woff2"
+import interWoff2 from "../../assets/fonts/inter.woff2"
 
 const interFontFace = `
   @font-face {

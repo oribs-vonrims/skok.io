@@ -1,7 +1,7 @@
-import amstelvarWoff2 from "./amstelvar.woff2"
-import amstelvarItalicWoff2 from "./amstelvar-italic.woff2"
+import amstelvarWoff2 from "../../assets/fonts/amstelvar.woff2"
+import amstelvarItalicWoff2 from "../../assets/fonts/amstelvar-italic.woff2"
 
-const amstelvarRomanFontFace = `
+const amstelvarFontFace = `
   @font-face {
     font-family: 'Amstelvar';
     font-weight: 100 900;
@@ -23,6 +23,6 @@ const amstelvarItalicFontFace = `
   }
 `
 
-const amstelvarFontFaces = amstelvarRomanFontFace + amstelvarItalicFontFace
+const amstelvarFontFaces = amstelvarItalicFontFace + amstelvarFontFace
 
 export default amstelvarFontFaces
