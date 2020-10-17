@@ -1,15 +1,14 @@
 const fontObserver = () => {
   if (`fonts` in document) {
-    Promise.all([
+    return Promise.all([
       document.fonts.load(`400 1em "Amstelvar"`),
       document.fonts.load(`italic 400 1em "Amstelvar"`),
       document.fonts.load(`400 1em "Inter var"`),
       document.fonts.load(`400 1em "Fira Code VF"`),
-    ]).then(() => {
-      // Optimization for repeat views
-      sessionStorage.isEveryFontLoaded = true
-    })
+    ])
   }
+
+  return Promise.reject()
 }
 
 export default fontObserver

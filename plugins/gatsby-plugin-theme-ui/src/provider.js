@@ -1,13 +1,5 @@
-/** @jsx jsx */
-import {
-  jsx,
-  ThemeProvider,
-  // merge,
-} from "theme-ui"
-// import localTheme from "./index"
-// import components from "./components"
-// import useThemeUiConfig from "./hooks/configOptions"
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
+import { ThemeProvider } from "theme-ui"
 import localTheme from "../../../src/theme/index"
 import components from "../../../src/theme/components"
 import fontObserver from "../../../src/utils/font-observer"
@@ -21,18 +13,23 @@ const safeFontsTheme = {
   ...Object.assign({}, localTheme, { fonts: safeFonts }),
 }
 
-const Root = ({ children }) => {
-  useEffect(() => fontObserver(), [])
+const isEveryFontLoaded = () =>
+  isWindow() ? sessionStorage.getItem(`isEveryFontLoaded`) : false
 
-  const isEveryFontLoaded = isWindow()
-    ? sessionStorage.getItem(`isEveryFontLoaded`)
-    : false
+const Root = ({ children }) => {
+  const [theme, setTheme] = useState(() =>
+    isEveryFontLoaded() ? localTheme : safeFontsTheme
+  )
+
+  useEffect(() => {
+    fontObserver().then(() => {
+      setTheme(localTheme)
+      sessionStorage.isEveryFontLoaded = true
+    })
+  }, [])
 
   return (
-    <ThemeProvider
-      theme={isEveryFontLoaded ? localTheme : safeFontsTheme}
-      components={components}
-    >
+    <ThemeProvider theme={theme} components={components}>
       {children}
     </ThemeProvider>
   )
