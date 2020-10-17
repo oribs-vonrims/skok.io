@@ -1,6 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
-import dispatchFontsLoadEndEvent from "../src/utils/dispatch-fonts-loaded-event"
+import dispatchFontsLoadEndEvent from "./utils/dispatch-fonts-loaded-event"
 
 export default function HTML(props) {
   return (
