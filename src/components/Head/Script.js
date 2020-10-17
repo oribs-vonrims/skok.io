@@ -6,11 +6,13 @@ const Script = () => {
   return (
     <Helmet>
       <script
+        // Dispatch event has to be inlined in order to be called
+        // only once on the initial page load
         dangerouslySetInnerHTML={{
           __html: `
-              if (sessionStorage.fontsLoaded) {
-                (${dispatchFontsLoadedEvent})()
-              }
+            if (sessionStorage.isEveryFontLoaded) {
+              (${dispatchFontsLoadedEvent})()
+            }
             `,
         }}
       />

@@ -12,7 +12,7 @@ const fontObserver = () => {
       dispatchFontsLoadedEvent()
 
       // Optimization for repeat views
-      sessionStorage.fontsLoaded = true
+      sessionStorage.isEveryFontLoaded = true
     })
   }
 }
