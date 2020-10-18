@@ -26,9 +26,16 @@ const onRouteUpdate = ({ location }) => {
 }
 
 const onClientEntry = () => {
+  // When all custom fonts are loaded:
+  // 1. append temporary class to avoid FOUT
+  // 2. trigger `theme-ui` provider to swap fonts
   if (sessionStorage.isEveryFontLoaded) {
     document.documentElement.classList.add(`font-loading-stage-2`)
+    window.dispatchEvent(new Event(`fontloadend`))
   } else {
+    // When custom fonts are not loaded:
+    // 1. append temporary class with web safe fonts
+    // 2. trigger font discovery mechanism
     document.documentElement.classList.add(`font-loading-stage-1`)
     window.onload = () => fontObserver()
   }
