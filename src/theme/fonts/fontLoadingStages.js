@@ -20,6 +20,10 @@ const fonts = `
   .font-loading-stage-2 code {
     font-family: 'Dank Mono';
   }
+
+  .font-loading-stage-2 body {
+    background-color: red !important;
+  }
 `
 
 export default fonts

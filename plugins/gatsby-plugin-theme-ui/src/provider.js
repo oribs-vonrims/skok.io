@@ -31,13 +31,25 @@ const Root = ({ children }) => {
     return () => window.removeEventListener(`fontloadend`, eventHandler)
   }, [])
 
-  useEffect(() => {
-    if (isEveryFontLoaded) {
-      setTheme(localTheme)
+  const updateTheme = useCallback(() => {
+    setTheme(localTheme)
+    setTimeout(() => {
       document.documentElement.classList.remove(
         `font-loading-stage-1`,
         `font-loading-stage-2`
       )
+    }, 2000)
+  }, [])
+
+  useEffect(() => {
+    if (isEveryFontLoaded) {
+      // setTheme(localTheme)
+      // document.documentElement.classList.remove(
+      //   `font-loading-stage-1`,
+      //   `font-loading-stage-2`
+      // )
+      updateTheme()
+      console.log("theme updated")
     }
   }, [isEveryFontLoaded])
 
