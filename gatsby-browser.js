@@ -26,7 +26,9 @@ const onRouteUpdate = ({ location }) => {
 }
 
 const onClientEntry = () => {
-  if (!sessionStorage.isEveryFontLoaded) {
+  if (sessionStorage.isEveryFontLoaded) {
+    document.documentElement.classList.add(`font-loading-stage-2`)
+  } else {
     document.documentElement.classList.add(`font-loading-stage-1`)
 
     window.onload = () => fontObserver()
