@@ -33,12 +33,10 @@ const Root = ({ children }) => {
 
   const updateTheme = useCallback(() => {
     setTheme(localTheme)
-    setTimeout(() => {
-      document.documentElement.classList.remove(
-        `font-loading-stage-1`,
-        `font-loading-stage-2`
-      )
-    }, 0)
+    document.documentElement.classList.remove(
+      `font-loading-stage-1`,
+      `font-loading-stage-2`
+    )
   }, [])
 
   useEffect(() => {
@@ -51,7 +49,7 @@ const Root = ({ children }) => {
       updateTheme()
       console.log("theme updated")
     }
-  }, [isEveryFontLoaded])
+  }, [isEveryFontLoaded, updateTheme])
 
   return (
     <ThemeProvider theme={theme} components={components}>
