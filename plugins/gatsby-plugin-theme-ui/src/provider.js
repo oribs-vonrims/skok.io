@@ -38,7 +38,7 @@ const Root = ({ children }) => {
         `font-loading-stage-1`,
         `font-loading-stage-2`
       )
-    }, 2000)
+    }, 0)
   }, [])
 
   useEffect(() => {
