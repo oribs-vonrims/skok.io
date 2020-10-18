@@ -17,6 +17,7 @@ const Root = ({ children }) => {
   )
 
   useEffect(() => {
+    // Mechanism for keeping track of loaded fonts.
     const eventHandler = () => {
       const isEveryFontLoaded = window.sessionStorage.getItem(
         `isEveryFontLoaded`
@@ -30,6 +31,9 @@ const Root = ({ children }) => {
   }, [])
 
   useEffect(() => {
+    // When all custom fonts are loaded:
+    // 1. update theme
+    // 2. remove temporary classes
     if (isEveryFontLoaded) {
       setTheme(localTheme)
       document.documentElement.classList.remove(

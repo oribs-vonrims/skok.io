@@ -7,7 +7,9 @@ const fontObserver = () => {
       document.fonts.load(`400 1em "Dank Mono"`),
       document.fonts.load(`italic 400 1em "Dank Mono"`),
     ]).then(() => {
+      // Trigger `theme-ui` provider to swap fonts.
       window.dispatchEvent(new Event(`fontloadend`))
+      // Optimize font rendering for repetitive views.
       sessionStorage.setItem(`isEveryFontLoaded`, true)
     })
   }
