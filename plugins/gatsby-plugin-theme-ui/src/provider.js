@@ -46,7 +46,12 @@ const Root = ({ children }) => {
       //   `font-loading-stage-1`,
       //   `font-loading-stage-2`
       // )
-      updateTheme()
+      // updateTheme()
+      setTheme(localTheme)
+      document.documentElement.classList.remove(
+        `font-loading-stage-1`,
+        `font-loading-stage-2`
+      )
       console.log("theme updated")
     }
   }, [isEveryFontLoaded, updateTheme])
