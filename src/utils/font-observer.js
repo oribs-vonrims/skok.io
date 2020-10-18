@@ -7,9 +7,8 @@ const fontObserver = () => {
       document.fonts.load(`400 1em "Dank Mono"`),
       document.fonts.load(`italic 400 1em "Dank Mono"`),
     ]).then(() => {
-      console.log("fontObserver promise resolved")
-      sessionStorage.setItem(`isEveryFontLoaded`, true)
       window.dispatchEvent(new Event(`fontloadend`))
+      sessionStorage.setItem(`isEveryFontLoaded`, true)
     })
   }
 }
