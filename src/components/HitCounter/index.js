@@ -3,7 +3,7 @@ import { jsx, Flex } from "theme-ui"
 import { useState, useEffect, Fragment } from "react"
 import firebase from "firebase/app"
 import "firebase/firestore"
-import EyeIcon from "../../icons/eye.inline.svg"
+import EyeIcon from "../../assets/icons/eye.inline.svg"
 
 const config = {
   apiKey: process.env.FIREBASE_API_KEY,

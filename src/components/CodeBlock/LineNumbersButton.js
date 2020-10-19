@@ -3,7 +3,7 @@ import { useContext } from "react"
 import { jsx, IconButton } from "theme-ui"
 import useSound from "use-sound"
 import { SoundContext } from "../SoundProvider"
-import switchOn from "../../sounds/switch-on.mp3"
+import switchOn from "../../assets/sounds/switch-on.mp3"
 
 const LineNumbersButton = ({ handleClick, lineNumbers }) => {
   const [sound] = useContext(SoundContext)
