@@ -1,14 +1,13 @@
+const loadingStage2Headers = [`h1`, `h2`, `h3`, `h4`, `h5`, `h6`]
+  .map(h => `.font-loading-stage-2 ${h}`)
+  .join(`,`)
+
 const fonts = `
   .font-loading-stage-1 body {
     font-family: -apple-system, system-ui, sans-serif;
   }
 
-  .font-loading-stage-2 h1,
-  .font-loading-stage-2 h2,
-  .font-loading-stage-2 h3,
-  .font-loading-stage-2 h4,
-  .font-loading-stage-2 h5,
-  .font-loading-stage-2 h6 {
+  ${loadingStage2Headers} {
     font-family: 'Amstelvar';
   }
 
