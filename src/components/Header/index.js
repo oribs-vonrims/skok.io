@@ -17,6 +17,7 @@ const Header = () => {
         display: `flex`,
         alignItems: `center`,
         paddingY: 1,
+        marginBottom: 5,
       }}
     >
       <Link
@@ -28,7 +29,11 @@ const Header = () => {
       >
         VS
       </Link>
-      <Box marginLeft="auto">
+      <Box
+        sx={{
+          marginLeft: `auto`,
+        }}
+      >
         <ul
           sx={{
             padding: 0,

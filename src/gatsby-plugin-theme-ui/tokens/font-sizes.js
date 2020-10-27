@@ -1,7 +1,5 @@
-import calcfontSizes from "../../utils/calc-font-sizes"
-
-const ratio = 1.2
-const range = [-2, 7]
-const fontSizes = calcfontSizes(ratio, range)
+const fontSizes = [0.7, 0.85, 1, 1.3, 1.6, 1.9, 2.2, 2.5, 3, 3.6].map(
+  fz => `${fz}rem`
+)
 
 export default fontSizes

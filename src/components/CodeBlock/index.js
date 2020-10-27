@@ -14,10 +14,7 @@ import LineNumbersButton from "./LineNumbersButton"
 import FileName from "./FileName"
 import LanguageTab from "./LanguageTab"
 import scope from "./scope"
-import { baseThemeSettings } from "../../gatsby-plugin-theme-ui"
 import switchOn from "../../assets/sounds/switch-on.mp3"
-
-const { rythm } = baseThemeSettings
 
 const CodeBlock = ({
   children,
@@ -78,8 +75,8 @@ const CodeBlock = ({
   return (
     <div
       sx={{
-        marginBottom: rythm,
-        position: "relative",
+        marginBottom: 4,
+        position: `relative`,
       }}
     >
       {isLanguageTab && !isLive && (
@@ -88,15 +85,15 @@ const CodeBlock = ({
 
       <div
         sx={{
-          display: "flex",
-          flexDirection: "column",
+          display: `flex`,
+          flexDirection: `column`,
           backgroundColor: `muted`,
         }}
       >
         {isFileName && <FileName name={fileName} />}
         <div
           sx={{
-            display: "flex",
+            display: `flex`,
             padding: 1,
           }}
         >

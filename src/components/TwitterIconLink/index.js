@@ -14,9 +14,9 @@ const TwitterIconLink = () => {
 
   return (
     <a
+      rel="noopener noreferrer"
+      target="_blank"
       href={twitterURL}
-      rel="me"
-      className="h-card"
       aria-label="Navigate to Vladimir's Twitter account"
       onFocus={addHighlight}
       onBlur={removeHighlight}
@@ -28,10 +28,10 @@ const TwitterIconLink = () => {
         display: `flex`,
         alignItems: `center`,
         cursor: `pointer`,
+        marginX: 0,
         padding: 0,
         width: `iconButton`,
         height: `iconButton`,
-        marginX: 0,
         color: highlight ? `secondary` : `primary`,
         transition: `color 400ms ease`,
       }}
