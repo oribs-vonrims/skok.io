@@ -1,29 +1,92 @@
 import { graphql, useStaticQuery } from "gatsby"
 
 const useSiteMetadata = () => {
-  const { site } = useStaticQuery(
+  const {
+    site: { siteMetadata },
+  } = useStaticQuery(
     graphql`
-      query SITE_METADATA_QUERY {
+      query {
         site {
           siteMetadata {
-            title
-            description
-            author
-            navigation {
-              label
-              to
+            firstName
+            lastName
+            siteUrl
+            language
+            speakableSelector
+            logo {
+              url
+              width
+              height
+            }
+            copyrightYear
+            address {
+              addressCountry
+              addressLocality
+              addressRegion
             }
             socialMedia {
               twitter
               github
             }
+            pages {
+              home {
+                to
+                order
+                label
+                breadcrumb
+                title
+                description
+                coverAlt
+                type
+              }
+              blog {
+                to
+                order
+                label
+                breadcrumb
+                title
+                description
+                coverAlt
+                type
+              }
+              contact {
+                to
+                order
+                label
+                breadcrumb
+                title
+                description
+                coverAlt
+                type
+              }
+              about {
+                to
+                order
+                label
+                breadcrumb
+                title
+                description
+                coverAlt
+                type
+              }
+              article {
+                order
+                breadcrumb
+                type
+              }
+              notFound {
+                order
+                title
+                description
+              }
+            }
+            colorModes
             codeBlock {
               lineNumbers
               lineNumbersButton
               copyButton
               languageTab
             }
-            colorModes
             favicons {
               light
               dark
@@ -34,7 +97,7 @@ const useSiteMetadata = () => {
     `
   )
 
-  return site.siteMetadata
+  return siteMetadata
 }
 
 export default useSiteMetadata
