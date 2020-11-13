@@ -2,20 +2,37 @@
 import { jsx, Styled } from "theme-ui"
 import { graphql } from "gatsby"
 import Layout from "../../components/Layout"
+import useSiteMetadata from "../../hooks/useSiteMetadata"
+import BlogCard from "../../components/BlogCard"
 import Pagination from "../../components/Pagination"
-import BlogPostCard from "../../components/BlogPostCard"
 
-const Blog = ({ data: { allMdx }, pageContext: { pagination } }) => {
+const Blog = ({ data: { file, allMdx }, pageContext: { pagination } }) => {
+  const {
+    pages: {
+      blog: { to, title, description, coverAlt, type, breadcrumb },
+    },
+  } = useSiteMetadata()
   const { page, nextPagePath, previousPagePath } = pagination
-
-  const posts = page.map(id => allMdx.edges.find(edge => edge.node.id === id))
+  const covers = file?.childImageSharp
+  const articles = page.map(id =>
+    allMdx.edges.find(edge => edge.node.id === id)
+  )
 
   return (
-    <Layout>
-      <Styled.h1>Blog</Styled.h1>
+    <Layout
+      to={to}
+      title={title}
+      description={description}
+      covers={{ ...covers }}
+      coverAlt={coverAlt}
+      type={type}
+      breadcrumb={breadcrumb}
+      pageName="blog"
+    >
+      <Styled.h1>{title}</Styled.h1>
 
-      {posts.map(({ node: post }) => (
-        <BlogPostCard key={post.id} post={post} />
+      {articles.map(({ node }) => (
+        <BlogCard key={node.id} article={node} />
       ))}
 
       <Pagination previous={previousPagePath} next={nextPagePath} />
@@ -25,26 +42,25 @@ const Blog = ({ data: { allMdx }, pageContext: { pagination } }) => {
 
 export default Blog
 
-export const pageQuery = graphql`
+export const query = graphql`
   query {
+    file(relativePath: { eq: "blog.jpg" }) {
+      childImageSharp {
+        ...ChildImageSharpFields
+      }
+    }
     allMdx {
       edges {
         node {
           id
-          excerpt(pruneLength: 300)
           fields {
             slug
           }
           frontmatter {
-            title
-            date(formatString: "MMMM DD, YYYY")
-            coverAlt
+            ...FrontmatterFields
             cover {
               childImageSharp {
-                sizes(maxWidth: 900) {
-                  ...GatsbyImageSharpSizes
-                }
-                fluid(maxWidth: 900, quality: 100) {
+                fluid(maxWidth: 900) {
                   ...GatsbyImageSharpFluid
                 }
               }

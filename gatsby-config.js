@@ -22,6 +22,13 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
+        name: `images`,
+        path: path.resolve(`./src/assets/images`),
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
         name: `posts`,
         path: path.resolve(`./posts`),
       },
@@ -37,6 +44,7 @@ module.exports = {
       resolve: `gatsby-plugin-sharp`,
       options: {
         useMozJpeg: true,
+        defaultQuality: 100,
       },
     },
     {
@@ -65,19 +73,22 @@ module.exports = {
       },
     },
     {
-      resolve: "gatsby-plugin-robots-txt",
+      resolve: `gatsby-plugin-robots-txt`,
       options: {
         host: siteMetadata.siteUrl,
-        // generate sitemap after moving on `skok.io`
         sitemap: null,
-        // allow all after moving on `skok.io domain`
-        policy: [{ userAgent: "*", disallow: ["/"] }],
+        policy: [
+          {
+            userAgent: `*`,
+            disallow: [`/`],
+          },
+        ],
       },
     },
     {
       resolve: `gatsby-plugin-offline`,
       options: {
-        precachePages: [`/blog/*`, `/about/`],
+        precachePages: [`/blog/*`, `/about`],
       },
     },
     `gatsby-plugin-theme-ui`,
