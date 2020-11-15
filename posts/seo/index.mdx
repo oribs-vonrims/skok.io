@@ -1,13 +1,89 @@
 ---
-title: SEO component
+title: Technical Guide to Gatsby's SEO
 description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu iaculis elit.
-date: 2009-10-11
-modifiedDate: 2020-10-11
+date: 2020-11-12
+modifiedDate: 2020-11-14
 published: true
 cover: ./cover.jpg
 coverAlt: SEO image
 ---
 
-## SEO heading
+If you are here it means that you care about organic SEO and want more people to
+discover your content. This makes total sense, otherwise why even bother
+creating content? In this blog post we are going to discuss what we as engineers
+can do better in order to make web crawler's life a little easier and hopefully
+get rewarded for it. Gatsby and `react-helmet` are going to be our main weapons.
 
-Post text
+## Prerequisites
+
+I'm making several assumptions in this article:
+
+1. You already have a basic understanding of how Gatsby Node API and GraphQL
+   works.
+2. The project I'm going to show will have a certain project structure,
+   which we will go over shortly. Though don't worry too much about this part,
+   because it should be pretty easy to adopt the same principals for a project with
+   a different project structure.
+3. All blog post examples are written in MDX, so if you are using markdown instead
+   you will have to find another way for using `ImageSharp` with image paths taken
+   from frontmatter.
+
+And finally if you have any questions feel free to look at the
+[final version](https://github.com/iamskok/gatsby-seo)) of the project
+or [tweet](https://twitter.com/iamskok) at me with your question.
+
+## Project Structure
+
+The blog we are going to work on has 4 pages - Home, Blog, Contact, and About as well
+as 1 template - Article. I prefer to keep the actual content outside of `src` direcotry
+in order to have a clear separation between source code and the actual content. The
+content folder can be named as `posts`, `articles`, or `garden` (AKA
+[digital garden](https://joelhooks.com/digital-garden)). I'm gonna roll with `posts`.
+Every post will be living in it's own folder with an `index.mdx`. All images which will
+be used in the post will also be placed in the same `posts` directory. Generic
+images are stored in `src/images`. And that's about it for the project structure,
+everything else is pretty standard.
+
+```
+├── gatsby-config.js
+├── gatsby-node.js
+├── site-metadata.js
+├── posts
+│   ├── article-1
+│   │   ├── cover.jpg
+│   │   └── index.mdx
+│   ├── article-2
+│   │   ├── cover.jpg
+│   │   └── index.mdx
+│   └── article-3
+│       ├── cover.jpg
+│       └── index.mdx
+├── src
+│   ├── components
+│   ├── images
+│   ├── pages
+│   │   ├── about.js
+│   │   ├── blog.js
+│   │   ├── contact.js
+│   │   └── index.js
+│   └── templates
+│       └── article.js
+└── static
+```
+
+## Site Metadata and `useSiteMetadata` Hook
+
+Before jumping right into the actual SEO components we first need to
+define the data we are going to pass to it as well as a mechanism for
+getting this data. `useSiteMetadata` hook will come to the resque, it
+which will be fetching the static data from `gatsby-config.js` and
+passing it in react components.
+
+1. gatsby-config + sitematadata
+2. useSiteMetadata
+
+## Helpful Links
+
+- [Gatsby SEO](https://bloggingfordevs.com/gatsby-seo/)
+- [Google Ranking Factors](https://backlinko.com/google-ranking-factors)
+- [Search Engine Optimization with Gatsby](https://blog.dustinschau.com/search-engine-optimization-with-gatsby)
