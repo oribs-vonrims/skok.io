@@ -35,13 +35,13 @@ or [tweet](https://twitter.com/iamskok) at me with your question.
 ## Project Structure
 
 The blog we are going to work on has 4 pages - Home, Blog, Contact, and About as well
-as 1 template - Article. I prefer to keep the actual content outside of `src` direcotry
+as 1 template - Article. I prefer to keep the actual content outside of `./src` direcotry
 in order to have a clear separation between source code and the actual content. The
 content folder can be named as `posts`, `articles`, or `garden` (AKA
 [digital garden](https://joelhooks.com/digital-garden)). I'm gonna roll with `posts`.
 Every post will be living in it's own folder with an `index.mdx`. All images which will
 be used in the post will also be placed in the same `posts` directory. Generic
-images are stored in `src/images`. And that's about it for the project structure,
+images are stored in `./src/images`. And that's about it for the project structure,
 everything else is pretty standard.
 
 ```
@@ -73,14 +73,206 @@ everything else is pretty standard.
 
 ## Site Metadata and `useSiteMetadata` Hook
 
-Before jumping right into the actual SEO components we first need to
-define the data we are going to pass to it as well as a mechanism for
-getting this data. `useSiteMetadata` hook will come to the resque, it
-which will be fetching the static data from `gatsby-config.js` and
-passing it in react components.
+Before jumping right into the actual coding we have to define define
+the data we are going to pass to the SEO components as well as some
+mechanism for retrieving the data.
 
-1. gatsby-config + sitematadata
-2. useSiteMetadata
+In order to keep `gatsby-config.js` file slim let's create a separate file
+which is gonna hold all the static metadata about our blog -
+`touch site-metadata.js`.
+
+```js
+module.exports = {
+  firstName: `Jane`,
+  lastName: `Doe`,
+  siteUrl: `https://gatsby-seo.netlify.app`,
+  logo: {
+    url: `logo.jpg`,
+    width: 640,
+    height: 640,
+  },
+  language: `en_US`,
+  socialMedia: {
+    twitter: `https://twitter.com/gatsbyjs`,
+    github: `https://github.com/gatsbyjs`,
+  },
+  address: {
+    addressCountry: `US`,
+    addressLocality: `Los Angeles`,
+    addressRegion: `GA`,
+  },
+  speakableSelector: [`[data-speakable="true"]`],
+  pages: {
+    home: {
+      to: `/`,
+      breadcrumb: `Home`,
+      title: `Jane Doe`,
+      description: `Jane Doe's personal blog`,
+      coverAlt: `Two corgis sitting next to each other`,
+      type: `WebPage`,
+    },
+    blog: {
+      to: `/blog/`,
+      breadcrumb: `Blog`,
+      title: `Blog`,
+      description: `Thoughts on software engineering`,
+      coverAlt: `Brown retriever is licking it's nose`,
+      type: `Blog`,
+    },
+    contact: {
+      to: `/contact/`,
+      breadcrumb: `Contact`,
+      title: `Contact Jane Doe`,
+      description: `Jane Doe's contact information`,
+      coverAlt: `Bulldog is chilling on the groud`,
+      type: `ContactPage`,
+    },
+    about: {
+      to: `/about/`,
+      breadcrumb: `About`,
+      title: `About Jane Doe`,
+      description: `Jane Doe's biography`,
+      coverAlt: `French bulldog is hanging out on the playgroud`,
+      type: `AboutPage`,
+    },
+    article: {
+      type: `Article`,
+    },
+  },
+}
+```
+
+- `speakableSelector` this is a selector which will tell search engines and some other assistive
+  technologies that a particular section on the page is "speakable".
+- `to` is a URL pathname.
+- `breadcrumb` is a breadcrumb title
+- `coverAlt` is the same as image `alt` attribute, but for your cover images.
+- `lang` the language of your content. Consists of [language code](https://www.w3schools.com/tags/ref_language_codes.asp)
+  and an options [country code](https://www.w3schools.com/tags/ref_country_codes.asp)
+
+Everything else should be pretty self-explanatory. Replace all the values
+with your own information, but keep page's `type` as is.
+
+Our next step is to import this file in `gatsby-config.js` so all this information will
+become accessible to the GraphQL layer.
+
+```js
+const siteMetadata = require("./site-metadata")
+
+module.exports = {
+  siteMetadata,
+  // ...
+}
+```
+
+Once we placed the data in the right place we need some way to retrieve it from
+react components using GraphQL queries. `useStaticQuery` is exactly what we are
+looking. Create `hooks` directory in `./src` - `touch src/hooks/useSiteMetadata.js`
+
+```js
+import { useStaticQuery, graphql } from "gatsby"
+
+export default () => {
+  const {
+    site: { siteMetadata },
+  } = useStaticQuery(
+    graphql`
+      query {
+        site {
+          siteMetadata {
+            firstName
+            lastName
+            siteUrl
+            logo {
+              url
+              width
+              height
+            }
+            language
+            socialMedia {
+              twitter
+              github
+            }
+            address {
+              addressCountry
+              addressLocality
+              addressRegion
+            }
+            speakableSelector
+            pages {
+              home {
+                to
+                breadcrumb
+                title
+                description
+                coverAlt
+                type
+              }
+              blog {
+                to
+                breadcrumb
+                title
+                description
+                coverAlt
+                type
+              }
+              contact {
+                to
+                breadcrumb
+                title
+                description
+                coverAlt
+                type
+              }
+              about {
+                to
+                breadcrumb
+                title
+                description
+                coverAlt
+                type
+              }
+              article {
+                type
+              }
+            }
+          }
+        }
+      }
+    `
+  )
+
+  return siteMetadata
+}
+```
+
+We are listing every property from `./site-metadata.js` in the graphql query,
+destructuring `siteMetadata`, because we are not making any use out of it and now
+we are ready to retrieve the data as:
+
+```jsx
+import useSiteMetadata from "../../hooks/useSiteMetadata"
+
+const Welcome = () => {
+  const { firstName } = useSiteMetadata()
+
+  return <h1>Hello! My name is {firstName}</h1>
+}
+```
+
+## Basic Data Flow
+
+All the data brewing will start at the page and template level. We are going
+to retrieve it using gatsby page queries and `useSiteMetadata` hook.
+After this it's going to drain down in the `Layout` component. `Layout` component
+will be a place where all the data is aggregated, sorted, and passed deeper
+in the actual SEO components.
+
+## Fetching Page Level Data
+
+- gatsby page query
+- useSiteMetadata
+- Home, Blog, Contact, About, Article pages.
 
 ## Helpful Links
 
