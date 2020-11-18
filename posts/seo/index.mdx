@@ -8,6 +8,8 @@ cover: ./cover.jpg
 coverAlt: SEO image
 ---
 
+import { Message } from "theme-ui"
+
 If you are here it means that you care about organic SEO and want more people to
 discover your content. This makes total sense, otherwise why even bother
 creating content? In this blog post we are going to discuss what we as engineers
@@ -321,7 +323,7 @@ might already know Gatsby has an awesome plugin
 which is used for creating multiple images of the right sizes and resolutions.
 It's gonna help us a ton with generating cover images for various aspect ratios.
 Why can't we use the same image you might wonder? Well, because all social networks
-and search engines (read Google) have different requirments.
+and search engines have different requirments.
 
 - [Facebook](https://developers.facebook.com/docs/sharing/webmasters/images/)
   recommends images to be at least 1200x630 pixels.
@@ -361,18 +363,58 @@ Let's break it down. First we are querying for a File in GraphQL
 using `gatsby-source-filesystem`. In our case we are targeting a
 file by it's relative path, which equals (`eq` operator must match
 the given data exactly) to `home.jpg`. It triggers copying of this
-file to the public directory.
+file to the `public` directory.
 
-Important note here is that the relative path is based on the line of
-code you put in the `gatsby-source-filesystem` config, in our case it's
-`/src/images`
-
-`gatsby-plugin-sharp` powers the connections between Sharp and Gatsby Plugins
+<Message variant="primary">
+  Relative path is based on the line of code you put in the
+  `gatsby-source-filesystem` in `gatsby-config.js`, in our case it's
+  `/src/images`.
+</Message>
 
 In the snippet above we are using Gatsby aliases, because we need to
-run multiple queries on the same data source - `childImageSharp`
+run multiple queries with different arguments on the same data
+source - `childImageSharp`.
 
-Example of a fragment.
+This query will be required for every page and this is not DRY, because
+the only piece, which will be different is the image title. GraphQL
+fragments will come to the resque. Fragments are reusable units, they
+let you construct sets of fields, and then include them in queries where
+you need to.
+
+Let's create our fragment `touch src/fragments/ImageSharpFields.js`.
+
+```js
+import { graphql } from "gatsby"
+
+export const ChildImageSharpFields = graphql`
+  fragment ChildImageSharpFields on ImageSharp {
+    google1x1: fixed(width: 1600, height: 1600) {
+      src
+    }
+    google4x3: fixed(width: 1600, height: 1200) {
+      src
+    }
+    google16x9: fixed(width: 1600, height: 900) {
+      src
+    }
+    twitter: fixed(width: 1600, height: 800) {
+      src
+    }
+    facebook: fixed(width: 1600, height: 838) {
+      src
+    }
+  }
+`
+```
+
+We are defining `FragmentName` that will be referenced in other
+queries. Specifing `TypeName` of an object the fragment
+will be used on - `ImageSharp`. Than we move aliases from the
+initial example in the query body. And to make this fragment accessible
+inside of the other GraphQL queries we using named export (There is no need
+to import this fragment, Gatsby automatically makes it globally available).
+
+Now you can use this fragment. This looks way better!
 
 ```GraphQL
 query {
@@ -384,14 +426,143 @@ query {
 }
 ```
 
-For each page we need to write a tiny query which will fetch a corresponding cover
-image image from GraphQL layer. We are going to do it by targeting a file name.
-
 ## Using Gatsby Page Query To Pull Page Data
 
-- gatsby page query
-- useSiteMetadata
-- Home, Blog, Contact, About, Article pages.
+At this point we have `useSiteMetadata` hook and fragments in place,
+so we can finish pulling all the data we need.
+
+```jsx {7,13,20,31-39}
+/** @jsx jsx */
+import { jsx, Styled } from "theme-ui"
+import { graphql } from "gatsby"
+import useSiteMetadata from "../hooks/useSiteMetadata"
+import Layout from "../components/Layout"
+
+const Home = ({ data }) => {
+  const {
+    pages: {
+      home: { to, title, description, coverAlt, type, breadcrumb },
+    },
+  } = useSiteMetadata()
+  const covers = data?.file?.childImageSharp
+
+  return (
+    <Layout
+      to={to}
+      title={title}
+      description={description}
+      covers={{ ...covers }}
+      coverAlt={coverAlt}
+      breadcrumb={breadcrumb}
+      type={type}
+      pageName="home"
+    >
+      {/* ... */}
+    </Layout>
+  )
+}
+
+export const query = graphql`
+  query {
+    file(relativePath: { eq: "home.jpg" }) {
+      childImageSharp {
+        ...ChildImageSharpFields
+      }
+    }
+  }
+`
+
+export default Home
+```
+
+On line `31-39` we difine the query for the cover image and the data
+coming from it becomes accessible via `data` prop in `Home` component.
+Let's grab the part we are interested in - `covers` and spread it in
+`covers` prop of `Layout` component.
+
+Here is the example of the `Article` template.
+
+```jsx
+/** @jsx jsx */
+import { jsx, Styled, Flex } from "theme-ui"
+import { graphql } from "gatsby"
+import { MDXRenderer } from "gatsby-plugin-mdx"
+import Img from "gatsby-image"
+import useSiteMetadata from "../hooks/useSiteMetadata"
+import Layout from "../components/Layout"
+
+const Article = ({ data, pageContext }) => {
+  const {
+    mdx: {
+      body,
+      frontmatter: { title, description, date, modifiedDate, cover, coverAlt },
+    },
+  } = data
+  const { slug } = pageContext
+  const {
+    pages: {
+      article: { type, breadcrumb },
+    },
+  } = useSiteMetadata()
+
+  const childImageSharp = cover?.childImageSharp
+
+  return (
+    <Layout
+      type={type}
+      slug={slug}
+      title={title}
+      date={date}
+      modifiedDate={modifiedDate}
+      covers={{ ...childImageSharp }}
+      coverAlt={coverAlt}
+      description={description}
+      breadcrumb={breadcrumb}
+      pageName="article"
+    >
+      {/* ... */}
+    </Layout>
+  )
+}
+
+export default Article
+
+export const query = graphql`
+  query($id: String!) {
+    mdx(id: { eq: $id }) {
+      id
+      body
+      frontmatter {
+        title
+        description
+        date(formatString: "MMMM DD, YYYY")
+        modifiedDate(formatString: "MMMM DD, YYYY")
+        coverAlt
+        cover {
+          childImageSharp {
+            ...ChildImageSharpFields
+          }
+        }
+      }
+    }
+  }
+`
+```
+
+In `Article` template we are taking `slug` from `pageContext`, using
+`useSiteMetadata` to query `type` and `breadcrumb` and the rest of the
+data comes from the page query, specifically from `frontmatter` fields
+on `mdx`.
+
+If you are not familiar with `pageContext` have a look at the
+[Gatsby Docs](https://www.gatsbyjs.com/docs/creating-and-modifying-pages/#pass-context-to-pages)
+or check out the [`gatsby-config.js` from the example repo](https://github.com/iamskok/gatsby-seo-draft/blob/master/gatsby-node.js).
+
+## `Layout` component
+
+`Layout` is the most data heavy component in the whole chain. It receives
+the data passed to it from pages and templates and fetches the remaining
+static data with `useSiteMetadata`.
 
 ## Helpful Links
 
