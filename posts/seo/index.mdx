@@ -268,7 +268,126 @@ After this it's going to drain down in the `Layout` component. `Layout` componen
 will be a place where all the data is aggregated, sorted, and passed deeper
 in the actual SEO components.
 
-## Fetching Page Level Data
+## Using `useSiteMetadata` Hook To Pull Page Data
+
+Every page has a corresponding data in `./site-metadata.js`, so let's get it in
+the page components. Here is the example for the Home page.
+
+```jsx {9,21}
+/** @jsx jsx */
+import { jsx, Styled } from "theme-ui"
+import useSiteMetadata from "../hooks/useSiteMetadata"
+import Layout from "../components/Layout"
+
+const Home = () => {
+  const {
+    pages: {
+      home: { to, title, description, coverAlt, type, breadcrumb },
+    },
+  } = useSiteMetadata()
+
+  return (
+    <Layout
+      to={to}
+      title={title}
+      description={description}
+      coverAlt={coverAlt}
+      breadcrumb={breadcrumb}
+      type={type}
+      pageName="home"
+    >
+      {/* ... */}
+    </Layout>
+  )
+}
+
+export default Home
+```
+
+There 2 important pieces here:
+
+- page title in `useSitemetaData` destructuring
+- `pageName` prop, which corresponds to the component name
+
+They are going to change from page to page. Now add the same
+code to the rest of the pages. Feel free to check out the example
+[repo](https://github.com/iamskok/gatsby-seo-draft/tree/master/src/pages).
+
+### GraphQL Fragment For Cover Images
+
+Before moving to the Gatsby page queries let's do some preparation. As you
+might already know Gatsby has an awesome plugin
+[gatsby-transformer-sharp](https://www.gatsbyjs.com/plugins/gatsby-transformer-sharp),
+which is used for creating multiple images of the right sizes and resolutions.
+It's gonna help us a ton with generating cover images for various aspect ratios.
+Why can't we use the same image you might wonder? Well, because all social networks
+and search engines (read Google) have different requirments.
+
+- [Facebook](https://developers.facebook.com/docs/sharing/webmasters/images/)
+  recommends images to be at least 1200x630 pixels.
+- [Twitter](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image)
+  recommends aspect ratio of 2:1 with minimum dimensions of 300x157 pixels.
+- [Google](https://developers.google.com/search/docs/data-types/article) says
+  that their images has to be at least 696 pixels wide and suggests
+  to provide multiple images with the following aspect ratios: 16x9, 4x3, and 1x1.
+
+Now let's have a look at how this might look in practice for the Home cover image:
+
+```graphql
+query {
+  file(relativePath: { eq: "home.jpg" }) {
+    childImageSharp {
+      facebook: fixed(width: 1600, height: 838) {
+        src
+      }
+      twitter: fixed(width: 1600, height: 800) {
+        src
+      }
+      google1x1: fixed(width: 1600, height: 1600) {
+        src
+      }
+      google4x3: fixed(width: 1600, height: 1200) {
+        src
+      }
+      google16x9: fixed(width: 1600, height: 900) {
+        src
+      }
+    }
+  }
+}
+```
+
+Let's break it down. First we are querying for a File in GraphQL
+using `gatsby-source-filesystem`. In our case we are targeting a
+file by it's relative path, which equals (`eq` operator must match
+the given data exactly) to `home.jpg`. It triggers copying of this
+file to the public directory.
+
+Important note here is that the relative path is based on the line of
+code you put in the `gatsby-source-filesystem` config, in our case it's
+`/src/images`
+
+`gatsby-plugin-sharp` powers the connections between Sharp and Gatsby Plugins
+
+In the snippet above we are using Gatsby aliases, because we need to
+run multiple queries on the same data source - `childImageSharp`
+
+Example of a fragment.
+
+```GraphQL
+query {
+  file(relativePath: { eq: "home.jpg" }) {
+    childImageSharp {
+      ...ChildImageSharpFields
+    }
+  }
+}
+```
+
+For each page we need to write a tiny query which will fetch a corresponding cover
+image image from GraphQL layer. We are going to do it by targeting a file name.
+
+## Using Gatsby Page Query To Pull Page Data
 
 - gatsby page query
 - useSiteMetadata
