@@ -26,9 +26,9 @@ I'm making several assumptions in this article:
    which we will go over shortly. Though don't worry too much about this part,
    because it should be pretty easy to adopt the same principals for a project with
    a different project structure.
-3. All blog post examples are written in MDX, so if you are using markdown instead
-   you will have to find another way for using `ImageSharp` with image paths taken
-   from frontmatter.
+3. All blog post examples are written using MDX and Theme-UI, so if you are using
+   markdown or different styling solution some things might look slightly different
+   for you.
 
 And finally if you have any questions feel free to look at the
 [final version](https://github.com/iamskok/gatsby-seo)) of the project
@@ -36,8 +36,8 @@ or [tweet](https://twitter.com/iamskok) at me with your question.
 
 ## Project Structure
 
-The blog we are going to work on has 4 pages - Home, Blog, Contact, and About as well
-as 1 template - Article. I prefer to keep the actual content outside of `./src` direcotry
+The blog we are going to work on has 4 pages - Home, Blog, Contact, About, and an
+Article template. I prefer to keep the actual content outside of `./src` directory
 in order to have a clear separation between source code and the actual content. The
 content folder can be named as `posts`, `articles`, or `garden` (AKA
 [digital garden](https://joelhooks.com/digital-garden)). I'm gonna roll with `posts`.
@@ -416,7 +416,7 @@ to import this fragment, Gatsby automatically makes it globally available).
 
 Now you can use this fragment. This looks way better!
 
-```GraphQL
+```graphql
 query {
   file(relativePath: { eq: "home.jpg" }) {
     childImageSharp {
@@ -560,12 +560,328 @@ or check out the [`gatsby-config.js` from the example repo](https://github.com/i
 
 ## `Layout` component
 
-`Layout` is the most data heavy component in the whole chain. It receives
+`Layout` is the most data heavy component. It receives multiple props from
 the data passed to it from pages and templates and fetches the remaining
-static data with `useSiteMetadata`.
+static data using `useSiteMetadata` hook. Let's create one
+`touch src/components/Layout/index.js`.
+
+```jsx {35-41,43-60}
+/** @jsx jsx */
+import { Fragment } from "react"
+import { jsx } from "theme-ui"
+import useSiteMetadata from "../../hooks/useSiteMetadata"
+import Head from "../Head"
+import SchemaOrg from "../SchemaOrg"
+
+const Layout = ({
+  children,
+  to,
+  slug,
+  title,
+  description,
+  cover,
+  covers,
+  coverAlt,
+  pageName,
+  type,
+  breadcrumb,
+  date,
+  modifiedDate,
+}) => {
+  const {
+    siteUrl,
+    firstName,
+    lastName,
+    socialMedia,
+    pages,
+    logo,
+    language,
+    address,
+    speakableSelector,
+  } = useSiteMetadata()
+
+  const isPage = {
+    article: pageName === `article`,
+    home: pageName === `home`,
+    blog: pageName === `blog`,
+    about: pageName === `about`,
+    contact: pageName === `contact`,
+  }
+
+  const page = {
+    url: isPage.home
+      ? siteUrl
+      : isPage.article
+      ? `${siteUrl}${slug}`
+      : `${siteUrl}${to}`,
+    speakableSelector: !isPage.blog && speakableSelector,
+    covers: (() => {
+      const coverURLs = {}
+      for (const [key, { src }] of Object.entries(covers)) {
+        coverURLs[key] = `${siteUrl}${src}`
+      }
+      return coverURLs
+    })(),
+  }
+
+  return (
+    <Fragment>
+      <Head
+        url={page.url}
+        title={title}
+        description={description}
+        covers={page.covers}
+        coverAlt={coverAlt}
+        firstName={firstName}
+        lastName={lastName}
+        socialMedia={socialMedia}
+        date={date}
+        language={language}
+        pages={pages}
+        isPage={isPage}
+      />
+      {/* ... */}
+      <SchemaOrg
+        to={to}
+        slug={slug}
+        url={page.url}
+        siteUrl={siteUrl}
+        title={title}
+        description={description}
+        covers={page.covers}
+        firstName={firstName}
+        lastName={lastName}
+        socialMedia={socialMedia}
+        type={type}
+        breadcrumb={breadcrumb}
+        date={date}
+        modifiedDate={modifiedDate}
+        address={address}
+        language={language}
+        logo={logo}
+        pages={pages}
+        isPage={isPage}
+        speakableSelector={page.speakableSelector}
+      />
+    </Fragment>
+  )
+}
+
+export default Layout
+```
+
+On line `35-41` we create `isPage` object which acts as helpers in the
+data filtering process. This object is going to be passed as prop down in
+`Head` and `SchemaOrg` components.
+
+Line `43-60` defines `page` object which composes the proper data, which is
+going to be passed down the tree. `url` property constructs page url for a
+current page.
+
+- Home - `/`
+- Blog - `/blog/`
+- Contact - `/contact/`
+- About - `/about/`
+- Article - `/blog/article-title/`
+
+`speakableSelector` is used on all of the templates except blog and this is what
+we check with `!isPage.blog`.
+
+`covers` takes care of transforming cover images object. GraphQL returns `covers`
+object which looks, like:
+
+```json
+{
+  "google1x1": {
+    "src": "/static/402ec135e08c3b799c16c08a82ae2dd8/acd4e/home.jpg"
+  },
+  "google4x3": {
+    "src": "/static/402ec135e08c3b799c16c08a82ae2dd8/feead/home.jpg"
+  },
+  "google16x9": {
+    "src": "/static/402ec135e08c3b799c16c08a82ae2dd8/fb8ef/home.jpg"
+  },
+  "twitter": {
+    "src": "/static/402ec135e08c3b799c16c08a82ae2dd8/70d01/home.jpg"
+  },
+  "facebook": {
+    "src": "/static/402ec135e08c3b799c16c08a82ae2dd8/10355/home.jpg"
+  }
+}
+```
+
+`covers` is being used in multiple places, so it's going to be much nicer
+if the object will be take in this format:
+
+```
+{
+  "google1x1": "/static/402ec135e08c3b799c16c08a82ae2dd8/acd4e/home.jpg",
+  "google4x3": "/static/402ec135e08c3b799c16c08a82ae2dd8/feead/home.jpg",
+  "google16x9": "/static/402ec135e08c3b799c16c08a82ae2dd8/fb8ef/home.jpg",
+  "twitter": "/static/402ec135e08c3b799c16c08a82ae2dd8/70d01/home.jpg",
+  "facebook": "/static/402ec135e08c3b799c16c08a82ae2dd8/10355/home.jpg",
+}
+```
+
+## Head Component
+
+`Head` component will consist of several other components. I personally
+prefer breaking everything into smaller pieces, but I can also see that
+someone might prefer one bigger component. Your call!
+
+```jsx
+import React from "react"
+import Html from "./Html"
+import Title from "./Title"
+import Description from "./Description"
+import OpenGraph from "./OpenGraph"
+import Twitter from "./Twitter"
+
+const Head = ({
+  url,
+  title,
+  description,
+  covers: { twitter: twitterCover, facebook: facebookCover },
+  coverAlt,
+  socialMedia,
+  date,
+  language,
+  firstName,
+  lastName,
+  pages: {
+    home: { title: siteName },
+  },
+  isPage,
+}) => {
+  const { twitter: twitterHandle } = socialMedia
+
+  return (
+    <>
+      <Html language={language} />
+      <Title title={title} />
+      <Description description={description} />
+      <OpenGraph
+        url={url}
+        title={title}
+        description={description}
+        image={facebookCover}
+        imageAlt={coverAlt}
+        publishedTime={date}
+        siteName={siteName}
+        firstName={firstName}
+        lastName={lastName}
+        locale={language}
+        seeAlso={socialMedia}
+        isArticle={isPage.article}
+      />
+      <Twitter
+        title={title}
+        description={description}
+        image={twitterCover}
+        imageAlt={coverAlt}
+        creator={twitterHandle}
+      />
+    </>
+  )
+}
+
+export default Head
+```
+
+Nothing fancy is going on here we are just receiving data from `Layout`
+component and passing it further down.
+
+### HTML Component
+
+In HTML, the language declaration is an attribute that states the language
+of the page’s content and optionally it's geographic location.
+
+```jsx
+import React from "react"
+import { Helmet } from "react-helmet"
+
+const Html = ({ language }) => (
+  <Helmet>
+    <html lang={language} />
+  </Helmet>
+)
+
+export default Html
+```
+
+We are wrapping `html` tag in `Helmet` component, which will output
+it in the document head.
+
+> This reusable React component will manage all of your changes to the
+> document head. Helmet takes plain HTML tags and outputs plain HTML tags.
+> It's dead simple, and React beginner friendly.
+>
+> [`react-helmet` GitHub page](https://github.com/nfl/react-helmet)
+
+### Title Component
+
+Almost identical thing happens in `Title` component, but this
+time we are wrapping `title` tag in `Helmet`.
+
+```jsx
+import React from "react"
+import { Helmet } from "react-helmet"
+
+const Title = ({ title }) => {
+  return (
+    <Helmet>
+      <title>{title}</title>
+    </Helmet>
+  )
+}
+
+export default Title
+```
+
+### Description Component
+
+```jsx
+import React from "react"
+import { Helmet } from "react-helmet"
+
+const Description = ({ description }) => (
+  <Helmet>
+    <meta name="description" content={description} />
+  </Helmet>
+)
+
+export default Description
+```
+
+### Twitter Component
+
+### OpenGraph Component
 
 ## Helpful Links
 
 - [Gatsby SEO](https://bloggingfordevs.com/gatsby-seo/)
 - [Google Ranking Factors](https://backlinko.com/google-ranking-factors)
 - [Search Engine Optimization with Gatsby](https://blog.dustinschau.com/search-engine-optimization-with-gatsby)
+
+## Order
+
+- Intro
+- List of components we are going to build
+- Head
+  - Title
+  - Description
+  - HTML
+  - Twitter
+  - OpenGraph
+- SchemaOrg
+  - schemaId
+  - Address
+  - Person
+  - Organization
+  - Page
+  - Breadcrumbs
+- Fetching data
+  - `useSiteMetadata`
+  - GraphQL fragments
+- Pages
+- Layout
