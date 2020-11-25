@@ -977,11 +977,74 @@ To validate the markup you can use Twitter's
 
 What is Schema.org and JSON-LD?
 
+Schema.org is a structured data markup, which helps search engines interpret
+the content of a web pages. It was initially launched in 2011 by Google, Yahoo,
+and Bing. Once added to a webpage it conveys the contextual meaning
+to search engines by using hierarchical set of schemas.
+
+![Schema.org Graph](https://upload.wikimedia.org/wikipedia/commons/8/8e/Schema.org_%285925660995%29.png)
+
+HTML lacks the ability to provide a meaning of what a text string means. E.g.
+a webpage can have a header of `<h1>Apple</h1>` and it can refer to a
+fruit or a company. This is when schema.org comes into play and provides
+semantical meaning to search engines.
+
+There are several different formats in which you can represent schema.org, but
+the most popular one is [JSON-LD](https://json-ld.org/). By far this is the most
+intuitive for all developers, because it's almost indentical to a well know JSON
+format. It's implementation doesn't dependant on the markup as opposed to other
+schema.org formats which attach special attributes to HTML elements and are more
+prone to errors.
+
+[What is JSON-LD](https://www.youtube.com/watch?v=4x_xzT5eF5Q)
+
+[Schema.org vocabulary](https://schema.org/docs/full.html) is extremely broad and in
+order to be practical we are going to focus on the schemas, which are [officially
+supported by Google](https://developers.google.com/search/docs/guides/search-gallery).
+This way we are going to help search engines as well as benefit from rich snippets.
+Rich snippets stand out from the other search results, look more appealing and have a
+higher click thru rate.
+
+Before jumping into coding I want to make you familiar with the concept of node
+identifiers. To put it in simple words it's a unique `@id` property, which gets
+attach to a schema and than can be referenced inside of another schema. This is
+extremely useful for keeping your code DRY and readable. Take a look at this
+example:
+
+```html
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "PostalAddress",
+    "@id": "https://gatsby-seo.netlify.app/#address",
+    "addressCountry": "US",
+    "addressLocality": "Los Angeles",
+    "addressRegion": "CA"
+  }
+</script>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": "https://gatsby-seo.netlify.app/#person",
+    "name": "Jane Doe",
+    "address": { "@id": "https://gatsby-seo.netlify.app/#address" }
+  }
+</script>
+```
+
+We defined postall address schema and than we are referencing it inside
+of the person schema. Keep in mind that this is a simplied example and
+real world schemas can get pretty bulky.
+
+## Node identifier utility
+
 - schemaId
 - address
 - person
 - organization (why do we have to use it?)
 - Page (all different types of pages, how they are simillar and how they are different)
+- Article
 - Breadcrumbs
 
 ## Helpful Links
