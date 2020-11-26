@@ -1026,9 +1026,9 @@ example:
   {
     "@context": "https://schema.org",
     "@type": "Person",
-    "@id": "https://gatsby-seo.netlify.app/#person",
+    "@id": "https://example.com/#person",
     "name": "Jane Doe",
-    "address": { "@id": "https://gatsby-seo.netlify.app/#address" }
+    "address": { "@id": "https://example.com/#address" }
   }
 </script>
 ```
@@ -1037,12 +1037,150 @@ We defined postall address schema and than we are referencing it inside
 of the person schema. Keep in mind that this is a simplied example and
 real world schemas can get pretty bulky.
 
-## Node identifier utility
+### Node identifier utility
 
-- schemaId
-- address
-- person
-- organization (why do we have to use it?)
+Node identifiers can be pretty much anything, but the convention is to
+use the domain name and hash `https://example.com/#your-schema`. Let's
+create a tiny helper function which we will be using later on.
+
+```js
+import { siteUrl } from "../../../site-metadata"
+
+const schemaId = hash => `${siteUrl}/#${hash}`
+
+export default schemaId
+```
+
+We are directly importing object from `site-metadata.js`, because
+we can't use hooks outside of React componets. We will be able to call this function
+like, so: `schemaId("address")` and it will return `https://example.com/#address`.
+
+### Address Schema Component
+
+Let's start building out smaller schemas which will be referenced in the larger
+ones.
+
+```jsx
+import React from "react"
+import schemaId from "./schemaId"
+
+const Address = ({
+  address: { addressCountry, addressLocality, addressRegion },
+}) => {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": `https://schema.org`,
+          "@type": `PostalAddress`,
+          "@id": schemaId(`address`),
+          addressCountry,
+          addressLocality,
+          addressRegion,
+        }),
+      }}
+    />
+  )
+}
+
+export default Address
+```
+
+In the code above we are adding postal address with 3 properties - country, locality, and
+region. There are many others properties, so make sure to check out the official
+[`PostalAddress` page](https://schema.org/PostalAddress) and add them by your own needs
+(this will also apply to the rest of the scehams).
+
+In order to inject JSON object in the `script` tag we are using a combination of
+`dangerouslySetInnerHTML` and `JSON.stringify`.
+
+### Person Schema Component
+
+```jsx
+import React from "react"
+import schemaId from "./schemaId"
+
+const Person = ({ name, url, sameAs }) => {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": `https://schema.org`,
+          "@type": `Person`,
+          "@id": schemaId(`person`),
+          name,
+          url,
+          sameAs: Object.values(sameAs),
+          address: {
+            "@id": schemaId(`address`),
+          },
+        }),
+      }}
+    />
+  )
+}
+
+export default Person
+```
+
+For the person schema we are adding our `name`, blog `url`, `sameAs` - which is a list
+of social media profiles, and `address` by referencing previously defined `Address` schema.
+
+### Organization Schema Component
+
+Next one in our list is the `Organization` schema. You might think why would we need
+it if we are adding markup for a personal blog. Well it's going to be required
+later on when we will be adding `Article` schema. Even though
+[schema.org](https://schema.org/Article) tells as that `publisher` property (which
+is a required field for article schema) can be either organization or a person Google's
+structured data validator tool will throw an error. And it's unfortunate.
+
+```jsx
+import React from "react"
+import schemaId from "./schemaId"
+
+const Organization = ({
+  url,
+  name,
+  logo: { url: logoPathName, width, height },
+}) => {
+  const logoUrl = `${url}/${logoPathName}`
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": `http://schema.org`,
+          "@id": schemaId(`organization`),
+          "@type": `Organization`,
+          url,
+          name,
+          logo: {
+            "@type": `ImageObject`,
+            url: logoUrl,
+            height,
+            width,
+          },
+          address: {
+            "@id": schemaId(`address`),
+          },
+        }),
+      }}
+    />
+  )
+}
+
+export default Organization
+```
+
+It's suficient to add `logo` and `name`, but because we already have `url`,
+`name`, and `address` we will add it as well.
+
+### Page Schema Component
+
 - Page (all different types of pages, how they are simillar and how they are different)
 - Article
 - Breadcrumbs
