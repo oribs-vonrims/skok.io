@@ -1,6 +1,6 @@
 ---
-title: Technical Guide to Gatsby's SEO
-description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu iaculis elit.
+title: Guide to Gatsby blog SEO
+description: Tips and tricks for building powerful SEO components.
 date: 2020-11-12
 modifiedDate: 2020-11-14
 published: true
@@ -8,13 +8,40 @@ cover: ./cover.jpg
 coverAlt: SEO image
 ---
 
+**Table of Content**
+
+- Prerequisites
+- Project Structure
+- Site Metadata and `useSiteMetadata` Hook
+- Basic Data Flow
+- Using `useSiteMetadata` Hook To Pull Page Data
+  - GraphQL Fragment For Cover Images
+- Using Gatsby Page Query To Pull Page Data
+- `Layout` component
+- Head Component
+  - HTML Component
+  - Title Component
+  - Description Component
+  - OpenGraph Component
+  - Twitter Component
+- `SchemaOrg` Component
+  - Node identifier utility
+  - Address Schema Component
+  - Person Schema Component
+  - Organization Schema Component
+  - Page Schema Component
+  - Breadcrumbs Schema Component
+- Conclusion
+- Helpful Links and Further Reading
+
 import { Message } from "theme-ui"
 
 If you are here it means that you care about organic SEO and want more people to
 discover your content. This makes total sense, otherwise why even bother
 creating content? In this blog post we are going to discuss what we as engineers
 can do better in order to make web crawler's life a little easier and hopefully
-get rewarded for it. Gatsby and `react-helmet` are going to be our main weapons.
+get rewarded for it. Gatsby and `react-helmet` are going to be our main tools
+in this path.
 
 ## Prerequisites
 
@@ -32,7 +59,7 @@ I'm making several assumptions in this article:
 
 And finally if you have any questions feel free to look at the
 [final version](https://github.com/iamskok/gatsby-seo)) of the project
-or [tweet](https://twitter.com/iamskok) at me with your question.
+or [tweet](https://twitter.com/iamskok1) at me with your question.
 
 ## Project Structure
 
@@ -43,8 +70,7 @@ content folder can be named as `posts`, `articles`, or `garden` (AKA
 [digital garden](https://joelhooks.com/digital-garden)). I'm gonna roll with `posts`.
 Every post will be living in it's own folder with an `index.mdx`. All images which will
 be used in the post will also be placed in the same `posts` directory. Generic
-images are stored in `./src/images`. And that's about it for the project structure,
-everything else is pretty standard.
+images are stored in `./src/images`. And that's about it for the project structure.
 
 ```
 ├── gatsby-config.js
@@ -144,13 +170,11 @@ module.exports = {
 }
 ```
 
-- `speakableSelector` this is a selector which will tell search engines and some other assistive
-  technologies that a particular section on the page is "speakable".
+- `speakableSelector` this is a selector which will tell search engines and some other assistive technologies that a particular section on the page is "speakable".
 - `to` is a URL pathname.
 - `breadcrumb` is a breadcrumb title
-- `coverAlt` is the same as image `alt` attribute, but for your cover images.
-- `lang` the language of your content. Consists of [language code](https://www.w3schools.com/tags/ref_language_codes.asp)
-  and an options [country code](https://www.w3schools.com/tags/ref_country_codes.asp)
+- `coverAlt` is the same as image image `alt` attribute, but for your cover images.
+- `lang` the language of your content. Consists of [language code](https://www.w3schools.com/tags/ref_language_codes.asp) and an options [country code](https://www.w3schools.com/tags/ref_country_codes.asp)
 
 Everything else should be pretty self-explanatory. Replace all the values
 with your own information, but keep page's `type` as is.
@@ -169,7 +193,7 @@ module.exports = {
 
 Once we placed the data in the right place we need some way to retrieve it from
 react components using GraphQL queries. `useStaticQuery` is exactly what we are
-looking. Create `hooks` directory in `./src` - `touch src/hooks/useSiteMetadata.js`
+looking for. Create `hooks` directory in `./src` - `touch src/hooks/useSiteMetadata.js`
 
 ```js
 import { useStaticQuery, graphql } from "gatsby"
@@ -308,8 +332,8 @@ export default Home
 
 There 2 important pieces here:
 
-- page title in `useSitemetaData` destructuring
-- `pageName` prop, which corresponds to the component name
+- page title key in pages (`useSitemetaData` destructuring block)
+- `pageName` prop, which corresponds to the component's name
 
 They are going to change from page to page. Now add the same
 code to the rest of the pages. Feel free to check out the example
@@ -371,7 +395,7 @@ file to the `public` directory.
   `/src/images`.
 </Message>
 
-In the snippet above we are using Gatsby aliases, because we need to
+On line `4-16` we are using Gatsby aliases, because we need to
 run multiple queries with different arguments on the same data
 source - `childImageSharp`.
 
@@ -411,10 +435,10 @@ We are defining `FragmentName` that will be referenced in other
 queries. Specifing `TypeName` of an object the fragment
 will be used on - `ImageSharp`. Than we move aliases from the
 initial example in the query body. And to make this fragment accessible
-inside of the other GraphQL queries we using named export (There is no need
+inside of the other GraphQL queries we use named export (There is no need
 to import this fragment, Gatsby automatically makes it globally available).
 
-Now you can use this fragment. This looks way better!
+And here is how you can use this fragment.
 
 ```graphql
 query {
@@ -426,10 +450,13 @@ query {
 }
 ```
 
+This looks way better, right?
+
 ## Using Gatsby Page Query To Pull Page Data
 
 At this point we have `useSiteMetadata` hook and fragments in place,
-so we can finish pulling all the data we need.
+so we can finish pulling all the data we need in all the pages and
+template.
 
 ```jsx {7,13,20,31-39}
 /** @jsx jsx */
@@ -476,9 +503,9 @@ export default Home
 ```
 
 On line `31-39` we difine the query for the cover image and the data
-coming from it becomes accessible via `data` prop in `Home` component.
-Let's grab the part we are interested in - `covers` and spread it in
-`covers` prop of `Layout` component.
+coming from it becomes accessible via `data` prop. Let's grab the part
+we are interested in - `covers` and spread it in `covers` prop of the
+`Layout` component.
 
 Here is the example of the `Article` template.
 
@@ -551,8 +578,8 @@ export const query = graphql`
 
 In `Article` template we are taking `slug` from `pageContext`, using
 `useSiteMetadata` to query `type` and `breadcrumb` and the rest of the
-data comes from the page query, specifically from `frontmatter` fields
-on `mdx`.
+data comes from the page query, specifically from the `frontmatter`
+fields on `mdx`.
 
 If you are not familiar with `pageContext` have a look at the
 [Gatsby Docs](https://www.gatsbyjs.com/docs/creating-and-modifying-pages/#pass-context-to-pages)
@@ -561,7 +588,7 @@ or check out the [`gatsby-config.js` from the example repo](https://github.com/i
 ## `Layout` component
 
 `Layout` is the most data heavy component. It receives multiple props from
-the data passed to it from pages and templates and fetches the remaining
+the data passed to it from pages and template and fetches the remaining
 static data using `useSiteMetadata` hook. Let's create one
 `touch src/components/Layout/index.js`.
 
@@ -685,7 +712,8 @@ current page.
 - Article - `/blog/article-title/`
 
 `speakableSelector` is used on all of the templates except blog and this is what
-we check with `!isPage.blog`.
+we check with `!isPage.blog` (we are going to talk about in more details in
+Page Schema Component section).
 
 `covers` takes care of transforming cover images object. GraphQL returns `covers`
 object which looks, like:
@@ -711,7 +739,7 @@ object which looks, like:
 ```
 
 `covers` is being used in multiple places, so it's going to be much nicer
-if the object will be take in this format:
+if the object will take in this form:
 
 ```
 {
@@ -889,12 +917,15 @@ const OpenGraph = ({
     <meta property="og:image" content={image} />
     <meta property="og:image:alt" content={imageAlt} />
     <meta property="og:site_name" content={siteName} />
-    <meta property="og:locale" content={locale} />
     {!isArticle && <meta property="profile:first_name" content={firstName} />}
     {!isArticle && <meta property="profile:last_name" content={lastName} />}
+    <meta property="og:locale" content={locale} />
     <meta property="og:type" content={isArticle ? `article` : `website`} />
     {isArticle && (
       <meta property="article:published_time" content={publishedTime} />
+    )}
+    {isArticle && modifiedTime && (
+      <meta property="article:modified_time" content={modifiedTime} />
     )}
     {isArticle && (
       <meta property="article:author" content={`${firstName} ${lastName}`} />
@@ -906,7 +937,7 @@ export default OpenGraph
 ```
 
 - `og:type` the type of your object, which is represented in Open Graph. It can be
-  one of music, video, website, profile, article, and serveral others. In our blog
+  music, video, website, profile, article, and serveral others. In our blog
   we will be using `article` if it's an article template or `website` for the rest of
   the pages. (Required field).
 - `og:title` blog post or a page title. (Required field).
@@ -917,15 +948,16 @@ export default OpenGraph
 - `og:image:alt` cover image description. (Techically not required, but I urge you to use it).
 - `og:site_name` your blog name.
 - `og:locale` the language of the content. It default to `en_US`.
-  in [Pinterest documentation](https://developers.pinterest.com/docs/rich-pins/reference/).
 - `article:author` author of the article if `og:type` is `article`.
 - `article:published_time` publish time of the article if `og:type` is `article`.
+- `article:modified_time` - modified time of the article if `og:type` is `article`.
 - `profile:first_name` your first name if `og:type` is `website`.
 - `profile:last_name` your last name if `og:type` is `website`.
 
 To debug Open Graph markup you can use
 [Facebook Debug Tool](https://developers.facebook.com/tools/debug), but unfortunatelly
-it requires to Facebook developer's account.
+it requires to Facebook developer's account (it's free, but you will spend a precious
+minute or two filling out the form).
 
 ### Twitter Component
 
@@ -954,8 +986,7 @@ export default Twitter
 
 - `twitter.card` is a type of a card. We are using "Summary Large Image" which
   features a large, full-width prominent image alongside a tweet. There are several other
-  types, like "Player" or "Card", but they are not relevant for a blog. (Required
-  field).
+  types, like "Player" or "Card", but we are not going to use them. (Required field).
 - `twitter.title` is an actual title of a blog post or a page. Same as `<title>`.
   Should be approximately 70 characters. (Required field).
 - `twitter.description` concise summary of a blog post or a page. Should be approximately
@@ -1033,7 +1064,7 @@ example:
 </script>
 ```
 
-We defined postall address schema and than we are referencing it inside
+We defined postal address schema and than we are referencing it inside
 of the person schema. Keep in mind that this is a simplied example and
 real world schemas can get pretty bulky.
 
@@ -1041,7 +1072,7 @@ real world schemas can get pretty bulky.
 
 Node identifiers can be pretty much anything, but the convention is to
 use the domain name and hash `https://example.com/#your-schema`. Let's
-create a tiny helper function which we will be using later on.
+create a tiny helper function which we will be used later on.
 
 ```js
 import { siteUrl } from "../../../site-metadata"
@@ -1087,10 +1118,10 @@ const Address = ({
 export default Address
 ```
 
-In the code above we are adding postal address with 3 properties - country, locality, and
-region. There are many others properties, so make sure to check out the official
+In the code above we are adding postal address with 3 properties - `country`, `locality`,
+and `region`. There are many others properties, so make sure to check out the official
 [`PostalAddress` page](https://schema.org/PostalAddress) and add them by your own needs
-(this will also apply to the rest of the scehams).
+(this also applies to the rest of the scehams).
 
 In order to inject JSON object in the `script` tag we are using a combination of
 `dangerouslySetInnerHTML` and `JSON.stringify`.
@@ -1126,16 +1157,16 @@ export default Person
 ```
 
 For the person schema we are adding our `name`, blog `url`, `sameAs` - which is a list
-of social media profiles, and `address` by referencing previously defined `Address` schema.
+of our social media profiles, and `address` by referencing previously defined `Address` schema.
 
 ### Organization Schema Component
 
 Next one in our list is the `Organization` schema. You might think why would we need
 it if we are adding markup for a personal blog. Well it's going to be required
 later on when we will be adding `Article` schema. Even though
-[schema.org](https://schema.org/Article) tells as that `publisher` property (which
-is a required field for article schema) can be either organization or a person Google's
-structured data validator tool will throw an error. And it's unfortunate.
+[schema.org](https://schema.org/Article) tells us that `publisher` property (which
+is a required field for the article schema) can be either organization or a person in
+practice Google's structured data validator tool will throw an error.
 
 ```jsx
 import React from "react"
@@ -1177,48 +1208,225 @@ export default Organization
 ```
 
 It's suficient to add `logo` and `name`, but because we already have `url`,
-`name`, and `address` we will add it as well.
+`name`, and `address` we will add them as well.
 
 ### Page Schema Component
 
-- Page (all different types of pages, how they are simillar and how they are different)
-- Article
-- Breadcrumbs
+Once we are done with smaller pieces we can start working on the bigger schemas.
+We will create a reusable Page component and handle `WebPage`, `Blog`,
+`ContactPage`, `AboutPage`, and `Article` all together, because they are very
+simillar. Let's write down the part, which will be identical for all of the pages:
 
-## Helpful Links
+```jsx
+import React from "react"
+import schemaId from "./schemaId"
+
+const Page = ({
+  type,
+  headline,
+  description,
+  dateModified,
+  datePublished,
+  mainEntityOfPage,
+  url,
+  name,
+  inLanguage,
+  images,
+  cssSelector,
+}) => {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": `http://schema.org`,
+          "@type": type,
+          author: {
+            "@id": schemaId(`person`),
+          },
+          publisher: {
+            "@id": schemaId(`organization`),
+          },
+          description,
+          headline,
+          inLanguage,
+          name,
+          url,
+          mainEntityOfPage: {
+            "@type": `WebPage`,
+            "@id": mainEntityOfPage,
+          },
+          image: [images?.google1x1, images?.google4x3, images?.google16x9],
+        }),
+      }}
+    />
+  )
+}
+
+export default Page
+```
+
+- `type`- schema type
+- `name` - name of the page.
+- `description` - description of the page.
+- `author` - author of the content.
+- `publisher` - content publisher. We are using node reference by passing the id of the
+  organization schema (As you might remeber we specifically defined it to satisfy Google's
+  structured data validator).
+- `headline` - page headline.
+- `inLanguage` - language of the content.
+- `url` - URL of the page.
+- `mainEntityOfPage` - indicates a page for which this thing is the main entity being
+  described. In case of the blog the primary topic is clear, so we are going to use the same
+  value as `url`. (For more complecated websites this might not be the case).
+- `image` - list of images with 1x1, 4x3, and 16x9 aspect ratios.
+
+There are also properties, which we will be added conditionally depending on the page type.
+For the `Article` page it will be `datePublished`, and `dateModified`. And `Blog` page can't
+have `speakable` property.
+
+`speakable` indicates sections of a Web page that are particularly
+'speakable' in the sense of being highlighted as being especially appropriate for
+text-to-speech conversion. [Google](https://developers.google.com/search/docs/data-types/speakable)
+recently started using speakable structured data to answer topical news queries on smart
+speaker devices.
+
+```jsx {5,11-22}
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(
+      Object.assign(
+        {
+          "@context": `http://schema.org`,
+          "@type": type,
+          // static properties of the schema ...
+        },
+        datePublished && { datePublished },
+        dateModified
+          ? { dateModified }
+          : datePublished
+          ? { dateModified: datePublished }
+          : null,
+        cssSelector && {
+          speakable: {
+            "@type": `SpeakableSpecification`,
+            cssSelector,
+          },
+        }
+      )
+    ),
+  }}
+/>
+```
+
+In order to conditionally add properties to the object we are leveraging
+`Object.assign(target, ...sources)`. All static properties is our `target`
+and all optional properties is our `source`. If you want to dig into this
+syntax a little further I recommend to check out this
+[StackOverflow link](https://stackoverflow.com/questions/11704267/in-javascript-how-to-conditionally-add-a-member-to-an-object).
+`dateModified` needs an extra bit of logic. In order not define
+`dateModified` in the frontmatter for every new blog post we check if
+it exists and than we apply it, otherwise we are reusing `datePublished`
+value (we are doing it because `dateModified` is the reqiured property
+on the `Article` schema).
+
+### Breadcrumbs Schema Component
+
+`BreadcrumbList` is independant and doesn't appear to be a part of any
+other schema. It consists of a chain of linked web pages. The position
+property is used to order the items and starts with `1` (and not with
+`0` as all of you devs might thought at first 😂). The first item is the
+root of the website.
+
+```jsx {15-40}
+import React from "react"
+import schemaId from "./schemaId"
+
+const Breadcrumbs = ({
+  siteUrl,
+  title,
+  homeBreadcrumb,
+  blogBreadcrumb,
+  isPage,
+  blogTo,
+  slug,
+  to,
+  breadcrumb,
+}) => {
+  const itemListElement = [
+    {
+      id: siteUrl,
+      name: `${homeBreadcrumb}`,
+    },
+  ]
+
+  if (isPage.blog || isPage.contact || isPage.about) {
+    itemListElement.push({
+      id: `${siteUrl}${to}`,
+      name: breadcrumb,
+    })
+  }
+
+  if (isPage.article) {
+    itemListElement.push(
+      {
+        id: `${siteUrl}${blogTo}`,
+        name: blogBreadcrumb,
+      },
+      {
+        id: `${siteUrl}${blogTo}${slug}`,
+        name: title,
+      }
+    )
+  }
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": `http://schema.org`,
+          "@type": `BreadcrumbList`,
+          "@id": schemaId(`breadcrumbs`),
+          name: `Breadcrumbs`,
+          itemListElement: itemListElement.map(({ id, name }, index) => ({
+            "@type": `ListItem`,
+            position: index + 1,
+            name,
+            item: {
+              "@type": `WebPage`,
+              "@id": id,
+            },
+          })),
+        }),
+      }}
+    />
+  )
+}
+
+export default Breadcrumbs
+```
+
+On line 15-40 we construct an array of links depending on the page.
+The very first item is always going to be the homepage, that the reason
+why we define `itemListElement` with `siteUrl` right away. The second
+level is a blog, contact or about page. The third level is an article and we
+know that it always goes after the blog page, that's why we push both of the
+values to the `itemListElement` array at the same time.
+
+## Conclusion
+
+Crafting `Head` and `SchemaOrg` components will help you improve your organic
+SEO as well as social media sharing, but do remember that this is not a
+silver bullet. Think about it as complementary thing for a great content you are
+going to be producing.
+
+## Helpful Links and Further Reading
 
 - [Gatsby SEO](https://bloggingfordevs.com/gatsby-seo/)
 - [Google Ranking Factors](https://backlinko.com/google-ranking-factors)
-- [Search Engine Optimization with Gatsby](https://blog.dustinschau.com/search-engine-optimization-with-gatsby)
-
-## Edits
-
-Create single file component
-
-## Code edits
-
-- Add OG `article:modified_time`
-- Remove `og:see_also`
-
-## Order
-
-- Intro
-- List of components we are going to build
-- Head
-  - Title
-  - Description
-  - HTML
-  - Twitter
-  - OpenGraph
-- SchemaOrg
-  - schemaId
-  - Address
-  - Person
-  - Organization
-  - Page
-  - Breadcrumbs
-- Fetching data
-  - `useSiteMetadata`
-  - GraphQL fragments
-- Pages
-- Layout
+- [Annotated JSON-LD structured data examples](https://nystudio107.com/blog/annotated-json-ld-structured-data-examples)
+- [Structured Data JSON-LD examples](https://github.com/JayHoltslander/Structured-Data-JSON-LD)
+- [Google's officially supported structured data types](https://developers.google.com/search/docs/data-types/article)
+- [Open Graph Protocol Examples](https://github.com/niallkennedy/open-graph-protocol-examples)
