@@ -51,14 +51,14 @@ I'm making several assumptions in this article:
    works.
 2. The project I'm going to show will have a certain project structure,
    which we will go over shortly. Though don't worry too much about this part,
-   because it should be pretty easy to adopt the same principals for a project with
+   because it should be pretty easy to adopt the same principles for a project with
    a different project structure.
 3. All blog post examples are written using MDX and Theme-UI, so if you are using
    markdown or different styling solution some things might look slightly different
    for you.
 
 And finally if you have any questions feel free to look at the
-[final version](https://github.com/iamskok/gatsby-seo)) of the project
+[final version](https://github.com/iamskok/gatsby-seo) of the project
 or [tweet](https://twitter.com/iamskok1) at me with your question.
 
 ## Project Structure
@@ -101,7 +101,7 @@ images are stored in `./src/images`. And that's about it for the project structu
 
 ## Site Metadata and `useSiteMetadata` Hook
 
-Before jumping right into the actual coding we have to define define
+Before jumping right into the actual coding we have to define
 the data we are going to pass to the SEO components as well as some
 mechanism for retrieving the data.
 
@@ -170,14 +170,18 @@ module.exports = {
 }
 ```
 
-- `speakableSelector` this is a selector which will tell search engines and some other assistive technologies that a particular section on the page is "speakable".
+- `speakableSelector` this is a selector which will tell search engines
+  and some other assistive technologies that a particular section on the
+  page is "speakable".
 - `to` is a URL pathname.
 - `breadcrumb` is a breadcrumb title
-- `coverAlt` is the same as image image `alt` attribute, but for your cover images.
-- `lang` the language of your content. Consists of [language code](https://www.w3schools.com/tags/ref_language_codes.asp) and an options [country code](https://www.w3schools.com/tags/ref_country_codes.asp)
+- `coverAlt` is the same as image `alt` attribute, but for your cover images.
+- `lang` the language of your content. Consists of
+  [language code](https://www.w3schools.com/tags/ref_language_codes.asp) and an
+  options [country code](https://www.w3schools.com/tags/ref_country_codes.asp)
 
-Everything else should be pretty self-explanatory. Replace all the values
-with your own information, but keep page's `type` as is.
+Everything else should be pretty self-explanatory. Now you can go ahead and replace
+all the values with your own information, but keep page's `type` field as is.
 
 Our next step is to import this file in `gatsby-config.js` so all this information will
 become accessible to the GraphQL layer.
@@ -273,8 +277,7 @@ export default () => {
 ```
 
 We are listing every property from `./site-metadata.js` in the graphql query,
-destructuring `siteMetadata`, because we are not making any use out of it and now
-we are ready to retrieve the data as:
+destructuring `siteMetadata` and now we are ready to retrieve the data as:
 
 ```jsx
 import useSiteMetadata from "../../hooks/useSiteMetadata"
@@ -288,11 +291,13 @@ const Welcome = () => {
 
 ## Basic Data Flow
 
-All the data brewing will start at the page and template level. We are going
-to retrieve it using gatsby page queries and `useSiteMetadata` hook.
-After this it's going to drain down in the `Layout` component. `Layout` component
-will be a place where all the data is aggregated, sorted, and passed deeper
-in the actual SEO components.
+All the data brewing will start at the page (`./src/pages/about.js`,
+`./src/pages/blog.js`, `./src/pages/contact.js`, `./src/pages/index.js`)
+and template (`./src/templates/article.js`) level and than will be passed
+down to the SEO components. We are going to retrieve it using gatsby page
+queries and `useSiteMetadata` hook. After this it's going to drain down in
+the `Layout` component. `Layout` component will be a place where all the
+data is aggregated, sorted, and passed deeper in the actual SEO components.
 
 ## Using `useSiteMetadata` Hook To Pull Page Data
 
@@ -332,7 +337,7 @@ export default Home
 
 There 2 important pieces here:
 
-- page title key in pages (`useSitemetaData` destructuring block)
+- page title key in pages (`useSiteMetaData` destructuring block)
 - `pageName` prop, which corresponds to the component's name
 
 They are going to change from page to page. Now add the same
@@ -341,13 +346,12 @@ code to the rest of the pages. Feel free to check out the example
 
 ### GraphQL Fragment For Cover Images
 
-Before moving to the Gatsby page queries let's do some preparation. As you
-might already know Gatsby has an awesome plugin
-[gatsby-transformer-sharp](https://www.gatsbyjs.com/plugins/gatsby-transformer-sharp),
+Before moving to the Gatsby page queries let's do some preparation. Gatsby has an awesome
+plugin [gatsby-transformer-sharp](https://www.gatsbyjs.com/plugins/gatsby-transformer-sharp),
 which is used for creating multiple images of the right sizes and resolutions.
 It's gonna help us a ton with generating cover images for various aspect ratios.
-Why can't we use the same image you might wonder? Well, because all social networks
-and search engines have different requirments.
+You might be wondering why we can't use the same image? Well, because all social
+networks and search engines have different requirments.
 
 - [Facebook](https://developers.facebook.com/docs/sharing/webmasters/images/)
   recommends images to be at least 1200x630 pixels.
@@ -357,7 +361,7 @@ and search engines have different requirments.
   that their images has to be at least 696 pixels wide and suggests
   to provide multiple images with the following aspect ratios: 16x9, 4x3, and 1x1.
 
-Now let's have a look at how this might look in practice for the Home cover image:
+Now let's see how this might look in practice for the Home cover image:
 
 ```graphql
 query {
@@ -395,15 +399,17 @@ file to the `public` directory.
   `/src/images`.
 </Message>
 
-On line `4-16` we are using Gatsby aliases, because we need to
+On line `4-16` we are using Gatsby aliases (`facebook`, `twitter`,
+`google1x1`, `google4x3`, `google16x9`), because we need to
 run multiple queries with different arguments on the same data
 source - `childImageSharp`.
 
-This query will be required for every page and this is not DRY, because
-the only piece, which will be different is the image title. GraphQL
-fragments will come to the resque. Fragments are reusable units, they
-let you construct sets of fields, and then include them in queries where
-you need to.
+This query will be required for every page (home, contact, blog, about)
+and repeating it violates the [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)
+principle. The only piece, which will be different is the image title.
+GraphQL fragments will come to the rescue. Fragments are reusable units,
+they let you construct sets of fields, and then include them in queries
+where you need to.
 
 Let's create our fragment `touch src/fragments/ImageSharpFields.js`.
 
@@ -431,9 +437,9 @@ export const ChildImageSharpFields = graphql`
 `
 ```
 
-We are defining `FragmentName` that will be referenced in other
-queries. Specifing `TypeName` of an object the fragment
-will be used on - `ImageSharp`. Than we move aliases from the
+We are defining fragment name `ChildImageSharpFields` that will be
+referenced in other queries. Specifing type name `ImageSharp` of an
+object the fragment will be used on. Than we move aliases from the
 initial example in the query body. And to make this fragment accessible
 inside of the other GraphQL queries we use named export (There is no need
 to import this fragment, Gatsby automatically makes it globally available).
@@ -502,10 +508,10 @@ export const query = graphql`
 export default Home
 ```
 
-On line `31-39` we difine the query for the cover image and the data
-coming from it becomes accessible via `data` prop. Let's grab the part
-we are interested in - `covers` and spread it in `covers` prop of the
-`Layout` component.
+On line `31-39` we define the query for the cover image and the data
+coming from this query becomes accessible via `data` prop in `Home`
+component. Let's grab the part we are interested in - `covers` and
+spread it in `covers` prop of the `Layout` component.
 
 Here is the example of the `Article` template.
 
@@ -753,9 +759,8 @@ if the object will take in this form:
 
 ## Head Component
 
-`Head` component will consist of several other components. I personally
-prefer breaking everything into smaller pieces, but I can also see that
-someone might prefer one bigger component. Your call!
+`Head` component will consist of several other components, because I
+personally prefer breaking large components into smaller pieces.
 
 ```jsx
 import React from "react"
@@ -837,8 +842,8 @@ const Html = ({ language }) => (
 export default Html
 ```
 
-We are wrapping `html` tag in `Helmet` component, which will output
-it in the document head.
+We are wrapping `html` tag in `Helmet` component, that takes care of
+rendering it's content inside of the `head` tag of HTML document.
 
 > This reusable React component will manage all of your changes to the
 > document head. Helmet takes plain HTML tags and outputs plain HTML tags.
