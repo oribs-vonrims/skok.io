@@ -14,6 +14,7 @@ const Head = ({
   coverAlt,
   socialMedia,
   date,
+  modifiedDate,
   language,
   firstName,
   lastName,
@@ -39,11 +40,11 @@ const Head = ({
         image={facebookCover}
         imageAlt={coverAlt}
         publishedTime={date}
+        modifiedTime={modifiedDate}
         siteName={siteName}
         firstName={firstName}
         lastName={lastName}
         locale={language}
-        seeAlso={socialMedia}
         isArticle={isPage.article}
       />
       <Twitter

@@ -8,11 +8,11 @@ const OpenGraph = ({
   image,
   imageAlt,
   publishedTime,
+  modifiedTime,
   siteName,
   firstName,
   lastName,
   locale,
-  seeAlso,
   isArticle,
 }) => (
   <Helmet>
@@ -29,12 +29,12 @@ const OpenGraph = ({
     {isArticle && (
       <meta property="article:published_time" content={publishedTime} />
     )}
+    {isArticle && modifiedTime && (
+      <meta property="article:modified_time" content={modifiedTime} />
+    )}
     {isArticle && (
       <meta property="article:author" content={`${firstName} ${lastName}`} />
     )}
-    {Object.values(seeAlso).map((url, index) => (
-      <meta key={index} property="og:see_also" content={url} />
-    ))}
   </Helmet>
 )
 
