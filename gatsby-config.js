@@ -17,7 +17,7 @@ const gatsbyRemarkPlugins = [
 ]
 
 module.exports = {
-  siteMetadata, // what's the point of this?
+  siteMetadata,
   plugins: [
     {
       resolve: `gatsby-source-filesystem`,
@@ -86,11 +86,12 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-plugin-offline`,
+      resolve: `gatsby-plugin-force-file-loader`,
       options: {
-        precachePages: [`/blog/*`, `/about`],
+        rules: [`fonts`],
       },
     },
+    `gatsby-plugin-offline`,
     `gatsby-plugin-theme-ui`,
     `gatsby-transformer-sharp`,
     `gatsby-plugin-react-helmet`,
