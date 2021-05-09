@@ -1,9 +1,11 @@
 import dankMonoWoff2 from "../../assets/fonts/dank-mono.woff2"
 import dankMonoItalicWoff2 from "../../assets/fonts/dank-mono-italic.woff2"
+import { FONTS } from "../../utils/constants"
+const { code: codeFontFamily } = FONTS
 
 const dankMonoFontFace = `
   @font-face {
-    font-family: 'Dank Mono';
+    font-family: '${codeFontFamily}';
     font-weight: 400;
     font-display: swap;
     font-style: normal;
@@ -14,7 +16,7 @@ const dankMonoFontFace = `
 
 const dankMonoItalicFontFace = `
   @font-face {
-    font-family: 'Dank Mono';
+    font-family: '${codeFontFamily}';
     font-weight: 400;
     font-display: swap;
     font-style: italic;

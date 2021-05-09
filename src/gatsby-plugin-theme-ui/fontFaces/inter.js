@@ -1,8 +1,10 @@
 import interWoff2 from "../../assets/fonts/inter.woff2"
+import { FONTS } from "../../utils/constants"
+const { body: bodyFontFamily } = FONTS
 
 const interFontFace = `
   @font-face {
-    font-family: 'Inter var';
+    font-family: '${bodyFontFamily}';
     font-weight: 100 900;
     font-display: swap;
     font-style: oblique 0deg 10deg;

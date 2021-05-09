@@ -1,7 +1,7 @@
+import { FONTS } from "../../utils/constants"
+
 const fonts = {
-  body: `'Inter var'`,
-  heading: `'Amstelvar'`,
-  code: `'Dank Mono'`,
+  ...FONTS,
 }
 
 export default fonts

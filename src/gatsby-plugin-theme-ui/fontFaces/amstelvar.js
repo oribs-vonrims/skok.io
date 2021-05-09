@@ -1,8 +1,10 @@
 import amstelvarItalicWoff2 from "../../assets/fonts/amstelvar-italic.woff2"
+import { FONTS } from "../../utils/constants"
+const { heading: headingFontFamily } = FONTS
 
 const amstelvarFontFace = `
   @font-face {
-    font-family: 'Amstelvar';
+    font-family: '${headingFontFamily}';
     font-weight: 100 900;
     font-display: swap;
     font-style: italic;
