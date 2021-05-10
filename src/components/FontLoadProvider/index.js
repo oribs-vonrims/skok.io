@@ -5,30 +5,23 @@ import { FONTS } from "../../utils/constants"
 const FontLoadContext = createContext()
 
 const FontLoadProvider = ({ children }) => {
-  const {
-    code: codeFontFamily,
-    body: bodyFontFamily,
-    heading: headingFontFamily,
-  } = FONTS
-
-  const fontFaces = [
+  const { code, body, heading } = FONTS
+  const isLoaded = useFontFaceObserver([
     {
-      family: headingFontFamily,
+      family: heading,
       style: `italic`,
     },
     {
-      family: bodyFontFamily,
+      family: body,
     },
     {
-      family: codeFontFamily,
+      family: code,
       style: `italic`,
     },
     {
-      family: codeFontFamily,
+      family: code,
     },
-  ]
-
-  const isLoaded = useFontFaceObserver(fontFaces)
+  ])
 
   return (
     <FontLoadContext.Provider value={isLoaded}>

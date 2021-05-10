@@ -1,9 +1,9 @@
 /** @jsx jsx */
-import { useState, useEffect } from "react"
+import { useState, useContext, useEffect } from "react"
 import { jsx, useThemeUI } from "theme-ui"
 import { RoughNotation } from "react-rough-notation"
 import { useInView } from "react-intersection-observer"
-import FontFaceObserver from "fontfaceobserver"
+import { FontLoadContext } from "../../components/FontLoadProvider"
 
 const inViewOptions = {
   threshold: 0.1,
@@ -14,24 +14,66 @@ const RoughNotationOptions = {
   animationDuration: 1200,
 }
 
-const fontFaces = [
-  {
-    font: `Amstelvar`,
-    style: `italic`,
-  },
-  {
-    font: `Dank Mono`,
-    style: `italic`,
-  },
-  {
-    font: `Dank Mono`,
-    style: `normal`,
-  },
-  {
-    font: `Inter Var`,
-    style: ``,
-  },
-]
+// Underline,
+// Box,
+// Circle,
+// Highlight,
+// StrikeThrough,
+// CrossedOff,
+// BracketsX
+// BracketsY
+
+const Notation = ({
+  threshold = 0.1,
+  children,
+  type = `underline`,
+  multiline = true,
+  iterations = 2,
+  strokeWidth = 1,
+  padding = [5, 5, 5, 5],
+  brackets = null,
+  animate = true,
+  animationDelay = 200,
+  animationDuration = 1200,
+  rtl = false,
+  color = null,
+  ...rest
+}) => {
+  const isLoaded = useContext(FontLoadContext)
+  const { ref, inView } = useInView({ threshold })
+  const [show, setShow] = useState()
+  const {
+    theme: {
+      colors: { primary },
+    },
+  } = useThemeUI()
+
+  useEffect(() => {
+    setShow(isLoaded && inView)
+  }, [inView, isLoaded])
+
+  return (
+    <span ref={ref}>
+      <RoughNotation
+        type={type}
+        multiline={multiline}
+        iterations={iterations}
+        strokeWidth={strokeWidth}
+        padding={padding}
+        brackets={brackets}
+        animate={animate}
+        animationDelay={animationDelay}
+        animationDuration={animationDuration}
+        rtl={rtl}
+        color={color ? color : primary}
+        show={show}
+        {...rest}
+      >
+        {children}
+      </RoughNotation>
+    </span>
+  )
+}
 
 const Underline = props => {
   const {
@@ -102,16 +144,13 @@ const Circle = props => {
       colors: { primary },
     },
   } = useThemeUI()
+  const isLoaded = useContext(FontLoadContext)
   const { ref, inView } = useInView(inViewOptions)
   const [show, setShow] = useState()
 
   useEffect(() => {
-    Promise.all(
-      fontFaces.map(({ font, style }) =>
-        new FontFaceObserver(font, { style }).load()
-      )
-    ).then(() => setShow(inView))
-  }, [inView])
+    setShow(isLoaded && inView)
+  }, [inView, isLoaded])
 
   return (
     <span ref={ref}>
@@ -133,16 +172,13 @@ const Highlight = props => {
       colors: { primary },
     },
   } = useThemeUI()
+  const isLoaded = useContext(FontLoadContext)
   const { ref, inView } = useInView(inViewOptions)
   const [show, setShow] = useState()
 
   useEffect(() => {
-    Promise.all(
-      fontFaces.map(({ font, style }) =>
-        new FontFaceObserver(font, { style }).load()
-      )
-    ).then(() => setShow(inView))
-  }, [inView])
+    setShow(isLoaded && inView)
+  }, [inView, isLoaded])
 
   return (
     <span ref={ref}>
@@ -164,16 +200,13 @@ const StrikeThrough = props => {
       colors: { primary },
     },
   } = useThemeUI()
+  const isLoaded = useContext(FontLoadContext)
   const { ref, inView } = useInView(inViewOptions)
   const [show, setShow] = useState()
 
   useEffect(() => {
-    Promise.all(
-      fontFaces.map(({ font, style }) =>
-        new FontFaceObserver(font, { style }).load()
-      )
-    ).then(() => setShow(inView))
-  }, [inView])
+    setShow(isLoaded && inView)
+  }, [inView, isLoaded])
 
   return (
     <span ref={ref}>
@@ -195,16 +228,13 @@ const CrossedOff = props => {
       colors: { primary },
     },
   } = useThemeUI()
+  const isLoaded = useContext(FontLoadContext)
   const { ref, inView } = useInView(inViewOptions)
   const [show, setShow] = useState()
 
   useEffect(() => {
-    Promise.all(
-      fontFaces.map(({ font, style }) =>
-        new FontFaceObserver(font, { style }).load()
-      )
-    ).then(() => setShow(inView))
-  }, [inView])
+    setShow(isLoaded && inView)
+  }, [inView, isLoaded])
 
   return (
     <span ref={ref}>
@@ -226,16 +256,13 @@ const BracketsX = props => {
       colors: { primary },
     },
   } = useThemeUI()
+  const isLoaded = useContext(FontLoadContext)
   const { ref, inView } = useInView(inViewOptions)
   const [show, setShow] = useState()
 
   useEffect(() => {
-    Promise.all(
-      fontFaces.map(({ font, style }) =>
-        new FontFaceObserver(font, { style }).load()
-      )
-    ).then(() => setShow(inView))
-  }, [inView])
+    setShow(isLoaded && inView)
+  }, [inView, isLoaded])
 
   return (
     <span ref={ref}>
@@ -258,16 +285,13 @@ const BracketsY = props => {
       colors: { primary },
     },
   } = useThemeUI()
+  const isLoaded = useContext(FontLoadContext)
   const { ref, inView } = useInView(inViewOptions)
   const [show, setShow] = useState()
 
   useEffect(() => {
-    Promise.all(
-      fontFaces.map(({ font, style }) =>
-        new FontFaceObserver(font, { style }).load()
-      )
-    ).then(() => setShow(inView))
-  }, [inView])
+    setShow(isLoaded && inView)
+  }, [inView, isLoaded])
 
   return (
     <span ref={ref}>

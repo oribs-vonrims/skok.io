@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useEffect, useState, useContext, Fragment } from "react"
+import { useEffect, useState, useContext } from "react"
 import { jsx, Styled } from "theme-ui"
 import { graphql } from "gatsby"
 import { MDXRenderer } from "gatsby-plugin-mdx"
@@ -13,6 +13,7 @@ import Progress from "../../components/Progress"
 import { RefContext } from "../../components/RefProvider"
 import handleActiveHeaderId from "./handleActiveHeaderId"
 import handleProgress from "./handleProgress"
+import { FontLoadProvider } from "../../components/FontLoadProvider"
 
 const Article = ({ pageContext, data }) => {
   const { prev, next, slug, articleHeaderIds } = pageContext
@@ -58,7 +59,7 @@ const Article = ({ pageContext, data }) => {
   }, [articleHeaderIds, headerRef])
 
   return (
-    <Fragment>
+    <FontLoadProvider>
       <Progress value={progress} />
       <Layout
         type={type}
@@ -85,7 +86,7 @@ const Article = ({ pageContext, data }) => {
           <Pagination previous={prev?.fields?.slug} next={next?.fields?.slug} />
         )}
       </Layout>
-    </Fragment>
+    </FontLoadProvider>
   )
 }
 
