@@ -1,25 +1,25 @@
 /** @jsx jsx */
-import { useEffect, useState, useContext } from "react"
 import { jsx, Styled } from "theme-ui"
 import { graphql } from "gatsby"
 import { MDXRenderer } from "gatsby-plugin-mdx"
-import throttle from "lodash.throttle"
-import Layout from "../../components/Layout"
+import { FontLoadProvider } from "../../components/FontLoadProvider"
+import { ScrollProvider } from "../../components/ScrollProvider"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
+import Layout from "../../components/Layout"
 import ArticleCover from "../../components/ArticleCover"
 import ArticleMeta from "../../components/ArticleMeta"
 import Pagination from "../../components/Pagination"
-import Progress from "../../components/Progress"
-import { RefContext } from "../../components/RefProvider"
-import handleActiveHeaderId from "./handleActiveHeaderId"
-import handleProgress from "./handleProgress"
-import { FontLoadProvider } from "../../components/FontLoadProvider"
+import ScrollProgress from "../../components/ScrollProgress"
 
 const Article = ({ pageContext, data }) => {
-  const { prev, next, slug, articleHeaderIds } = pageContext
+  const {
+    prev,
+    next,
+    slug,
+    toc: { ids: headerIds, items: tocItems },
+  } = pageContext
   const {
     mdx: {
-      tableOfContents: { items: tocItems },
       body,
       frontmatter: { title, description, date, modifiedDate, cover, coverAlt },
     },
@@ -31,61 +31,39 @@ const Article = ({ pageContext, data }) => {
     },
   } = useSiteMetadata()
 
-  const [activeHeaderId, setActiveHeaderId] = useState()
-  const [progress, setProgress] = useState(0)
-  const { headerRef } = useContext(RefContext)
-
-  useEffect(() => {
-    const hasIntro = !!document.getElementById(`introduction`)
-    if (hasIntro) {
-      setActiveHeaderId(`introduction`)
-    }
-
-    const handleScroll = throttle(() => {
-      handleActiveHeaderId({
-        hasIntro,
-        articleHeaderIds,
-        setActiveHeaderId,
-      })
-      handleProgress({
-        headerRef,
-        setProgress,
-      })
-    }, 200)
-
-    window.addEventListener(`scroll`, handleScroll)
-
-    return () => window.removeEventListener(`scroll`, handleScroll)
-  }, [articleHeaderIds, headerRef])
-
   return (
     <FontLoadProvider>
-      <Progress value={progress} />
-      <Layout
-        type={type}
-        slug={slug}
-        title={title}
-        date={date}
-        modifiedDate={modifiedDate}
-        cover={cover?.childImageSharp?.fluid?.src}
-        covers={{ ...cover?.childImageSharp }}
-        coverAlt={coverAlt}
-        description={description}
-        breadcrumb={breadcrumb}
-        pageName="article"
-      >
-        {cover && coverAlt && <ArticleCover src={cover} alt={coverAlt} />}
-        <div data-speakable="true">
-          <Styled.h1>{title}</Styled.h1>
-          <ArticleMeta slug={slug} date={date} />
-          <MDXRenderer tocItems={tocItems} tocActiveHeader={activeHeaderId}>
-            {body}
-          </MDXRenderer>
-        </div>
-        {(prev?.fields?.slug || next?.fields?.slug) && (
-          <Pagination previous={prev?.fields?.slug} next={next?.fields?.slug} />
-        )}
-      </Layout>
+      <ScrollProvider>
+        <ScrollProgress />
+        <Layout
+          type={type}
+          slug={slug}
+          title={title}
+          date={date}
+          modifiedDate={modifiedDate}
+          cover={cover?.childImageSharp?.fluid?.src}
+          covers={{ ...cover?.childImageSharp }}
+          coverAlt={coverAlt}
+          description={description}
+          breadcrumb={breadcrumb}
+          pageName="article"
+        >
+          {cover && coverAlt && <ArticleCover src={cover} alt={coverAlt} />}
+          <div data-speakable="true">
+            <Styled.h1>{title}</Styled.h1>
+            <ArticleMeta slug={slug} date={date} />
+            <MDXRenderer tocItems={tocItems} headerIds={headerIds}>
+              {body}
+            </MDXRenderer>
+          </div>
+          {(prev?.fields?.slug || next?.fields?.slug) && (
+            <Pagination
+              previous={prev?.fields?.slug}
+              next={next?.fields?.slug}
+            />
+          )}
+        </Layout>
+      </ScrollProvider>
     </FontLoadProvider>
   )
 }
@@ -97,7 +75,6 @@ export const query = graphql`
     mdx(id: { eq: $id }) {
       id
       body
-      tableOfContents
       frontmatter {
         ...FrontmatterFields
         cover {
