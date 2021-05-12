@@ -4,6 +4,7 @@ import { jsx, useThemeUI } from "theme-ui"
 import { RoughNotation } from "react-rough-notation"
 import { useInView } from "react-intersection-observer"
 import { FontLoadContext } from "../FontLoadProvider"
+import { HeightResizeContext } from "../HeightResizeProvider"
 
 const Notation = ({
   threshold = 0.1,
@@ -21,6 +22,10 @@ const Notation = ({
   ...rest
 }) => {
   const isFontListLoaded = useContext(FontLoadContext)
+  // Force re-render component on page height event change.
+  // Triggers SVG position re-adjustment.
+  useContext(HeightResizeContext)
+
   const { ref, inView } = useInView({
     threshold,
     triggerOnce,
