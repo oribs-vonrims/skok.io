@@ -1,65 +1,87 @@
 /** @jsx jsx */
-import { useState, useContext, useEffect } from "react"
+import { memo, useState, useContext, useEffect } from "react"
 import { jsx, useThemeUI } from "theme-ui"
 import { RoughNotation } from "react-rough-notation"
 import { useInView } from "react-intersection-observer"
-import { FontLoadContext } from "../FontLoadProvider"
-import { HeightResizeContext } from "../HeightResizeProvider"
+import { NotationContext } from "../NotationProvider"
 
-const Notation = ({
-  threshold = 0.1,
-  triggerOnce = true,
-  type = `underline`,
-  multiline = false,
-  iterations = 3,
-  strokeWidth = 1,
-  padding = [5, 5, 5, 5],
-  brackets = null,
-  animate = true,
-  animationDelay = 200,
-  animationDuration = 1200,
-  color = null,
-  ...rest
-}) => {
-  const isFontListLoaded = useContext(FontLoadContext)
-  // Force re-render component on page height event change.
-  // Triggers SVG position re-adjustment.
-  useContext(HeightResizeContext)
-
-  const { ref, inView } = useInView({
-    threshold,
-    triggerOnce,
-  })
+// Wrapper component that takes NotationProvider context and `show` state,
+// that indicates if the annotation should be displayed.
+const Notation = props => {
+  const { isFontListLoaded } = useContext(NotationContext)
   const [show, setShow] = useState(false)
-  const {
-    theme: {
-      colors: { primary },
-    },
-  } = useThemeUI()
 
-  useEffect(() => {
-    setShow(show || (isFontListLoaded && inView))
-  }, [inView, isFontListLoaded, show])
-
+  // Will be re-render only on `show`, `isFontListLoaded`, or `nonce` updates.
   return (
-    <span ref={ref}>
-      <RoughNotation
-        type={type}
-        multiline={multiline}
-        iterations={iterations}
-        strokeWidth={strokeWidth}
-        padding={padding}
-        brackets={brackets}
-        animate={animate}
-        animationDelay={animationDelay}
-        animationDuration={animationDuration}
-        color={color ? color : primary}
-        show={show}
-        {...rest}
-      />
-    </span>
+    <MemoizedNotation
+      {...props}
+      // Force re-render component if it was visible at least once.
+      nonce={show && Math.random()}
+      isFontListLoaded={isFontListLoaded}
+      show={show}
+      setShow={setShow}
+    />
   )
 }
+
+const MemoizedNotation = memo(
+  ({
+    nonce,
+    show,
+    setShow,
+    isFontListLoaded,
+    threshold = 0.1,
+    triggerOnce = true,
+    type = `underline`,
+    multiline = false,
+    iterations = 3,
+    strokeWidth = 1,
+    padding = [5, 5, 5, 5],
+    brackets = null,
+    animate = true,
+    animationDelay = 200,
+    animationDuration = 1200,
+    color = null,
+    ...rest
+  }) => {
+    const { ref, inView } = useInView({
+      threshold,
+      triggerOnce,
+    })
+    const {
+      theme: {
+        colors: { primary },
+      },
+    } = useThemeUI()
+
+    useEffect(() => {
+      if (show) {
+        setShow(show)
+      } else {
+        setShow(isFontListLoaded && inView)
+      }
+    }, [inView, isFontListLoaded, show, setShow])
+
+    return (
+      <span ref={ref}>
+        <RoughNotation
+          type={type}
+          multiline={multiline}
+          iterations={iterations}
+          strokeWidth={strokeWidth}
+          padding={padding}
+          brackets={brackets}
+          animate={animate}
+          animationDelay={animationDelay}
+          animationDuration={animationDuration}
+          color={color ? color : primary}
+          show={show}
+          {...rest}
+        />
+      </span>
+    )
+  }
+)
 
 const Underline = props => <Notation {...props} multiline={true} />
 

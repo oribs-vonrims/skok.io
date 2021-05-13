@@ -2,12 +2,11 @@
 import { jsx, Styled } from "theme-ui"
 import { graphql } from "gatsby"
 import { MDXRenderer } from "gatsby-plugin-mdx"
-import { FontLoadProvider } from "../../components/FontLoadProvider"
 import { ScrollProvider } from "../../components/ScrollProvider"
 import {
-  HeightResizeProvider,
-  heightResizeRef,
-} from "../../components/HeightResizeProvider"
+  NotationProvider,
+  notationRef,
+} from "../../components/NotationProvider"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
 import Layout from "../../components/Layout"
 import ArticleCover from "../../components/ArticleCover"
@@ -36,41 +35,39 @@ const Article = ({ pageContext, data }) => {
   } = useSiteMetadata()
 
   return (
-    <HeightResizeProvider>
-      <FontLoadProvider>
-        <ScrollProvider>
-          <ScrollProgress />
-          <Layout
-            type={type}
-            slug={slug}
-            title={title}
-            date={date}
-            modifiedDate={modifiedDate}
-            cover={cover?.childImageSharp?.fluid?.src}
-            covers={{ ...cover?.childImageSharp }}
-            coverAlt={coverAlt}
-            description={description}
-            breadcrumb={breadcrumb}
-            pageName="article"
-          >
-            {cover && coverAlt && <ArticleCover src={cover} alt={coverAlt} />}
-            <div data-speakable="true" ref={heightResizeRef}>
-              <Styled.h1>{title}</Styled.h1>
-              <ArticleMeta slug={slug} date={date} />
-              <MDXRenderer tocItems={tocItems} headerIds={headerIds}>
-                {body}
-              </MDXRenderer>
-            </div>
-            {(prev?.fields?.slug || next?.fields?.slug) && (
-              <Pagination
-                previous={prev?.fields?.slug}
-                next={next?.fields?.slug}
-              />
-            )}
-          </Layout>
-        </ScrollProvider>
-      </FontLoadProvider>
-    </HeightResizeProvider>
+    <NotationProvider>
+      <ScrollProvider>
+        <ScrollProgress />
+        <Layout
+          type={type}
+          slug={slug}
+          title={title}
+          date={date}
+          modifiedDate={modifiedDate}
+          cover={cover?.childImageSharp?.fluid?.src}
+          covers={{ ...cover?.childImageSharp }}
+          coverAlt={coverAlt}
+          description={description}
+          breadcrumb={breadcrumb}
+          pageName="article"
+        >
+          {cover && coverAlt && <ArticleCover src={cover} alt={coverAlt} />}
+          <div data-speakable="true" ref={notationRef}>
+            <Styled.h1>{title}</Styled.h1>
+            <ArticleMeta slug={slug} date={date} />
+            <MDXRenderer tocItems={tocItems} headerIds={headerIds}>
+              {body}
+            </MDXRenderer>
+          </div>
+          {(prev?.fields?.slug || next?.fields?.slug) && (
+            <Pagination
+              previous={prev?.fields?.slug}
+              next={next?.fields?.slug}
+            />
+          )}
+        </Layout>
+      </ScrollProvider>
+    </NotationProvider>
   )
 }
 
