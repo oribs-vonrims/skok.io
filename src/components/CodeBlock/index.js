@@ -1,154 +1,216 @@
 /** @jsx jsx */
-import { jsx, Styled, Box } from "theme-ui"
 import { useState, useContext } from "react"
+import { jsx, Box, Flex } from "theme-ui"
+import Prism from "@theme-ui/prism"
 import useSound from "use-sound"
-import HighlightCode from "./HighlightCode"
-import ReactLiveEditor from "./ReactLiveEditor"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
+import biteSound from "../../assets/sounds/bite.mp3"
+import { isFirefox } from "../../utils/user-agent"
+import {
+  CODE_BLOCK_COPY_CLICK_TIMEOUT,
+  CODE_BLOCK_CLASS_NAME,
+  CODE_BLOCK_CONTAINER_CLASS_NAME,
+} from "../../utils/constants"
 import { SoundContext } from "../SoundProvider"
-import calculateLinesToHighlight from "./calculate-lines-to-highlight"
-import getConfig from "./get-config"
-import getLanguage from "./get-language"
-import CopyButton from "./CopyButton"
-import LineNumbersButton from "./LineNumbersButton"
-import FileName from "./FileName"
-import LanguageTab from "./LanguageTab"
-import scope from "./scope"
-import switchOn from "../../assets/sounds/switch-on.mp3"
+import copyToClipboard from "./copy-to-clipboard"
+import CopyButton from "./copy-button"
+import FileName from "./file-name"
+import LanguageLabel from "./language-label"
 
-const CodeBlock = ({
-  children,
-  className,
-  metastring,
-  lineNumbers,
-  lineNumbersButton,
-  live,
-  noInline,
-  disabled,
-  copyButton,
-  fileName,
-  languageTab,
-}) => {
+const languageRegex = new RegExp(`language-`, ``)
+const highlightCommentRegex = new RegExp(
+  `\/\/ highlight-((start|end)\n|line)`,
+  `g`
+)
+
+const getLanguage = (className, regex = languageRegex) => {
+  const firstClassName = className?.split(` `)[0]
+  const isLanguageClassName = firstClassName?.match(regex)
+
+  return isLanguageClassName ? firstClassName.replace(regex, ``) : null
+}
+
+const getBorderRadius = isFileNameVisible => ({
+  borderTopLeftRadius: isFileNameVisible ? 0 : 2,
+  borderTopRightRadius: isFileNameVisible ? 0 : 2,
+  borderBottomLeftRadius: 2,
+  borderBottomRightRadius: 2,
+})
+
+const truthyList = [true, `true`]
+
+const CodeBlock = props => {
+  const [isCopied, setIsCopied] = useState(false)
+  const [sound] = useContext(SoundContext)
+  const [play] = useSound(biteSound)
   const {
-    codeBlock: {
-      lineNumbers: globalLineNumbers,
-      lineNumbersButton: globalLineNumbersButton,
-      copyButton: globalCopyButton,
-      languageTab: globalLanguageTab,
+    components: {
+      codeBlock: { isCopy, isLabel, isFocus },
     },
   } = useSiteMetadata()
 
-  const language = getLanguage(className)
-  const code = children.props.children.trim()
-  const shouldHighlightLine = calculateLinesToHighlight(metastring)
+  const {
+    id,
+    children,
+    fileName,
+    className: prismClassName,
+    copy = isCopy,
+    label = isLabel,
+    focus = isFocus,
+    ...rest
+  } = props
 
-  // Get all enabled features
-  const isLive = getConfig(live)
-  const isNoInline = getConfig(noInline)
-  const isDisabled = getConfig(disabled)
-  const isLineNumbers = getConfig(lineNumbers, globalLineNumbers)
-  const isLineNumbersButton = getConfig(
-    lineNumbersButton,
-    globalLineNumbersButton
-  )
-  const isCopyButton = getConfig(copyButton, globalCopyButton)
-  const isLanguageTab = getConfig(languageTab, globalLanguageTab)
-  const isFileName = !!fileName
+  const language = getLanguage(prismClassName)
+  const isLanguageLabelVisible = truthyList.includes(label) && Boolean(language)
+  const isFileNameVisible = Boolean(fileName)
+  const isCopyButtonVisible = truthyList.includes(copy)
+  const tabIndex = Number(truthyList.includes(focus)) - 1
 
-  const [sound] = useContext(SoundContext)
-  const [playSwitchOn] = useSound(switchOn)
+  const handleCopyClick = () => {
+    setIsCopied(true)
+    copyToClipboard(children.replace(highlightCommentRegex, ``))
 
-  const [lineNumbersState, setLineNumbersState] = useState(isLineNumbers)
-  const toggleLineNumbers = () => {
-    setLineNumbersState(!lineNumbersState)
-    sound && playSwitchOn()
-  }
+    if (sound) {
+      play()
+    }
 
-  const [scrollbar, setScrollbar] = useState(false)
-  const addScrollbar = () => {
-    setScrollbar(true)
     setTimeout(() => {
-      setScrollbar(false)
-    }, 5000)
+      setIsCopied(false)
+    }, CODE_BLOCK_COPY_CLICK_TIMEOUT)
   }
 
   return (
-    <div
+    <Flex
+      tabIndex={tabIndex}
+      className={CODE_BLOCK_CLASS_NAME}
+      {...(id && { id })}
       sx={{
-        marginBottom: 4,
         position: `relative`,
+        flexDirection: `column`,
+        marginTop: 5,
+        marginBottom: 4,
+        scrollMarginTop: 5,
+        backgroundColor: `muted`,
+        borderRadius: 2,
+        "&:focus": {
+          ".language-label": {
+            boxShadow: ({ colors: { accent } }) => `0 0 0 2px ${accent}`,
+            transition: `codeBlockLanguageLabelIsFocused`,
+          },
+          ".copy-button": {
+            opacity: `codeBlockCopyButtonIsFocused`,
+          },
+        },
+        "&:hover": {
+          ".copy-button": {
+            opacity: `codeBlockCopyButtonIsHovered`,
+          },
+        },
+        "&:active": {
+          ".copy-button": {
+            opacity: `codeBlockCopyButtonIsActive`,
+          },
+        },
       }}
     >
-      {isLanguageTab && !isLive && (
-        <LanguageTab language={getLanguage(className)} />
-      )}
-
-      <div
-        sx={{
-          display: `flex`,
-          flexDirection: `column`,
-          backgroundColor: `muted`,
-        }}
-      >
-        {isFileName && <FileName name={fileName} />}
-        <div
-          sx={{
-            display: `flex`,
-            padding: 1,
-          }}
-        >
-          <Box
+      <Box>
+        {isLanguageLabelVisible && (
+          <LanguageLabel
+            language={language}
+            className="language-label"
             sx={{
-              marginLeft: `auto`,
+              position: `absolute`,
+              right: 4,
+              transform: `translateY(calc(-100% - 2px))`,
+              "&:after": {
+                content: `""`,
+                position: `absolute`,
+                bottom: `-2px`,
+                right: 0,
+                display: `inline-block`,
+                width: `100%`,
+                height: `codeBlockLanguageLabelAfter`,
+                backgroundColor: `muted`,
+              },
             }}
-          >
-            {isLineNumbersButton && (
-              <LineNumbersButton
-                handleClick={toggleLineNumbers}
-                lineNumbers={lineNumbersState}
-              />
-            )}
-            {isCopyButton && <CopyButton code={code} />}
-          </Box>
-        </div>
-      </div>
-      <Styled.pre
-        onScroll={addScrollbar}
-        sx={{
-          margin: 0,
-          "&::-webkit-scrollbar": {
-            height: `5px`,
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: scrollbar ? `primary` : `rgba(0,0,0,0)`,
-          },
-        }}
-      >
-        {isLive ? (
-          <ReactLiveEditor
-            code={code}
-            theme={undefined}
-            scope={scope}
-            language={language}
-            metastring={metastring}
-            disabled={isDisabled}
-            noInline={isNoInline}
-            lineNumbers={lineNumbersState}
-            shouldHighlightLine={shouldHighlightLine}
-          />
-        ) : (
-          <HighlightCode
-            code={code}
-            language={language}
-            theme={undefined}
-            metastring={metastring}
-            lineNumbers={lineNumbersState}
-            shouldHighlightLine={shouldHighlightLine}
           />
         )}
-      </Styled.pre>
-    </div>
+        {isFileNameVisible && (
+          <FileName
+            fileName={fileName}
+            sx={{
+              borderTopRightRadius: 2,
+              borderTopLeftRadius: 2,
+            }}
+          />
+        )}
+        {isCopyButtonVisible && (
+          <CopyButton
+            onClick={handleCopyClick}
+            isCopied={isCopied}
+            className="copy-button"
+            sx={{
+              position: `absolute`,
+              top: 4,
+              right: 2,
+              zIndex: `codeBlockCopyButton`,
+              opacity: `codeBlockCopyButton`,
+              transition: `codeBlockCopyButton`,
+            }}
+          />
+        )}
+      </Box>
+      <Box
+        sx={{
+          position: `relative`,
+          overflow: `hidden`,
+          ...getBorderRadius(isFileNameVisible),
+        }}
+      >
+        <Box
+          // `div` with overflow receives focus in Firefox
+          // https://bugzilla.mozilla.org/show_bug.cgi?id=1069739
+          // Conditioanlly remove element from the tab order
+          {...(isFirefox && { tabIndex: `-1` })}
+          className={CODE_BLOCK_CONTAINER_CLASS_NAME}
+          sx={{
+            overflow: `auto`,
+            scrollbarColor: ({ colors: { primary, gray } }) =>
+              `${primary} ${gray}`,
+            scrollbarWidth: `thin`,
+            "&::-webkit-scrollbar": {
+              height: `codeBlockScrollBar`,
+            },
+            "&::-webkit-scrollbar-track": {
+              backgroundColor: `gray`,
+              borderRadius: 2,
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: `primary`,
+              borderRadius: 2,
+            },
+            ...getBorderRadius(isFileNameVisible),
+          }}
+        >
+          <Prism
+            className={prismClassName}
+            sx={{
+              float: `left`,
+              marginY: 0,
+              padding: 3,
+              minWidth: `100%`,
+              ".highlight": {
+                marginX: -3,
+                paddingX: 3,
+              },
+            }}
+            {...rest}
+          >
+            {children}
+          </Prism>
+        </Box>
+      </Box>
+    </Flex>
   )
 }
-
 export default CodeBlock

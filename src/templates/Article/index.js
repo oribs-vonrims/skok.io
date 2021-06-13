@@ -1,7 +1,8 @@
 /** @jsx jsx */
-import { jsx, Styled } from "theme-ui"
+import { jsx, Themed } from "theme-ui"
 import { graphql } from "gatsby"
 import { MDXRenderer } from "gatsby-plugin-mdx"
+import { useKey } from "react-use"
 import { ScrollProvider } from "../../components/ScrollProvider"
 import {
   NotationProvider,
@@ -12,6 +13,7 @@ import Layout from "../../components/Layout"
 import ArticleCover from "../../components/ArticleCover"
 import ArticleMeta from "../../components/ArticleMeta"
 import Pagination from "../../components/Pagination"
+import scrollCodeBlock from "../../components/CodeBlock/scroller"
 import ScrollProgress from "../../components/ScrollProgress"
 
 const Article = ({ pageContext, data }) => {
@@ -34,6 +36,9 @@ const Article = ({ pageContext, data }) => {
     },
   } = useSiteMetadata()
 
+  useKey("ArrowLeft", event => scrollCodeBlock(event, `left`))
+  useKey("ArrowRight", event => scrollCodeBlock(event, `right`))
+
   return (
     <NotationProvider>
       <ScrollProvider>
@@ -53,7 +58,7 @@ const Article = ({ pageContext, data }) => {
         >
           {cover && coverAlt && <ArticleCover src={cover} alt={coverAlt} />}
           <div data-speakable="true" ref={notationRef}>
-            <Styled.h1>{title}</Styled.h1>
+            <Themed.h1>{title}</Themed.h1>
             <ArticleMeta slug={slug} date={date} />
             <MDXRenderer tocItems={tocItems} headerIds={headerIds}>
               {body}
@@ -74,7 +79,7 @@ const Article = ({ pageContext, data }) => {
 export default Article
 
 export const query = graphql`
-  query($id: String!) {
+  query ($id: String!) {
     mdx(id: { eq: $id }) {
       id
       body

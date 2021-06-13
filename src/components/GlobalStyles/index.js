@@ -6,28 +6,43 @@ import fontFaces from "../../gatsby-plugin-theme-ui/fontFaces"
 const GlobalStyles = () => {
   const {
     theme: {
+      colors: { accent },
       breakpoints: [tablet],
+      transitions: { globalStyles: transition },
+      opacities: { globalStyles: opacity },
     },
   } = useThemeUI()
 
-  const styles = {
-    html: {
-      fontSize: `125%`,
-      height: `100%`,
-      overflowY: `scroll`,
-      scrollBehavior: `smooth`,
-      [`@media (min-width: ${tablet})`]: {
-        fontSize: `150%`,
-      },
-    },
-    [`body,
-    #___gatsby,
-    #gatsby-focus-wrapper`]: {
-      height: `100%`,
-    },
-  }
-
-  return <Global styles={[...fontFaces, styles]} />
+  return (
+    <Global
+      styles={[
+        ...fontFaces,
+        {
+          "*:focus": {
+            outline: 0,
+            "&:not(#gatsby-focus-wrapper)": {
+              boxShadow: `0 0 0 2px ${accent}`,
+              transition,
+              opacity,
+            },
+          },
+          html: {
+            fontSize: `125%`,
+            scrollBehavior: `smooth`,
+            // Fixes font size issue in `CodeBlock` component on iOS
+            // https://stackoverflow.com/a/22417120/3614631
+            textSizeAdjust: `none`,
+            [`@media (min-width: ${tablet})`]: {
+              fontSize: `150%`,
+            },
+          },
+          "html, body, #___gatsby, #gatsby-focus-wrapper": {
+            height: `100%`,
+          },
+        },
+      ]}
+    />
+  )
 }
 
 export default GlobalStyles

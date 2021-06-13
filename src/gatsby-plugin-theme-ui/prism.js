@@ -1,4 +1,7 @@
 const prism = {
+  ".highlight": {
+    backgroundColor: `gray`,
+  },
   ".changed": {
     color: `codeChanged`,
     fontStyle: `italic`,
