@@ -1,14 +1,9 @@
 /** @jsx jsx */
 import { jsx, Card, Themed } from "theme-ui"
-import { useState } from "react"
 import Img from "gatsby-image"
 import Link from "../Link"
 
 const BlogCard = ({ article }) => {
-  const [active, setActive] = useState(false)
-  const addActiveState = () => setActive(true)
-  const removeActiveState = () => setActive(false)
-
   const {
     frontmatter: { title, cover, coverAlt, description },
   } = article
@@ -16,23 +11,32 @@ const BlogCard = ({ article }) => {
   return (
     <Link
       to={article.fields.slug}
-      onFocus={addActiveState}
-      onBlur={removeActiveState}
-      onTouchStart={addActiveState}
-      onTouchEnd={removeActiveState}
-      onMouseEnter={addActiveState}
-      onMouseLeave={removeActiveState}
       sx={{
         textDecoration: `none`,
+        margin: 0,
+        padding: 0,
         marginBottom: 4,
+        borderRadius: 2,
+        transition: `blogCard`,
+        "&:hover, &:focus-visible": {
+          ".blog-card": {
+            boxShadow: `active`,
+          },
+          ".blog-card-header": {
+            color: `primary`,
+          },
+        },
       }}
     >
       <Card
         as="article"
+        className="blog-card"
         sx={{
-          boxShadow: active ? `active` : `default`,
+          margin: 0,
+          padding: 3,
           borderRadius: 2,
-          borderColor: active ? `secondary` : `primary`,
+          boxShadow: `default`,
+          transition: `card`,
         }}
       >
         {cover && (
@@ -46,10 +50,11 @@ const BlogCard = ({ article }) => {
         )}
 
         <Themed.h2
+          className="blog-card-header"
           sx={{
-            color: active ? `primary` : `text`,
+            color: `text`,
             marginTop: 0,
-            transition: `color 400ms ease`,
+            transition: `blogCardHeader`,
           }}
         >
           {title}
@@ -58,7 +63,7 @@ const BlogCard = ({ article }) => {
         <Themed.p
           sx={{
             color: `text`,
-            transition: `color 400ms ease`,
+            transition: `blogCardHeaderParagraph`,
           }}
         >
           {description}

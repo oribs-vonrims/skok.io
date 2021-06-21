@@ -1,25 +1,20 @@
 /** @jsx jsx */
-import { jsx } from "theme-ui"
+import { jsx, Themed } from "theme-ui"
 
-const Link = ({ url, title, active }) => (
-  <a
+const Link = ({ url, title, isActive }) => (
+  <Themed.a
     href={url}
     sx={{
+      display: `flex`,
       fontSize: 1,
       fontFamily: `code`,
-      color: active ? `primary` : `text`,
-      transition: `all 400ms ease`,
-      transitionProperty: `opacity, color`,
-      textDecoration: `none`,
-      opacity: active ? 1 : `0.5`,
-      "&:hover": {
-        opacity: 1,
-        color: `secondary`,
-      },
+      color: isActive ? `primary` : `text`,
+      borderRadius: 1,
+      transition: `tableOfContentsLink`,
     }}
   >
     {title}
-  </a>
+  </Themed.a>
 )
 
 export default Link

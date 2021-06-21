@@ -1,6 +1,12 @@
-const INTRODUCTION_ITEM = {
-  url: `#introduction`,
-  title: `Introduction`,
+const {
+  components: {
+    tableOfContents: { introId, introTitle },
+  },
+} = require("../../site-metadata")
+
+const introItem = {
+  url: `#${introId}`,
+  title: introTitle,
 }
 
 const getHeaderIds = (items = []) =>
@@ -17,7 +23,7 @@ const getHeaderIds = (items = []) =>
   }, [])
 
 const getToc = (items = [], hasIntro) => {
-  const allItems = hasIntro ? [INTRODUCTION_ITEM, ...items] : items
+  const allItems = hasIntro ? [introItem, ...items] : items
 
   return {
     ids: getHeaderIds(allItems),

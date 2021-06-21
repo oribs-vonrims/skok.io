@@ -1,81 +1,111 @@
 /** @jsx jsx */
-import { useState, useContext } from "react"
-import { jsx, IconButton, useColorMode } from "theme-ui"
+import { useState, useContext, useEffect } from "react"
+import { jsx, IconButton, useColorMode, useThemeUI } from "theme-ui"
 import useSound from "use-sound"
+import { motion } from "framer-motion"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
-import { SoundContext } from "../SoundProvider"
-import switchOn from "../../assets/sounds/switch-on.mp3"
 import setFavicon from "../../utils/set-favicon"
+import isWindow from "../../utils/is-window"
+import switchOnSound from "../../assets/sounds/switch-on.mp3"
+import { SoundContext } from "../SoundProvider"
+import SVG from "../SVG"
+
+const disableAllTransitionStyles = `* {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -ms-transition: none !important;
+  transition: none !important;
+}`
+const styleElement = isWindow() && document.createElement(`style`)
+const disableAllTransitions = () => {
+  styleElement.appendChild(document.createTextNode(disableAllTransitionStyles))
+  document.head.appendChild(styleElement)
+}
+const enableAllTransitions = () => styleElement.remove()
+
+const AnimatedSVG = motion(SVG)
 
 const ColorModeButton = props => {
   const [sound] = useContext(SoundContext)
-  const [playSwitchOn] = useSound(switchOn)
-
-  const [highlight, setHighlight] = useState(false)
-  const addHighlight = () => setHighlight(true)
-  const removeHighlight = () => setHighlight(false)
-
-  const { colorModes, favicons } = useSiteMetadata()
+  const [playSwitchOn] = useSound(switchOnSound)
+  const [iconAngle, setIconAngle] = useState(0)
   const [colorMode, setColorMode] = useColorMode()
+  const [isInColorModeTransition, setIsInColorModeTransition] = useState(false)
+  const {
+    colorModes,
+    favicons: { light: lightFavicon, dark: darkFavicon },
+  } = useSiteMetadata()
+  const {
+    theme: {
+      transitionDurations: [duration],
+    },
+  } = useThemeUI()
 
-  const [turn, setTurn] = useState(0)
-  const turnButton = () => setTurn(turn < 1 ? 1 : 0)
+  useEffect(() => {
+    if (isInColorModeTransition) {
+      enableAllTransitions()
+      setIsInColorModeTransition(false)
+    }
+  }, [isInColorModeTransition])
 
-  const { light: faviconLight, dark: faviconDark } = favicons
+  const rotateIcon = () => setIconAngle(iconAngle === 0 ? 180 : 0)
 
   const clickHandler = () => {
-    const index = colorModes.indexOf(colorMode)
-    const next = colorModes[(index + 1) % colorModes.length]
-    setColorMode(next)
-    turnButton()
+    const currentThemeIndex = colorModes.indexOf(colorMode)
+    const nextTheme = colorModes[(currentThemeIndex + 1) % colorModes.length]
 
-    next === `default` ? setFavicon(faviconDark) : setFavicon(faviconLight)
+    rotateIcon()
+    disableAllTransitions()
+    setColorMode(nextTheme)
+    setIsInColorModeTransition(true)
 
-    sound && playSwitchOn()
+    if (nextTheme === `default`) {
+      setFavicon(darkFavicon)
+    } else {
+      setFavicon(lightFavicon)
+    }
+
+    if (sound) {
+      playSwitchOn()
+    }
   }
 
   return (
     <IconButton
-      {...props}
-      onFocus={addHighlight}
-      onBlur={removeHighlight}
-      onTouchStart={addHighlight}
-      onTouchEnd={removeHighlight}
-      onMouseEnter={addHighlight}
-      onMouseLeave={removeHighlight}
-      aria-label="Toggle website theme"
+      aria-label="Change color mode"
       onClick={clickHandler}
       sx={{
-        cursor: `pointer`,
-        padding: 0,
-        width: `iconButton`,
-        height: `iconButton`,
-        marginX: 0,
-        color: highlight ? `secondary` : `primary`,
+        color: `primary`,
+        transition: `colorModeButton`,
+        "&:hover": {
+          color: `secondary`,
+        },
       }}
+      {...props}
     >
-      <svg
-        width="24"
-        height="24"
+      <AnimatedSVG
+        as={motion.svg}
         viewBox="0 0 32 32"
-        fill="currentColor"
-        sx={{
-          display: `flex`,
-          margin: `0 auto`,
-          transition: `transform 400ms ease`,
-          transform: `rotate(${turn * 180}deg)`,
+        transition={{ duration }}
+        animate={{
+          rotate: iconAngle,
+          originX: `center`,
+          originY: `center`,
         }}
       >
         <circle
-          cx="16"
-          cy="16"
-          r="14"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="4"
-        ></circle>
-        <path d="M 16 0 A 16 16 0 0 0 16 32 z"></path>
-      </svg>
+          sx={{
+            cx: 16,
+            cy: 16,
+            r: 14,
+            fill: `none`,
+            stroke: `currentColor`,
+            strokeWidth: 4,
+          }}
+        />
+        <path d="M 16 0 A 16 16 0 0 0 16 32 z" />
+      </AnimatedSVG>
     </IconButton>
   )
 }

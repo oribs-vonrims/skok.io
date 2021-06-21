@@ -1,35 +1,27 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui"
-import { useThemeUI } from "theme-ui"
+import Icon from "./icon"
 
-/* eslint react/display-name: 0 */
-/* eslint react-hooks/rules-of-hooks: 0 */
-const Heading = Tag => props => {
-  const { id, children } = props
-  const {
-    theme: {
-      styles: { a: linkStyles },
-    },
-  } = useThemeUI()
+/* eslint-disable react/display-name */
+const Heading =
+  Tag =>
+  ({ id, children, ...rest }) => {
+    if (!id) {
+      return <Tag {...rest}>{children}</Tag>
+    }
 
-  if (!id) return <Tag {...props} />
-
-  return (
-    <Tag {...props} data-header="true">
-      <a
-        href={`#${id}`}
-        sx={{
-          ...linkStyles,
-          textDecoration: `none`,
-          fontFamily: `body`,
-          marginRight: 2,
-        }}
-      >
-        #
-      </a>
-      {children}
-    </Tag>
-  )
-}
+    return (
+      <Tag {...rest}>
+        <Icon
+          id={id}
+          target={null}
+          rel={null}
+          href={`#${id}`}
+          ariaLabel={children}
+        />
+        {children}
+      </Tag>
+    )
+  }
 
 export default Heading

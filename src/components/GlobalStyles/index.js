@@ -6,10 +6,8 @@ import fontFaces from "../../gatsby-plugin-theme-ui/fontFaces"
 const GlobalStyles = () => {
   const {
     theme: {
-      colors: { accent },
       breakpoints: [tablet],
-      transitions: { globalStyles: transition },
-      opacities: { globalStyles: opacity },
+      colors: { accent },
     },
   } = useThemeUI()
 
@@ -18,17 +16,21 @@ const GlobalStyles = () => {
       styles={[
         ...fontFaces,
         {
-          "*:focus": {
-            outline: 0,
-            "&:not(#gatsby-focus-wrapper)": {
-              boxShadow: `0 0 0 2px ${accent}`,
-              transition,
-              opacity,
+          "*": {
+            "&:focus": {
+              outline: 0,
+            },
+            "&:focus-visible": {
+              outline: 0,
+              "&:not(#gatsby-focus-wrapper)": {
+                boxShadow: `0 0 0 2px ${accent}`,
+              },
             },
           },
           html: {
             fontSize: `125%`,
-            scrollBehavior: `smooth`,
+            // Prevent scrollbar from repositioning web page
+            paddingLeft: `calc(100vw - 100%)`,
             // Fixes font size issue in `CodeBlock` component on iOS
             // https://stackoverflow.com/a/22417120/3614631
             textSizeAdjust: `none`,

@@ -6,6 +6,11 @@ const Details = ({ children }) => (
     <summary
       sx={{
         cursor: `pointer`,
+        borderRadius: 1,
+        transition: `tableOfContentsSummary`,
+        "&:hover": {
+          color: `secondary`,
+        },
       }}
     >
       Table of Contents{` `}

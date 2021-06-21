@@ -1,27 +1,17 @@
 /** @jsx jsx */
-import { useState, useContext } from "react"
 import { jsx, Box, Flex } from "theme-ui"
 import Prism from "@theme-ui/prism"
-import useSound from "use-sound"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
-import biteSound from "../../assets/sounds/bite.mp3"
 import { isFirefox } from "../../utils/user-agent"
 import {
-  CODE_BLOCK_COPY_CLICK_TIMEOUT,
   CODE_BLOCK_CLASS_NAME,
   CODE_BLOCK_CONTAINER_CLASS_NAME,
 } from "../../utils/constants"
-import { SoundContext } from "../SoundProvider"
-import copyToClipboard from "./copy-to-clipboard"
 import CopyButton from "./copy-button"
 import FileName from "./file-name"
 import LanguageLabel from "./language-label"
 
-const languageRegex = new RegExp(`language-`, ``)
-const highlightCommentRegex = new RegExp(
-  `\/\/ highlight-((start|end)\n|line)`,
-  `g`
-)
+const languageRegex = new RegExp(`language-`)
 
 const getLanguage = (className, regex = languageRegex) => {
   const firstClassName = className?.split(` `)[0]
@@ -37,12 +27,7 @@ const getBorderRadius = isFileNameVisible => ({
   borderBottomRightRadius: 2,
 })
 
-const truthyList = [true, `true`]
-
 const CodeBlock = props => {
-  const [isCopied, setIsCopied] = useState(false)
-  const [sound] = useContext(SoundContext)
-  const [play] = useSound(biteSound)
   const {
     components: {
       codeBlock: { isCopy, isLabel, isFocus },
@@ -61,23 +46,11 @@ const CodeBlock = props => {
   } = props
 
   const language = getLanguage(prismClassName)
-  const isLanguageLabelVisible = truthyList.includes(label) && Boolean(language)
+  const truthy = [true, `true`]
+  const isLanguageLabelVisible = truthy.includes(label) && Boolean(language)
   const isFileNameVisible = Boolean(fileName)
-  const isCopyButtonVisible = truthyList.includes(copy)
-  const tabIndex = Number(truthyList.includes(focus)) - 1
-
-  const handleCopyClick = () => {
-    setIsCopied(true)
-    copyToClipboard(children.replace(highlightCommentRegex, ``))
-
-    if (sound) {
-      play()
-    }
-
-    setTimeout(() => {
-      setIsCopied(false)
-    }, CODE_BLOCK_COPY_CLICK_TIMEOUT)
-  }
+  const isCopyButtonVisible = truthy.includes(copy)
+  const tabIndex = Number(truthy.includes(focus)) - 1
 
   return (
     <Flex
@@ -92,23 +65,10 @@ const CodeBlock = props => {
         scrollMarginTop: 5,
         backgroundColor: `muted`,
         borderRadius: 2,
-        "&:focus": {
+        transition: `codeBlock`,
+        "&:focus-visible": {
           ".language-label": {
             boxShadow: ({ colors: { accent } }) => `0 0 0 2px ${accent}`,
-            transition: `codeBlockLanguageLabelIsFocused`,
-          },
-          ".copy-button": {
-            opacity: `codeBlockCopyButtonIsFocused`,
-          },
-        },
-        "&:hover": {
-          ".copy-button": {
-            opacity: `codeBlockCopyButtonIsHovered`,
-          },
-        },
-        "&:active": {
-          ".copy-button": {
-            opacity: `codeBlockCopyButtonIsActive`,
           },
         },
       }}
@@ -121,15 +81,15 @@ const CodeBlock = props => {
             sx={{
               position: `absolute`,
               right: 4,
+              // Mask intersecting focus styles
               transform: `translateY(calc(-100% - 2px))`,
               "&:after": {
                 content: `""`,
                 position: `absolute`,
+                width: `100%`,
+                height: 4,
                 bottom: `-2px`,
                 right: 0,
-                display: `inline-block`,
-                width: `100%`,
-                height: `codeBlockLanguageLabelAfter`,
                 backgroundColor: `muted`,
               },
             }}
@@ -146,16 +106,12 @@ const CodeBlock = props => {
         )}
         {isCopyButtonVisible && (
           <CopyButton
-            onClick={handleCopyClick}
-            isCopied={isCopied}
-            className="copy-button"
+            content={children}
             sx={{
               position: `absolute`,
               top: 4,
               right: 2,
               zIndex: `codeBlockCopyButton`,
-              opacity: `codeBlockCopyButton`,
-              transition: `codeBlockCopyButton`,
             }}
           />
         )}
@@ -171,7 +127,7 @@ const CodeBlock = props => {
           // `div` with overflow receives focus in Firefox
           // https://bugzilla.mozilla.org/show_bug.cgi?id=1069739
           // Conditioanlly remove element from the tab order
-          {...(isFirefox && { tabIndex: `-1` })}
+          {...(isFirefox() && { tabIndex: `-1` })}
           className={CODE_BLOCK_CONTAINER_CLASS_NAME}
           sx={{
             overflow: `auto`,

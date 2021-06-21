@@ -10,12 +10,11 @@ import borderWidths from "./tokens/border-widths"
 import radii from "./tokens/radii"
 import shadows from "./tokens/shadows"
 import transitions from "./tokens/transitions"
-import opacities from "./tokens/opacities"
+import transitionDurations from "./tokens/transition-durations"
 import zIndices from "./tokens/z-indices"
 import text from "./variants/text"
+import icons from "./variants/icons"
 import buttons from "./variants/buttons"
-import links from "./variants/links"
-import cards from "./variants/cards"
 import messages from "./variants/messages"
 import styles from "./styles"
 
@@ -32,12 +31,11 @@ const theme = {
   radii,
   shadows,
   transitions,
-  opacities,
+  transitionDurations,
   zIndices,
+  icons,
   text,
   buttons,
-  links,
-  cards,
   messages,
   styles,
 }

@@ -9,6 +9,7 @@ import {
   notationRef,
 } from "../../components/NotationProvider"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
+import useScrollBehavior from "../../hooks/useScrollBehavior"
 import Layout from "../../components/Layout"
 import ArticleCover from "../../components/ArticleCover"
 import ArticleMeta from "../../components/ArticleMeta"
@@ -17,18 +18,9 @@ import scrollCodeBlock from "../../components/CodeBlock/scroller"
 import ScrollProgress from "../../components/ScrollProgress"
 
 const Article = ({ pageContext, data }) => {
-  const {
-    prev,
-    next,
-    slug,
-    toc: { ids: headerIds, items: tocItems },
-  } = pageContext
-  const {
-    mdx: {
-      body,
-      frontmatter: { title, description, date, modifiedDate, cover, coverAlt },
-    },
-  } = data
+  useScrollBehavior()
+  useKey(`ArrowLeft`, event => scrollCodeBlock(event, `left`))
+  useKey(`ArrowRight`, event => scrollCodeBlock(event, `right`))
 
   const {
     pages: {
@@ -36,8 +28,19 @@ const Article = ({ pageContext, data }) => {
     },
   } = useSiteMetadata()
 
-  useKey("ArrowLeft", event => scrollCodeBlock(event, `left`))
-  useKey("ArrowRight", event => scrollCodeBlock(event, `right`))
+  const {
+    prev,
+    next,
+    slug,
+    toc: { ids: headerIds, items: tocItems },
+  } = pageContext
+
+  const {
+    mdx: {
+      body,
+      frontmatter: { title, description, date, modifiedDate, cover, coverAlt },
+    },
+  } = data
 
   return (
     <NotationProvider>

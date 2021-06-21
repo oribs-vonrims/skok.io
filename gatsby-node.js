@@ -123,25 +123,3 @@ exports.createPages = ({ actions, graphql }) =>
     createBlog(actions.createPage, edges)
     createArticles(actions.createPage, edges)
   })
-
-exports.onCreateWebpackConfig = ({ stage, actions }) => {
-  actions.setWebpackConfig({
-    resolve: {
-      alias: {
-        buble$: path.resolve(
-          __dirname,
-          `node_modules/@philpl/buble/src/index.js`
-        ),
-      },
-    },
-  })
-}
-
-// https://github.com/ChristopherBiscardi/gatsby-mdx/issues/176#issuecomment-429569578
-exports.onCreateWebpackConfig = ({ actions }) => {
-  actions.setWebpackConfig({
-    resolve: {
-      modules: [path.resolve(__dirname, `src`), `node_modules`],
-    },
-  })
-}

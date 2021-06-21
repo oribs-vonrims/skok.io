@@ -17,10 +17,13 @@ export default {
   },
   a: {
     color: `primary`,
+    // Disable iOS tap highlight
     WebkitTapHighlightColor: `transparent`,
+    // Disable iOS link preview
+    WebkitTouchCallout: `none`,
+    textDecoration: `none`,
     "&:hover": {
       color: `secondary`,
-      textDecoration: `none`,
     },
   },
   h1: {

@@ -17,19 +17,20 @@ const ScrollProgress = () => {
       value={scrollProgress}
       sx={{
         position: `fixed`,
+        left: 0,
         zIndex: `progress`,
         borderRadius: 0,
         opacity,
         pointerEvents: `none`,
-        transition: `opacity 200ms ease`,
+        transition: `progress`,
         "&::-webkit-progress-bar": {
-          transition: `width 400ms ease`,
+          transition: `progressBar`,
         },
         "&::-webkit-progress-value": {
-          transition: `width 400ms ease`,
+          transition: `progressValue`,
         },
         "&::-moz-progress-bar": {
-          transition: `width 400ms ease`,
+          transition: `progressBar`,
         },
       }}
     />

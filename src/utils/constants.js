@@ -3,7 +3,7 @@ const CODE_BLOCK_CLASS_NAME = `code-block`
 const CODE_BLOCK_CONTAINER_CLASS_NAME = `code-block-container`
 const CODE_BLOCK_SCROLL_STEP = 100
 
-export {
+module.exports = {
   CODE_BLOCK_COPY_CLICK_TIMEOUT,
   CODE_BLOCK_CLASS_NAME,
   CODE_BLOCK_CONTAINER_CLASS_NAME,
