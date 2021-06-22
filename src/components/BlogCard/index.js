@@ -3,75 +3,73 @@ import { jsx, Card, Themed } from "theme-ui"
 import Img from "gatsby-image"
 import Link from "../Link"
 
-const BlogCard = ({ article }) => {
-  const {
+const BlogCard = ({
+  article: {
     frontmatter: { title, cover, coverAlt, description },
     fields: { slug },
-  } = article
-
-  return (
-    <Link
-      to={slug}
-      sx={{
-        textDecoration: `none`,
-        margin: 0,
-        padding: 0,
-        marginBottom: 4,
-        borderRadius: 2,
-        transition: `blogCard`,
-        "&:hover, &:focus-visible": {
-          ".blog-card": {
-            boxShadow: `active`,
-          },
-          ".blog-card-header": {
-            color: `primary`,
-          },
+  },
+}) => (
+  <Link
+    to={slug}
+    sx={{
+      textDecoration: `none`,
+      margin: 0,
+      padding: 0,
+      marginBottom: 4,
+      borderRadius: 2,
+      transition: `blogCard`,
+      "&:hover, &:focus-visible": {
+        ".blog-card": {
+          boxShadow: `active`,
         },
+        ".blog-card-header": {
+          color: `primary`,
+        },
+      },
+    }}
+  >
+    <Card
+      as="article"
+      className="blog-card"
+      sx={{
+        margin: 0,
+        padding: 3,
+        borderRadius: 2,
+        boxShadow: `default`,
+        transition: `card`,
       }}
     >
-      <Card
-        as="article"
-        className="blog-card"
+      {cover && (
+        <Img
+          alt={coverAlt}
+          fluid={{
+            ...cover.childImageSharp.fluid,
+            aspectRatio: 16 / 9,
+          }}
+        />
+      )}
+
+      <Themed.h2
+        className="blog-card-header"
         sx={{
-          margin: 0,
-          padding: 3,
-          borderRadius: 2,
-          boxShadow: `default`,
-          transition: `card`,
+          color: `text`,
+          marginTop: 0,
+          transition: `blogCardHeader`,
         }}
       >
-        {cover && (
-          <Img
-            alt={coverAlt}
-            fluid={{
-              ...cover.childImageSharp.fluid,
-              aspectRatio: 16 / 9,
-            }}
-          />
-        )}
+        {title}
+      </Themed.h2>
 
-        <Themed.h2
-          className="blog-card-header"
-          sx={{
-            color: `text`,
-            marginTop: 0,
-            transition: `blogCardHeader`,
-          }}
-        >
-          {title}
-        </Themed.h2>
-
-        <Themed.p
-          sx={{
-            color: `text`,
-            transition: `blogCardHeaderParagraph`,
-          }}
-        >
-          {description}
-        </Themed.p>
-      </Card>
-    </Link>
-  )
-}
+      <Themed.p
+        sx={{
+          color: `text`,
+          transition: `blogCardHeaderParagraph`,
+        }}
+      >
+        {description}
+      </Themed.p>
+    </Card>
+  </Link>
+)
 
 export default BlogCard
