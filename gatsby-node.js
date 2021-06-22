@@ -2,8 +2,6 @@ const { createFilePath } = require("gatsby-source-filesystem")
 const path = require("path")
 const getToc = require("./src/utils/get-toc.js")
 
-const PAGINATION_OFFSET = 20
-
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions
 
@@ -18,46 +16,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
   }
 }
 
-const createBlog = (createPage, edges) => {
-  createPaginatedPages(createPage, edges, `/blog`)
-}
-
-const createPaginatedPages = (createPage, edges, pathPrefix, context) => {
-  const pages = edges.reduce((acc, value, index) => {
-    const pageIndex = Math.floor(index / PAGINATION_OFFSET)
-
-    if (!acc[pageIndex]) {
-      acc[pageIndex] = []
-    }
-
-    acc[pageIndex].push(value.node.id)
-
-    return acc
-  }, [])
-
-  pages.forEach((page, index) => {
-    const previousPagePath = `${pathPrefix}/${index + 1}`
-    const nextPagePath = index === 1 ? pathPrefix : `${pathPrefix}/${index - 1}`
-
-    createPage({
-      path: index > 0 ? `${pathPrefix}/${index}` : `${pathPrefix}`,
-      component: path.resolve(`src/templates/Blog/index.js`),
-      context: {
-        pagination: {
-          page,
-          nextPagePath: index === 0 ? null : nextPagePath,
-          previousPagePath:
-            index === pages.length - 1 ? null : previousPagePath,
-          pageCount: pages.length,
-          pathPrefix,
-        },
-        ...context,
-      },
-    })
-  })
-}
-
-const createArticles = (createPage, edges) => {
+const createPosts = (createPage, edges) => {
   edges.forEach(({ node }, i) => {
     const {
       fields: { slug: pathName },
@@ -72,7 +31,7 @@ const createArticles = (createPage, edges) => {
 
     createPage({
       path: pathName,
-      component: path.resolve(`src/templates/Article/index.js`),
+      component: path.resolve(`src/templates/Post/index.js`),
       context: {
         id: node.id,
         slug,
@@ -87,24 +46,15 @@ const createArticles = (createPage, edges) => {
 exports.createPages = ({ actions, graphql }) =>
   graphql(`
     query {
-      allMdx(
-        sort: { order: DESC, fields: [frontmatter___date] }
-        filter: { frontmatter: { published: { eq: true } } }
-      ) {
+      allMdx {
         edges {
           node {
             id
-            body
-            excerpt
             fields {
               slug
             }
             tableOfContents
             frontmatter {
-              title
-              description
-              date
-              published
               hasIntro
             }
           }
@@ -120,6 +70,5 @@ exports.createPages = ({ actions, graphql }) =>
       allMdx: { edges },
     } = data
 
-    createBlog(actions.createPage, edges)
-    createArticles(actions.createPage, edges)
+    createPosts(actions.createPage, edges)
   })

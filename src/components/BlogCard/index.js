@@ -6,11 +6,12 @@ import Link from "../Link"
 const BlogCard = ({ article }) => {
   const {
     frontmatter: { title, cover, coverAlt, description },
+    fields: { slug },
   } = article
 
   return (
     <Link
-      to={article.fields.slug}
+      to={slug}
       sx={{
         textDecoration: `none`,
         margin: 0,

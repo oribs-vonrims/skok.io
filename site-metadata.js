@@ -39,7 +39,7 @@ module.exports = {
       coverAlt: `Blog image`,
       type: `Blog`,
     },
-    article: {
+    post: {
       order: false,
       type: `Article`,
       breadcrumb: `📝`,

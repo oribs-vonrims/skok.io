@@ -1,22 +1,19 @@
 /** @jsx jsx */
 import { jsx, Themed } from "theme-ui"
 import { graphql } from "gatsby"
-import Layout from "../../components/Layout"
-import useSiteMetadata from "../../hooks/useSiteMetadata"
-import BlogCard from "../../components/BlogCard"
-import Pagination from "../../components/Pagination"
+import Layout from "../components/Layout"
+import useSiteMetadata from "../hooks/useSiteMetadata"
+import BlogCard from "../components/BlogCard"
 
-const Blog = ({ data: { file, allMdx }, pageContext: { pagination } }) => {
+const Blog = ({ data: { file, allMdx } }) => {
   const {
     pages: {
       blog: { to, title, description, coverAlt, type, breadcrumb },
     },
   } = useSiteMetadata()
-  const { page, nextPagePath, previousPagePath } = pagination
+
   const covers = file?.childImageSharp
-  const articles = page.map(id =>
-    allMdx.edges.find(edge => edge.node.id === id)
-  )
+  const articles = allMdx.edges.map(({ node }) => node)
 
   return (
     <Layout
@@ -31,11 +28,9 @@ const Blog = ({ data: { file, allMdx }, pageContext: { pagination } }) => {
     >
       <Themed.h1>{title}</Themed.h1>
 
-      {articles.map(({ node }) => (
-        <BlogCard key={node.id} article={node} />
+      {articles.map(({ id, ...article }) => (
+        <BlogCard key={id} article={article} />
       ))}
-
-      <Pagination previous={previousPagePath} next={nextPagePath} />
     </Layout>
   )
 }
@@ -49,7 +44,7 @@ export const query = graphql`
         ...ChildImageSharpFields
       }
     }
-    allMdx {
+    allMdx(sort: { order: DESC, fields: [frontmatter___date] }) {
       edges {
         node {
           id
