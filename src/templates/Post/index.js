@@ -11,20 +11,20 @@ import {
 import useSiteMetadata from "../../hooks/useSiteMetadata"
 import useScrollBehavior from "../../hooks/useScrollBehavior"
 import Layout from "../../components/Layout"
-import ArticleCover from "../../components/ArticleCover"
-import ArticleMeta from "../../components/ArticleMeta"
+import PostCover from "../../components/PostCover"
+import PostMeta from "../../components/PostMeta"
 import Pagination from "../../components/Pagination"
 import scrollCodeBlock from "../../components/CodeBlock/scroller"
 import ScrollProgress from "../../components/ScrollProgress"
 
-const Article = ({ pageContext, data }) => {
+const Post = ({ pageContext, data }) => {
   useScrollBehavior()
   useKey(`ArrowLeft`, event => scrollCodeBlock(event, `left`))
   useKey(`ArrowRight`, event => scrollCodeBlock(event, `right`))
 
   const {
     pages: {
-      article: { type, breadcrumb },
+      post: { type, breadcrumb },
     },
   } = useSiteMetadata()
 
@@ -57,12 +57,12 @@ const Article = ({ pageContext, data }) => {
           coverAlt={coverAlt}
           description={description}
           breadcrumb={breadcrumb}
-          pageName="article"
+          pageName="post"
         >
-          {cover && coverAlt && <ArticleCover src={cover} alt={coverAlt} />}
+          {cover && coverAlt && <PostCover src={cover} alt={coverAlt} />}
           <div data-speakable="true" ref={notationRef}>
             <Themed.h1>{title}</Themed.h1>
-            <ArticleMeta slug={slug} date={date} />
+            <PostMeta slug={slug} date={date} />
             <MDXRenderer tocItems={tocItems} headerIds={headerIds}>
               {body}
             </MDXRenderer>
@@ -79,7 +79,7 @@ const Article = ({ pageContext, data }) => {
   )
 }
 
-export default Article
+export default Post
 
 export const query = graphql`
   query ($id: String!) {

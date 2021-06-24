@@ -28,7 +28,7 @@ const SchemaOrg = ({
   pages: {
     home: { breadcrumb: homeBreadcrumb },
     blog: { to: blogTo, breadcrumb: blogBreadcrumb },
-    article: { breadcrumb: articleBreadcrumb },
+    post: { breadcrumb: articleBreadcrumb },
   },
 }) => {
   const fullName = `${firstName} ${lastName}`

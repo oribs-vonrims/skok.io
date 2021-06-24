@@ -49,7 +49,7 @@ const useSiteMetadata = () => {
                 coverAlt
                 type
               }
-              article {
+              post {
                 order
                 breadcrumb
                 type
