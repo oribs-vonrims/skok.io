@@ -147,13 +147,9 @@ module.exports = {
           },
           "branch-deploy": {
             policy: [{ userAgent: "*", disallow: ["/"] }],
-            sitemap: ``,
-            host: ``,
           },
           "deploy-preview": {
             policy: [{ userAgent: `*`, disallow: [`/`] }],
-            sitemap: ``,
-            host: ``,
           },
         },
       },
