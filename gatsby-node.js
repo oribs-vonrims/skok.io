@@ -1,49 +1,39 @@
 const { createFilePath } = require("gatsby-source-filesystem")
 const path = require("path")
+const { pages } = require("./site-metadata")
+const slashify = require("./src/utils/slashify")
 const getToc = require("./src/utils/get-toc.js")
+const { IMAGES_PATH, POST_TEMPLATE_PATH } = require("./src/utils/constants")
 
-exports.onCreateNode = ({ node, actions, getNode }) => {
-  const { createNodeField } = actions
-
+exports.onCreateNode = ({ node, getNode, actions: { createNodeField } }) => {
   if (node.internal.type === `Mdx`) {
-    const value = createFilePath({ node, getNode })
-
     createNodeField({
       name: `slug`,
-      value: `/blog${value}`,
+      value: createFilePath({ node, getNode }).replace(/\//g, ``),
       node,
     })
   }
 }
 
-const createPosts = (createPage, edges) => {
-  edges.forEach(({ node }, i) => {
-    const {
-      fields: { slug: pathName },
-      tableOfContents: { items: tocItems },
-      frontmatter: { hasIntro },
-    } = node
-    const slug = pathName.replace(`/blog/`, ``).replace(`/`, ``)
-    const prev = i === 0 ? null : edges[i - 1].node
-    const next = i === edges.length - 1 ? null : edges[i + 1].node
+exports.onCreatePage = ({ page, actions: { createPage, deletePage } }) => {
+  const pagesMetadata = Object.values(pages)
+    .map(({ pathName, image }) => [slashify(pathName), image])
+    .filter(([pathName, image]) => pathName && image)
 
-    const toc = getToc(tocItems, hasIntro)
-
-    createPage({
-      path: pathName,
-      component: path.resolve(`src/templates/Post/index.js`),
-      context: {
-        id: node.id,
-        slug,
-        prev,
-        next,
-        toc,
-      },
-    })
+  pagesMetadata.forEach(([pathName, image]) => {
+    if (page.path === pathName) {
+      deletePage(page)
+      createPage({
+        ...page,
+        context: {
+          image: path.join(process.cwd(), IMAGES_PATH, image),
+        },
+      })
+    }
   })
 }
 
-exports.createPages = ({ actions, graphql }) =>
+exports.createPages = ({ actions: { createPage }, graphql }) =>
   graphql(`
     query {
       allMdx {
@@ -61,14 +51,55 @@ exports.createPages = ({ actions, graphql }) =>
         }
       }
     }
-  `).then(({ data, errors }) => {
-    if (errors) {
-      return Promise.reject(errors)
+  `).then(
+    ({
+      data: {
+        allMdx: { edges },
+      },
+      errors,
+    }) => {
+      if (errors) {
+        return Promise.reject(errors)
+      }
+
+      edges.forEach(
+        (
+          {
+            node: {
+              id,
+              fields: { slug },
+              tableOfContents: { items: tocItems },
+              frontmatter: { hasIntro },
+            },
+          },
+          index
+        ) => {
+          const {
+            blog: { pathName: blogPathName },
+          } = pages
+          const previousPost =
+            index === 0
+              ? null
+              : slashify(blogPathName, edges[index - 1].node.fields.slug)
+          const nextPost =
+            index === edges.length - 1
+              ? null
+              : slashify(blogPathName, edges[index + 1].node.fields.slug)
+
+          const toc = getToc(tocItems, hasIntro)
+
+          createPage({
+            path: slashify(blogPathName, slug),
+            component: path.resolve(POST_TEMPLATE_PATH),
+            context: {
+              id,
+              slug,
+              previousPost,
+              nextPost,
+              toc,
+            },
+          })
+        }
+      )
     }
-
-    const {
-      allMdx: { edges },
-    } = data
-
-    createPosts(actions.createPage, edges)
-  })
+  )

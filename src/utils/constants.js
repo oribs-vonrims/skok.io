@@ -3,9 +3,16 @@ const CODE_BLOCK_CLASS_NAME = `code-block`
 const CODE_BLOCK_CONTAINER_CLASS_NAME = `code-block-container`
 const CODE_BLOCK_SCROLL_STEP = 100
 
+const IMAGES_PATH = `./src/assets/images`
+const POSTS_PATH = `./posts`
+const POST_TEMPLATE_PATH = `./src/templates/post/index.js`
+
 module.exports = {
   CODE_BLOCK_COPY_CLICK_TIMEOUT,
   CODE_BLOCK_CLASS_NAME,
   CODE_BLOCK_CONTAINER_CLASS_NAME,
   CODE_BLOCK_SCROLL_STEP,
+  IMAGES_PATH,
+  POSTS_PATH,
+  POST_TEMPLATE_PATH,
 }

@@ -11,6 +11,7 @@ const useSiteMetadata = () => {
             firstName
             lastName
             siteUrl
+            siteName
             language
             speakableSelector
             logo {
@@ -30,34 +31,28 @@ const useSiteMetadata = () => {
             }
             pages {
               home {
-                to
-                order
-                label
-                breadcrumb
+                id
+                pathName
                 title
                 description
-                coverAlt
+                image
+                imageAlt
+                breadcrumb
                 type
               }
               blog {
-                to
-                order
-                label
-                breadcrumb
+                id
+                pathName
                 title
                 description
-                coverAlt
+                image
+                imageAlt
+                breadcrumb
                 type
               }
               post {
-                order
-                breadcrumb
+                id
                 type
-              }
-              notFound {
-                order
-                title
-                description
               }
             }
             colorModes

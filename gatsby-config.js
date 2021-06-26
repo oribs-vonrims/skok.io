@@ -1,28 +1,41 @@
 const path = require("path")
 const remarkSlug = require("remark-slug")
 const siteMetadata = require("./site-metadata")
+const slashify = require("./src/utils/slashify")
+const { POSTS_PATH, IMAGES_PATH } = require("./src/utils/constants")
 
 require("dotenv").config({
   path: `.env.${process.env.NODE_ENV}`,
 })
 
-const { siteUrl } = siteMetadata
+const {
+  NODE_ENV,
+  SITE_URL,
+  URL: NETLIFY_SITE_URL = SITE_URL,
+  DEPLOY_PRIME_URL: NETLIFY_DEPLOY_URL = NETLIFY_SITE_URL,
+  CONTEXT: NETLIFY_ENV = NODE_ENV,
+} = process.env
+const isNetlifyProduction = NETLIFY_ENV === `production`
+const siteUrl = isNetlifyProduction ? NETLIFY_SITE_URL : NETLIFY_DEPLOY_URL
 
 module.exports = {
-  siteMetadata,
+  siteMetadata: {
+    ...siteMetadata,
+    siteUrl,
+  },
   plugins: [
     {
       resolve: `gatsby-source-filesystem`,
       options: {
         name: `images`,
-        path: path.resolve(`./src/assets/images`),
+        path: path.resolve(IMAGES_PATH),
       },
     },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
         name: `posts`,
-        path: path.resolve(`./posts`),
+        path: path.resolve(POSTS_PATH),
       },
     },
     {
@@ -34,7 +47,7 @@ module.exports = {
           {
             resolve: `gatsby-remark-images`,
             options: {
-              maxWidth: 1200,
+              maxWidth: 900,
               withWebp: true,
               quality: 100,
               loading: `lazy`,
@@ -66,8 +79,8 @@ module.exports = {
       resolve: `gatsby-plugin-manifest`,
       options: {
         name: `Vladimir Skok`,
-        short_name: `VS`,
-        description: `Personal blog about web development.`,
+        short_name: `skok.dev`,
+        description: `Software engineering blog`,
         lang: `en`,
         start_url: `/`,
         background_color: `#fff`,
@@ -77,16 +90,72 @@ module.exports = {
       },
     },
     {
+      resolve: `gatsby-plugin-sitemap`,
+      options: {
+        query: `{
+          allMdx {
+            nodes {
+              frontmatter {
+                datePublished
+                dateModified
+              }
+              fields {
+                slug
+              }
+            }
+          }
+        }`,
+        resolveSiteUrl: () => siteUrl,
+        resolvePages: ({ allMdx: { nodes: mdxNodes } }) => {
+          const { pages } = siteMetadata
+          const {
+            blog: { pathName: blogPathName },
+          } = pages
+
+          const allPages = Object.values(pages).reduce((acc, { pathName }) => {
+            if (pathName) {
+              acc.push({ path: slashify(pathName) })
+            }
+            return acc
+          }, [])
+
+          const allArticles = mdxNodes.map(
+            ({
+              frontmatter: { datePublished, dateModified },
+              fields: { slug },
+            }) => ({
+              path: slashify(blogPathName, slug),
+              lastmod: dateModified ? dateModified : datePublished,
+            })
+          )
+
+          return [...allPages, ...allArticles]
+        },
+        serialize: ({ path: url, lastmod }) => ({
+          url,
+          lastmod,
+        }),
+      },
+    },
+    {
       resolve: `gatsby-plugin-robots-txt`,
       options: {
-        host: siteUrl,
-        sitemap: `${siteUrl}/sitemap.xml`,
-        policy: [
-          {
-            userAgent: `*`,
-            disallow: [`/`],
+        resolveEnv: () => NETLIFY_ENV,
+        env: {
+          production: {
+            policy: [{ userAgent: `*` }],
           },
-        ],
+          "branch-deploy": {
+            policy: [{ userAgent: "*", disallow: ["/"] }],
+            sitemap: null,
+            host: null,
+          },
+          "deploy-preview": {
+            policy: [{ userAgent: `*`, disallow: [`/`] }],
+            sitemap: null,
+            host: null,
+          },
+        },
       },
     },
     {
@@ -95,11 +164,10 @@ module.exports = {
         rules: [`fonts`],
       },
     },
-    `gatsby-plugin-sitemap`,
+    `gatsby-plugin-image`,
     `gatsby-plugin-offline`,
     `gatsby-plugin-theme-ui`,
     `gatsby-transformer-sharp`,
     `gatsby-plugin-react-helmet`,
-    `gatsby-plugin-webpack-size`,
   ],
 }
