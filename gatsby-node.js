@@ -5,6 +5,7 @@ const slashify = require("./src/utils/slashify")
 const getToc = require("./src/utils/get-toc.js")
 const { IMAGES_PATH, POST_TEMPLATE_PATH } = require("./src/utils/constants")
 
+// Create slugs from file names
 exports.onCreateNode = ({ node, getNode, actions: { createNodeField } }) => {
   if (node.internal.type === `Mdx`) {
     createNodeField({
@@ -15,6 +16,7 @@ exports.onCreateNode = ({ node, getNode, actions: { createNodeField } }) => {
   }
 }
 
+// Pass SEO image data in page context
 exports.onCreatePage = ({ page, actions: { createPage, deletePage } }) => {
   const pagesMetadata = Object.values(pages)
     .map(({ pathName, image }) => [slashify(pathName), image])
@@ -33,8 +35,18 @@ exports.onCreatePage = ({ page, actions: { createPage, deletePage } }) => {
   })
 }
 
-exports.createPages = ({ actions: { createPage }, graphql }) =>
-  graphql(`
+// Generate blog posts
+exports.createPages = async ({
+  actions: { createPage },
+  graphql,
+  reporter,
+}) => {
+  const {
+    data: {
+      allMdx: { edges },
+    },
+    errors,
+  } = await graphql(`
     query {
       allMdx {
         edges {
@@ -51,55 +63,53 @@ exports.createPages = ({ actions: { createPage }, graphql }) =>
         }
       }
     }
-  `).then(
-    ({
-      data: {
-        allMdx: { edges },
+  `)
+
+  if (errors) {
+    reporter.panicOnBuild(`There was an error loading posts`, errors)
+    return
+  }
+
+  edges.forEach(
+    (
+      {
+        node: {
+          id,
+          fields: { slug },
+          tableOfContents: { items: tocItems },
+          frontmatter: { hasIntro },
+        },
       },
-      errors,
-    }) => {
-      if (errors) {
-        return Promise.reject(errors)
-      }
+      index
+    ) => {
+      const {
+        blog: { pathName: blogPathName },
+      } = pages
 
-      edges.forEach(
-        (
-          {
-            node: {
-              id,
-              fields: { slug },
-              tableOfContents: { items: tocItems },
-              frontmatter: { hasIntro },
-            },
-          },
-          index
-        ) => {
-          const {
-            blog: { pathName: blogPathName },
-          } = pages
-          const previousPost =
-            index === 0
-              ? null
-              : slashify(blogPathName, edges[index - 1].node.fields.slug)
-          const nextPost =
-            index === edges.length - 1
-              ? null
-              : slashify(blogPathName, edges[index + 1].node.fields.slug)
+      // Create next and previous post links for the current post.
+      const previousPost =
+        index === 0
+          ? null
+          : slashify(blogPathName, edges[index - 1].node.fields.slug)
+      const nextPost =
+        index === edges.length - 1
+          ? null
+          : slashify(blogPathName, edges[index + 1].node.fields.slug)
 
-          const toc = getToc(tocItems, hasIntro)
+      // Generate table of contents data
+      const toc = getToc(tocItems, hasIntro)
 
-          createPage({
-            path: slashify(blogPathName, slug),
-            component: path.resolve(POST_TEMPLATE_PATH),
-            context: {
-              id,
-              slug,
-              previousPost,
-              nextPost,
-              toc,
-            },
-          })
-        }
-      )
+      createPage({
+        path: slashify(blogPathName, slug),
+        component: path.resolve(POST_TEMPLATE_PATH),
+        context: {
+          id,
+          slug,
+          previousPost,
+          nextPost,
+          toc,
+        },
+      })
     }
   )
+}

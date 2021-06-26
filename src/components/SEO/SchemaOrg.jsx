@@ -28,6 +28,7 @@ const SchemaOrg = ({
   pages: {
     home: { breadcrumb: homeBreadcrumb },
     blog: { breadcrumb: blogBreadcrumb, pathName: blogPathName },
+    post: { breadcrumb: postBreadcrumb },
   },
   activePages: { isHome, isBlog, isAbout, isContact, isArticle },
   url,
@@ -127,7 +128,7 @@ const SchemaOrg = ({
       },
       {
         id: articlePageUrl,
-        name: title,
+        name: `${postBreadcrumb} ${title}`,
       }
     )
   }

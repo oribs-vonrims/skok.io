@@ -53,6 +53,7 @@ const useSiteMetadata = () => {
               post {
                 id
                 type
+                breadcrumb
               }
             }
             colorModes

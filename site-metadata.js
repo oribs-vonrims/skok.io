@@ -1,7 +1,6 @@
 module.exports = {
   firstName: `Vladimir`,
   lastName: `Skok`,
-  // siteUrl: `https://skok.netlify.app`,
   siteName: `Vladimir Skok`,
   logo: {
     url: `logo.jpg`,
@@ -43,7 +42,7 @@ module.exports = {
     post: {
       id: `article`,
       type: `Article`,
-      // breadcrumb: `📝`,
+      breadcrumb: `📝`,
     },
   },
   copyrightYear: `2021`,
