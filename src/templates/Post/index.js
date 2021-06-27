@@ -37,7 +37,7 @@ const Post = ({
     previousPost,
     nextPost,
     slug,
-    toc: { ids: headerIds, items: tocItems },
+    tableOfContents: { ids: headerIds, items: tocItems },
   },
 }) => {
   const {
@@ -71,7 +71,10 @@ const Post = ({
           <div data-speakable="true" ref={notationRef}>
             <Themed.h1>{title}</Themed.h1>
             <PostMeta slug={slug} date={datePublished} />
-            <MDXRenderer tocItems={tocItems} headerIds={headerIds}>
+            <MDXRenderer
+              tableOfContentsItems={tocItems}
+              tableOfContentsHeaderIds={headerIds}
+            >
               {body}
             </MDXRenderer>
           </div>
