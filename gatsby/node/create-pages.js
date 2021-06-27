@@ -6,30 +6,32 @@ const {
 const slashify = require("../../src/utils/slashify")
 const { POST_TEMPLATE_PATH } = require("../../config/paths")
 
+const query = `
+  query {
+    allMdx {
+      edges {
+        node {
+          id
+          fields {
+            slug
+          }
+          tableOfContents
+          frontmatter {
+            hasIntro
+          }
+        }
+      }
+    }
+  }
+`
+
 const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
   const {
     data: {
       allMdx: { edges },
     },
     errors,
-  } = await graphql(`
-    query {
-      allMdx {
-        edges {
-          node {
-            id
-            fields {
-              slug
-            }
-            tableOfContents
-            frontmatter {
-              hasIntro
-            }
-          }
-        }
-      }
-    }
-  `)
+  } = await graphql(query)
 
   if (errors) {
     reporter.panicOnBuild(`There was an error loading posts`, errors)
