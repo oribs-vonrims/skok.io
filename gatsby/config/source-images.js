@@ -1,5 +1,5 @@
 const path = require("path")
-const { IMAGES_PATH } = require("../../src/utils/constants")
+const { IMAGES_PATH } = require("../../config/paths")
 
 const sourceImages = {
   resolve: `gatsby-source-filesystem`,
