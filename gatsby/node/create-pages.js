@@ -1,7 +1,7 @@
 const path = require("path")
+const { getToc } = require("./utils")
 const pages = require("../../config/pages")
 const slashify = require("../../src/utils/slashify")
-const getToc = require("../../src/utils/get-toc.js")
 const { POST_TEMPLATE_PATH } = require("../../config/paths")
 
 const createPages = async ({ actions: { createPage }, graphql, reporter }) => {

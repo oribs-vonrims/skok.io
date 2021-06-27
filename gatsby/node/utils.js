@@ -29,4 +29,4 @@ const getToc = (items = [], hasIntro) => {
   }
 }
 
-module.exports = getToc
+module.exports = { getToc }
