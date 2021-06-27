@@ -2,6 +2,7 @@ import setThemeFavicon from "./src/utils/set-theme-favicon"
 import setInactiveFavicon from "./src/utils/set-inactive-favicon"
 import setFavicon from "./src/utils/set-favicon"
 import bustCache from "./src/utils/bust-cache"
+import { INACTIVE_FAVICON_TIMEOUT } from "./src/utils/constants"
 import { wrapRootElement } from "./src/components/wrapRootElement"
 
 const onRouteUpdate = () => setThemeFavicon()
@@ -17,7 +18,7 @@ const onClientEntry = () => {
       visibilityTimer = setTimeout(() => {
         setInactiveFavicon()
         visibilityTimer = null
-      }, 5000)
+      }, INACTIVE_FAVICON_TIMEOUT)
     } else {
       if (visibilityTimer) {
         clearTimeout(visibilityTimer)
