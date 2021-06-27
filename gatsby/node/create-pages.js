@@ -17,6 +17,7 @@ const query = `
           }
           tableOfContents
           frontmatter {
+            title
             hasIntro
           }
         }
@@ -54,18 +55,15 @@ const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
         blog: { pathName: blogPathName },
       } = pages
 
-      const previousPost =
-        index === 0
-          ? null
-          : slashify(blogPathName, edges[index - 1].node.fields.slug)
-      const nextPost =
-        index === edges.length - 1
-          ? null
-          : slashify(blogPathName, edges[index + 1].node.fields.slug)
-
       const tableOfContents = getTableOfContents(
         tableOfContentsItems,
         hasTableOfContentsInto
+      )
+
+      const { previous: previousPost, next: nextPost } = getNearbyPosts(
+        edges,
+        index,
+        blogPathName
       )
 
       createPage({
@@ -74,16 +72,45 @@ const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
         context: {
           id,
           slug,
+          tableOfContents,
           previousPost,
           nextPost,
-          tableOfContents,
         },
       })
     }
   )
 }
 
-// Get the list of all header ids per post
+// Get title and URL of the previous and next posts
+const getNearbyPosts = (edges, index, pathName) => {
+  const isPrevious = index !== 0
+  const isNext = index !== edges.length - 1
+
+  const previousEdge = isPrevious ? edges[index - 1] : null
+  const nextEdge = isNext ? edges[index + 1] : null
+
+  return {
+    previous: previousEdge
+      ? {
+          url: getPostUrl(previousEdge, pathName),
+          title: getPostTitle(previousEdge),
+        }
+      : null,
+    next: nextEdge
+      ? {
+          url: getPostUrl(nextEdge, pathName),
+          title: getPostTitle(nextEdge),
+        }
+      : null,
+  }
+}
+
+// `getNearbyPosts` helpers
+const getPostTitle = edge => edge?.node?.frontmatter?.title
+const getPostSlug = edge => edge?.node?.fields?.slug
+const getPostUrl = (edge, pathName) => slashify(pathName, getPostSlug(edge))
+
+// Get the list of header IDs per post
 const getHeaderIds = (items = []) =>
   items.reduce((acc, { url, items: childItems }) => {
     if (url) {
@@ -97,7 +124,7 @@ const getHeaderIds = (items = []) =>
     return acc
   }, [])
 
-// Get all table of contents data per post
+// Get the table of contents data per post
 const getTableOfContents = (items = [], hasIntro) => {
   const { introId, introTitle } = tableOfContentsConfig
   const introItem = {
