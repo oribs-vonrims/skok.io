@@ -8,7 +8,7 @@ const { POST_TEMPLATE_PATH } = require("../../config/paths")
 
 const query = `
   query {
-    allMdx {
+    allMdx(sort: { order: DESC, fields: [frontmatter___datePublished] }) {
       edges {
         node {
           id
