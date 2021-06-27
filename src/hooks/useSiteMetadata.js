@@ -19,7 +19,6 @@ const useSiteMetadata = () => {
               width
               height
             }
-            copyrightYear
             address {
               addressCountry
               addressLocality

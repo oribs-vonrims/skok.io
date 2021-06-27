@@ -45,7 +45,6 @@ module.exports = {
       breadcrumb: `📝`,
     },
   },
-  copyrightYear: `2021`,
   colorModes: [`default`, `light`],
   favicons: {
     checkmarkEmoji: `/favicon-checkmark-emoji.svg`,
