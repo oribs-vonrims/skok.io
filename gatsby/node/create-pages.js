@@ -63,7 +63,7 @@ const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
           ? null
           : slashify(blogPathName, edges[index + 1].node.fields.slug)
 
-      const toc = getTableOfContents(
+      const tableOfContents = getTableOfContents(
         tableOfContentsItems,
         hasTableOfContentsInto
       )
@@ -76,7 +76,7 @@ const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
           slug,
           previousPost,
           nextPost,
-          toc,
+          tableOfContents,
         },
       })
     }
