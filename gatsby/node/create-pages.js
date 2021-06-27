@@ -1,6 +1,6 @@
 const path = require("path")
-const { getToc } = require("./utils")
 const pages = require("../../config/pages")
+const { tableOfContents } = require("../../config/components")
 const slashify = require("../../src/utils/slashify")
 const { POST_TEMPLATE_PATH } = require("../../config/paths")
 
@@ -50,7 +50,6 @@ const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
         blog: { pathName: blogPathName },
       } = pages
 
-      // Create next and previous post links for the current post.
       const previousPost =
         index === 0
           ? null
@@ -60,8 +59,7 @@ const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
           ? null
           : slashify(blogPathName, edges[index + 1].node.fields.slug)
 
-      // Generate table of contents data
-      const toc = getToc(tocItems, hasIntro)
+      const toc = getTableOfContents(tocItems, hasIntro)
 
       createPage({
         path: slashify(blogPathName, slug),
@@ -76,6 +74,35 @@ const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
       })
     }
   )
+}
+
+// Get the list of all header ids per post
+const getHeaderIds = (items = []) =>
+  items.reduce((acc, { url, items: childItems }) => {
+    if (url) {
+      acc.push(url.replace(`#`, ``))
+    }
+
+    if (childItems) {
+      acc.push(...getHeaderIds(childItems))
+    }
+
+    return acc
+  }, [])
+
+// Get all table of contents data per post
+const getTableOfContents = (items = [], hasIntro) => {
+  const { introId, introTitle } = tableOfContents
+  const introItem = {
+    url: `#${introId}`,
+    title: introTitle,
+  }
+  const allItems = hasIntro ? [introItem, ...items] : items
+
+  return {
+    ids: getHeaderIds(allItems),
+    items: allItems,
+  }
 }
 
 module.exports = createPages
