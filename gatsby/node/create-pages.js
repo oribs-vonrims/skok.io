@@ -1,6 +1,8 @@
 const path = require("path")
 const pages = require("../../config/pages")
-const { tableOfContents } = require("../../config/components")
+const {
+  tableOfContents: tableOfContentsConfig,
+} = require("../../config/components")
 const slashify = require("../../src/utils/slashify")
 const { POST_TEMPLATE_PATH } = require("../../config/paths")
 
@@ -40,8 +42,8 @@ const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
         node: {
           id,
           fields: { slug },
-          tableOfContents: { items: tocItems },
-          frontmatter: { hasIntro },
+          tableOfContents: { items: tableOfContentsItems },
+          frontmatter: { hasIntro: hasTableOfContentsInto },
         },
       },
       index
@@ -59,7 +61,10 @@ const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
           ? null
           : slashify(blogPathName, edges[index + 1].node.fields.slug)
 
-      const toc = getTableOfContents(tocItems, hasIntro)
+      const toc = getTableOfContents(
+        tableOfContentsItems,
+        hasTableOfContentsInto
+      )
 
       createPage({
         path: slashify(blogPathName, slug),
@@ -92,7 +97,7 @@ const getHeaderIds = (items = []) =>
 
 // Get all table of contents data per post
 const getTableOfContents = (items = [], hasIntro) => {
-  const { introId, introTitle } = tableOfContents
+  const { introId, introTitle } = tableOfContentsConfig
   const introItem = {
     url: `#${introId}`,
     title: introTitle,
