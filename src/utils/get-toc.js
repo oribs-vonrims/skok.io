@@ -1,8 +1,6 @@
 const {
-  components: {
-    tableOfContents: { introId, introTitle },
-  },
-} = require("../../site-metadata")
+  tableOfContents: { introId, introTitle },
+} = require("../../config/components")
 
 const introItem = {
   url: `#${introId}`,

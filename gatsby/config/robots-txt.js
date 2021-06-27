@@ -2,6 +2,7 @@ require("dotenv").config({
   path: `.env.${process.env.NODE_ENV}`,
 })
 
+// const { NODE_ENV, NETLIFY_ENV = NODE_ENV } = process.env
 const { NODE_ENV, CONTEXT: NETLIFY_ENV = NODE_ENV } = process.env
 
 const robotsTxt = {
@@ -10,13 +11,27 @@ const robotsTxt = {
     resolveEnv: () => NETLIFY_ENV,
     env: {
       production: {
-        policy: [{ userAgent: `*` }],
+        policy: [
+          {
+            userAgent: `*`,
+          },
+        ],
       },
       "branch-deploy": {
-        policy: [{ userAgent: "*", disallow: ["/"] }],
+        policy: [
+          {
+            userAgent: `*`,
+            disallow: [`/`],
+          },
+        ],
       },
       "deploy-preview": {
-        policy: [{ userAgent: `*`, disallow: [`/`] }],
+        policy: [
+          {
+            userAgent: `*`,
+            disallow: [`/`],
+          },
+        ],
       },
     },
   },

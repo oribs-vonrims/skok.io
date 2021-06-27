@@ -1,5 +1,5 @@
 const path = require("path")
-const { pages } = require("../../site-metadata")
+const pages = require("../../config/pages")
 const slashify = require("../../src/utils/slashify")
 const getToc = require("../../src/utils/get-toc.js")
 const { POST_TEMPLATE_PATH } = require("../../src/utils/constants")
