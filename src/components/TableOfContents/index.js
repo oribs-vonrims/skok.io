@@ -22,7 +22,7 @@ const TableOfContents = ({ items, ids }) => {
     dispatch({
       type: `SET_HEADER_IDS`,
       payload: {
-        ids: ids,
+        ids,
       },
     })
   }, [dispatch, ids])

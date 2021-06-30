@@ -5,27 +5,30 @@ import { SCROLL_PROVIDER_THROTTLE_DEPLAY } from "../../utils/constants"
 import handleActiveHeaderId from "./handleActiveHeaderId"
 import handleProgress from "./handleProgress"
 
-const reducer = (state, { type, payload }) => {
+const reducer = (
+  state,
+  { type, payload: { ids, activeId, isVisible, scrollProgress } }
+) => {
   switch (type) {
     case `SET_HEADER_IDS`:
       return {
         ...state,
-        ids: [...payload.ids],
+        ids,
       }
     case `SET_ACTIVE_HEADER_ID`:
       return {
         ...state,
-        activeId: payload.activeId,
+        activeId,
       }
     case `SHOW_TABLE_OF_CONTENTS`:
       return {
         ...state,
-        isVisible: payload.isVisible,
+        isVisible,
       }
     case `SET_SCROLL_PROGRESS`:
       return {
         ...state,
-        scrollProgress: payload.scrollProgress,
+        scrollProgress,
       }
   }
 }
