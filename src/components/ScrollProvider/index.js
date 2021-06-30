@@ -1,6 +1,7 @@
 import React, { createContext, useReducer, useEffect } from "react"
 import throttle from "lodash.throttle"
 import useIsMounted from "../../hooks/useIsMounted"
+import { SCROLL_PROVIDER_THROTTLE_DEPLAY } from "../../utils/constants"
 import handleActiveHeaderId from "./handleActiveHeaderId"
 import handleProgress from "./handleProgress"
 
@@ -16,10 +17,10 @@ const reducer = (state, { type, payload }) => {
         ...state,
         activeId: payload.activeId,
       }
-    case `ENABLE_TOC`:
+    case `SHOW_TABLE_OF_CONTENTS`:
       return {
         ...state,
-        isTocEnabled: payload.isTocEnabled,
+        isVisible: payload.isVisible,
       }
     case `SET_SCROLL_PROGRESS`:
       return {
@@ -32,7 +33,7 @@ const reducer = (state, { type, payload }) => {
 const initialState = {
   ids: [],
   activeId: null,
-  isTocEnabled: false,
+  isVisible: false,
   scrollProgress: null,
 }
 
@@ -41,7 +42,8 @@ const ScrollContext = createContext()
 const ScrollProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const isMounted = useIsMounted()
-  const { ids, isTocEnabled } = state
+
+  const { ids, isVisible } = state
 
   useEffect(() => {
     dispatch({
@@ -60,19 +62,19 @@ const ScrollProvider = ({ children }) => {
           dispatch,
         })
 
-        if (isTocEnabled) {
+        if (isVisible) {
           handleActiveHeaderId({
             ids,
             dispatch,
           })
         }
       }
-    }, 200)
+    }, SCROLL_PROVIDER_THROTTLE_DEPLAY)
 
     window.addEventListener(`scroll`, handleScroll)
 
     return () => window.removeEventListener(`scroll`, handleScroll)
-  }, [ids, isTocEnabled, isMounted])
+  }, [ids, isVisible, isMounted])
 
   return (
     <ScrollContext.Provider value={[state, dispatch]}>

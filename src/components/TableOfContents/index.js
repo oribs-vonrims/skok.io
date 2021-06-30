@@ -11,9 +11,9 @@ const TableOfContents = ({ items, ids }) => {
 
   useEffect(() => {
     dispatch({
-      type: `ENABLE_TOC`,
+      type: `SHOW_TABLE_OF_CONTENTS`,
       payload: {
-        isTocEnabled: true,
+        isVisible: true,
       },
     })
   }, [dispatch])
