@@ -6,7 +6,7 @@ import Container from "./Container"
 import Details from "./Details"
 import renderItems from "./render-items"
 
-const TableOfContents = ({ items, headerIds }) => {
+const TableOfContents = ({ items, ids }) => {
   const [{ activeHeaderId }, dispatch] = useContext(ScrollContext)
 
   useEffect(() => {
@@ -22,10 +22,10 @@ const TableOfContents = ({ items, headerIds }) => {
     dispatch({
       type: `SET_HEADER_IDS`,
       payload: {
-        headerIds: headerIds,
+        ids: ids,
       },
     })
-  }, [dispatch, headerIds])
+  }, [dispatch, ids])
 
   return (
     <Container>

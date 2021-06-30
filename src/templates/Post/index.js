@@ -37,7 +37,10 @@ const Post = ({
     previousPost,
     nextPost,
     slug,
-    tableOfContents: { ids: headerIds, items: tocItems },
+    tableOfContents: {
+      ids: tableOfContentsHeaderIds,
+      items: tableOfContentsItems,
+    },
   },
 }) => {
   const {
@@ -72,8 +75,8 @@ const Post = ({
             <Themed.h1>{title}</Themed.h1>
             <PostMeta slug={slug} date={datePublished} />
             <MDXRenderer
-              tableOfContentsItems={tocItems}
-              tableOfContentsHeaderIds={headerIds}
+              tableOfContentsItems={tableOfContentsItems}
+              tableOfContentsHeaderIds={tableOfContentsHeaderIds}
             >
               {body}
             </MDXRenderer>
