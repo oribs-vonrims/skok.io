@@ -7,7 +7,7 @@ import Details from "./Details"
 import renderItems from "./render-items"
 
 const TableOfContents = ({ items, ids }) => {
-  const [{ activeHeaderId }, dispatch] = useContext(ScrollContext)
+  const [{ activeId }, dispatch] = useContext(ScrollContext)
 
   useEffect(() => {
     dispatch({
@@ -29,7 +29,7 @@ const TableOfContents = ({ items, ids }) => {
 
   return (
     <Container>
-      <Details>{renderItems(items, activeHeaderId)}</Details>
+      <Details>{renderItems(items, activeId)}</Details>
     </Container>
   )
 }

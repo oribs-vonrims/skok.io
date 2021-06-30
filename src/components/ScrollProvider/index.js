@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useRef, useEffect } from "react"
+import React, { createContext, useReducer, useEffect } from "react"
 import throttle from "lodash.throttle"
 import useIsMounted from "../../hooks/useIsMounted"
 import handleActiveHeaderId from "./handleActiveHeaderId"
@@ -14,7 +14,7 @@ const reducer = (state, { type, payload }) => {
     case `SET_ACTIVE_HEADER_ID`:
       return {
         ...state,
-        activeHeaderId: payload.activeHeaderId,
+        activeId: payload.activeId,
       }
     case `ENABLE_TOC`:
       return {
@@ -31,7 +31,7 @@ const reducer = (state, { type, payload }) => {
 
 const initialState = {
   ids: [],
-  activeHeaderId: null,
+  activeId: null,
   isTocEnabled: false,
   scrollProgress: null,
 }
@@ -47,7 +47,7 @@ const ScrollProvider = ({ children }) => {
     dispatch({
       type: `SET_ACTIVE_HEADER_ID`,
       payload: {
-        activeHeaderId: ids[0],
+        activeId: ids[0],
       },
     })
   }, [ids])

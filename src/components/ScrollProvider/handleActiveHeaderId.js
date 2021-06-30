@@ -16,7 +16,7 @@ const handleActiveHeaderId = ({ ids, dispatch }) => {
       return dispatch({
         type: `SET_ACTIVE_HEADER_ID`,
         payload: {
-          activeHeaderId: topHeaderId,
+          activeId: topHeaderId,
         },
       })
     }
@@ -27,7 +27,7 @@ const handleActiveHeaderId = ({ ids, dispatch }) => {
   dispatch({
     type: `SET_ACTIVE_HEADER_ID`,
     payload: {
-      activeHeaderId: ids[0],
+      activeId: ids[0],
     },
   })
 }
