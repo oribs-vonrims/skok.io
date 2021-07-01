@@ -17,7 +17,10 @@ const seo = {
     addressLocality: `Atlanta`,
     addressRegion: `GA`,
   },
-  speakableSelector: [`[data-speakable="true"]`],
+  speakableSelector: {
+    attribute: `data-speakable`,
+    value: true,
+  },
 }
 
 module.exports = seo

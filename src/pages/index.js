@@ -33,7 +33,6 @@ const Home = ({
           justifyContent: `center`,
           minHeight: `100%`,
         }}
-        data-speakable="true"
       >
         <Themed.h1
           sx={{

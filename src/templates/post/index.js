@@ -71,7 +71,7 @@ const Post = ({
           {gatsbyImageData && imageAlt && (
             <GatsbyImage image={gatsbyImageData} alt={imageAlt} />
           )}
-          <div data-speakable="true" ref={notationRef}>
+          <div ref={notationRef}>
             <Themed.h1>{title}</Themed.h1>
             <PostMeta slug={slug} date={datePublished} />
             <MDXRenderer

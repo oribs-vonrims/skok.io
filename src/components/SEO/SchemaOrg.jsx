@@ -30,7 +30,7 @@ const SchemaOrg = ({
     blog: { breadcrumb: blogBreadcrumb, pathName: blogPathName },
     post: { breadcrumb: postBreadcrumb },
   },
-  activePages: { isHome, isBlog, isAbout, isContact, isArticle },
+  activePages: { isHome, isBlog, isAbout, isContact, isPost },
   url,
 }) => {
   const schemaId = id => `${siteUrl}/#${id}`
@@ -39,6 +39,8 @@ const SchemaOrg = ({
   const pageUrl = slashify(siteUrl, pathName)
   const blogPageUrl = slashify(siteUrl, blogPathName)
   const articlePageUrl = slashify(siteUrl, blogPathName, slug)
+  // Convert `speakableSelector` to CSS selector
+  const cssSelector = `[${Object.values(speakableSelector).join(`=`)}]`
 
   const schemaOrgAddress = {
     "@type": `PostalAddress`,
@@ -90,11 +92,11 @@ const SchemaOrg = ({
         schemaOrg16x9ImageUrl,
       ],
     },
-    isArticle &&
+    isPost &&
       datePublished && {
         datePublished,
       },
-    isArticle && dateModified
+    isPost && dateModified
       ? { dateModified }
       : datePublished
       ? { dateModified: datePublished }
@@ -103,7 +105,7 @@ const SchemaOrg = ({
       speakableSelector && {
         speakable: {
           "@type": `SpeakableSpecification`,
-          cssSelector: speakableSelector,
+          cssSelector,
         },
       }
   )
@@ -120,7 +122,7 @@ const SchemaOrg = ({
       id: pageUrl,
       name: breadcrumb,
     })
-  } else if (isArticle) {
+  } else if (isPost) {
     breadcrumbList.push(
       {
         id: blogPageUrl,
@@ -149,7 +151,7 @@ const SchemaOrg = ({
   }
 
   const schemaOrg = {
-    "@context": "http://schema.org",
+    "@context": `http://schema.org`,
     "@graph": [
       schemaOrgAddress,
       schemaOrgPerson,
@@ -159,7 +161,7 @@ const SchemaOrg = ({
   }
 
   if (!isHome) {
-    schemaOrg["@graph"].push(schemaOrgBreadcrumbs)
+    schemaOrg[`@graph`].push(schemaOrgBreadcrumbs)
   }
 
   return (

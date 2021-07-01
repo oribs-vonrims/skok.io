@@ -13,7 +13,10 @@ const useSiteMetadata = () => {
             siteUrl
             siteName
             language
-            speakableSelector
+            speakableSelector {
+              attribute
+              value
+            }
             logo {
               url
               width

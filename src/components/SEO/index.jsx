@@ -5,7 +5,7 @@ import OpenGraph from "./OpenGraph"
 import Twitter from "./Twitter"
 import SchemaOrg from "./SchemaOrg"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
-import { getActivePages, getImageUrls, getCurrentUrl } from "./utils"
+import { getActivePages, getImageUrls, getCurrentUrl } from "./helpers"
 
 const SEO = ({
   pathName,

@@ -20,7 +20,7 @@ const pages = {
     type: `Blog`,
   },
   post: {
-    id: `article`,
+    id: `post`,
     type: `Article`,
     breadcrumb: `📝`,
   },
