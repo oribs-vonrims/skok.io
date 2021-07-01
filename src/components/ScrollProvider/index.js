@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useEffect } from "react"
-import throttle from "lodash.throttle"
+import { throttle } from "lodash-es"
 import useIsMounted from "../../hooks/useIsMounted"
 import { SCROLL_PROVIDER_THROTTLE_DEPLAY } from "../../utils/constants"
 import handleActiveHeaderId from "./handleActiveHeaderId"
