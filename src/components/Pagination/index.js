@@ -1,23 +1,23 @@
 /** @jsx jsx */
-import { jsx, Flex, Box } from "theme-ui"
-import { useBreakpointIndex } from "@theme-ui/match-media"
-import Link from "../Link"
+import { Flex, jsx } from "theme-ui"
+import Link from "./link"
 
-const Pagination = ({ previous, next }) => {
-  const breakpointIndex = useBreakpointIndex()
-  const isMobile = breakpointIndex === 0
-
-  return (
-    <Flex sx={{ marginBottom: 4 }}>
-      {previous && (
-        <Link to={previous.url}>
-          {isMobile ? `Previous Post` : previous.title}
-        </Link>
-      )}
-      <Box sx={{ marginX: `auto` }} />
-      {next && <Link to={next.url}>{isMobile ? `Next Post` : next.title}</Link>}
-    </Flex>
-  )
-}
+const Pagination = ({ previous, next }) => (
+  <Flex
+    sx={{
+      marginX: [-3, 0],
+      marginBottom: 4,
+      columnGap: [0, 4],
+      rowGap: [2, 0],
+      flexDirection: [`column`, `row`],
+      textAlign: `left`,
+    }}
+  >
+    {previous && (
+      <Link url={previous.url} title={previous.title} text="Previous" />
+    )}
+    {next && <Link url={next.url} title={next.title} text="Next" />}
+  </Flex>
+)
 
 export default Pagination
