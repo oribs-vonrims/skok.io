@@ -49,6 +49,7 @@ const Post = ({
     },
   } = useSiteMetadata()
 
+  // Apply smooth scrolling after mounting to avoid the page jumping
   useStyleSheet(`html`, { "scroll-behavior": `smooth` })
   useKey(`ArrowLeft`, event => scrollCodeBlock(event, `left`))
   useKey(`ArrowRight`, event => scrollCodeBlock(event, `right`))

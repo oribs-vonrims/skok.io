@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { Fragment } from "react"
 import { jsx, Container } from "theme-ui"
-import { isEmpty } from "lodash-es"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
 import GlobalStyles from "../GlobalStyles"
 import Header from "../Header"
