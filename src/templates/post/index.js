@@ -10,7 +10,7 @@ import {
   notationRef,
 } from "../../components/NotationProvider"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
-import useScrollBehavior from "../../hooks/useScrollBehavior"
+import useStyleSheet from "../../hooks/use-style-sheet"
 import Layout from "../../components/Layout"
 import PostMeta from "../../components/PostMeta"
 import Pagination from "../../components/Pagination"
@@ -49,7 +49,7 @@ const Post = ({
     },
   } = useSiteMetadata()
 
-  useScrollBehavior()
+  useStyleSheet(`html`, { "scroll-behavior": `smooth` })
   useKey(`ArrowLeft`, event => scrollCodeBlock(event, `left`))
   useKey(`ArrowRight`, event => scrollCodeBlock(event, `right`))
 
