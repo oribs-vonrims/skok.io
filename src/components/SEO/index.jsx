@@ -1,11 +1,10 @@
 import React from "react"
-// import { Helmet } from "react-helmet"
 import DefaultMeta from "./DefaultMeta"
 import OpenGraph from "./OpenGraph"
 import Twitter from "./Twitter"
 import SchemaOrg from "./SchemaOrg"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
-import { getActivePages, getImageUrls, getCurrentUrl } from "./helpers"
+import slashify from "../../utils/slashify"
 
 const SEO = ({
   pathName,
@@ -100,5 +99,46 @@ const SEO = ({
     </>
   )
 }
+
+const getCurrentUrl = ({
+  siteUrl,
+  pathName,
+  slug,
+  pages: {
+    blog: { pathName: blogPathName },
+  },
+  activePages: { isHome, isArticle },
+}) =>
+  isHome
+    ? siteUrl
+    : isArticle
+    ? slashify(siteUrl, blogPathName, slug)
+    : slashify(siteUrl, pathName)
+
+const getActivePages = ({ pages, pageId }) =>
+  Object.entries(pages).reduce((acc, page) => {
+    const [name, { id }] = page
+    const [firstLetter, ...remainingLetters] = name
+    const key = `is` + firstLetter.toUpperCase() + remainingLetters.join(``)
+    acc[key] = id === pageId
+
+    return acc
+  }, {})
+
+const getImageUrls = ({ images, siteUrl }) =>
+  Object.entries(images).reduce((acc, image) => {
+    const [
+      key,
+      {
+        images: {
+          fallback: { src: path },
+        },
+      },
+    ] = image
+    const url = `${siteUrl}${path}`
+    acc[`${key}ImageUrl`] = url
+
+    return acc
+  }, {})
 
 export default SEO
