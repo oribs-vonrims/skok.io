@@ -31,9 +31,6 @@ const Canvas = forwardRef((props, ref) => {
       width={CANVAS_SIZE}
       height={CANVAS_SIZE}
       sx={{
-        border: `1px solid #000`,
-        // width: `${CANVAS_SIZE / 10}px`,
-        // height: `${CANVAS_SIZE / 10}px`,
         width: `faviconCanvas`,
         height: `faviconCanvas`,
       }}

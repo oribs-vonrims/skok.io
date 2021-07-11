@@ -1,5 +1,7 @@
 /** @jsx jsx */
+import { useEffect, useState, Fragment } from "react"
 import { jsx, Themed } from "theme-ui"
+import { Global } from "@emotion/react"
 import { graphql } from "gatsby"
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import { useKey } from "react-use"
@@ -10,7 +12,6 @@ import {
   notationRef,
 } from "../../components/NotationProvider"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
-import useStyleSheet from "../../hooks/use-style-sheet"
 import Layout from "../../components/Layout"
 import PostMeta from "../../components/PostMeta"
 import Pagination from "../../components/Pagination"
@@ -48,48 +49,61 @@ const Post = ({
       post: { id, type },
     },
   } = useSiteMetadata()
+  const [isSmoothScroll, setIsSmoothScroll] = useState(false)
 
-  // Apply smooth scrolling after mounting to avoid the page jumping
-  useStyleSheet(`html`, { "scroll-behavior": `smooth` })
+  // Avoid page jumping by applying the smooth scroll behavior after component mount
+  useEffect(() => {
+    setIsSmoothScroll(true)
+    return () => setIsSmoothScroll(false)
+  }, [])
+
+  // Add event listeners for CodeBlock scroll
   useKey(`ArrowLeft`, event => scrollCodeBlock(event, `left`))
   useKey(`ArrowRight`, event => scrollCodeBlock(event, `right`))
 
   return (
-    <NotationProvider>
-      <ScrollProvider>
-        <ScrollProgress />
-        <Layout
-          pageId={id}
-          type={type}
-          slug={slug}
-          title={title}
-          description={description}
-          images={{ ...seoImages }}
-          imageAlt={imageAlt}
-          datePublished={datePublished}
-          dateModified={dateModified}
-        >
-          {gatsbyImageData && imageAlt && (
-            <GatsbyImage image={gatsbyImageData} alt={imageAlt} />
-          )}
-          <div ref={notationRef}>
-            <Themed.h1>{title}</Themed.h1>
-            <PostMeta slug={slug} date={datePublished} />
-            <MDXRenderer
-              tableOfContentsItems={tableOfContentsItems}
-              tableOfContentsHeaderIds={tableOfContentsHeaderIds}
-            >
-              {body}
-            </MDXRenderer>
-          </div>
-          {(previousPost || nextPost) && (
-            <Pagination previous={previousPost} next={nextPost} />
-          )}
-        </Layout>
-      </ScrollProvider>
-    </NotationProvider>
+    <Fragment>
+      {isSmoothScroll && <SmoothScroll />}
+      <NotationProvider>
+        <ScrollProvider>
+          <ScrollProgress />
+          <Layout
+            pageId={id}
+            type={type}
+            slug={slug}
+            title={title}
+            description={description}
+            images={{ ...seoImages }}
+            imageAlt={imageAlt}
+            datePublished={datePublished}
+            dateModified={dateModified}
+          >
+            {gatsbyImageData && imageAlt && (
+              <GatsbyImage image={gatsbyImageData} alt={imageAlt} />
+            )}
+            <div ref={notationRef}>
+              <Themed.h1>{title}</Themed.h1>
+              <PostMeta slug={slug} date={datePublished} />
+              <MDXRenderer
+                tableOfContentsItems={tableOfContentsItems}
+                tableOfContentsHeaderIds={tableOfContentsHeaderIds}
+              >
+                {body}
+              </MDXRenderer>
+            </div>
+            {(previousPost || nextPost) && (
+              <Pagination previous={previousPost} next={nextPost} />
+            )}
+          </Layout>
+        </ScrollProvider>
+      </NotationProvider>
+    </Fragment>
   )
 }
+
+const SmoothScroll = () => (
+  <Global styles={{ html: { scrollBehavior: `smooth` } }} />
+)
 
 export default Post
 
