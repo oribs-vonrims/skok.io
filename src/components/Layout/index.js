@@ -6,6 +6,7 @@ import GlobalStyles from "../GlobalStyles"
 import Header from "../Header"
 import PreloadLinks from "../PreloadLinks"
 import SEO from "../SEO"
+import Favicon from "../favicon"
 
 const Layout = ({
   children,
@@ -31,6 +32,7 @@ const Layout = ({
 
   return (
     <Fragment>
+      <Favicon />
       <GlobalStyles />
       <PreloadLinks />
       {pageId && (

@@ -1,6 +1,7 @@
 const favicons = {
-  light: `/favicon-light.svg`,
-  dark: `/favicon-dark.svg`,
+  light: `/favicons/light.svg`,
+  dark: `/favicons/dark.svg`,
+  default: `/favicons/default.svg`,
 }
 
 module.exports = favicons

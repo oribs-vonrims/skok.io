@@ -54,8 +54,8 @@ const useSiteMetadata = () => {
                 breadcrumb
               }
             }
-            colorModes
             favicons {
+              default
               light
               dark
             }
