@@ -74,10 +74,10 @@ const Favicon = () => {
       <Canvas />
       <Helmet>
         <link
-          rel={isSafari ? `mask-icon` : `icon`}
+          rel={`mask-icon`}
           id={FAVICON_LINK_ELEMENT_ID}
           href={href}
-          {...(isSafari && { color })}
+          {...{ color }}
         />
       </Helmet>
     </Fragment>
