@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, useThemeUI } from "theme-ui"
 import { getColor } from "@theme-ui/color"
-import { Fragment, useState, useEffect, useRef } from "react"
+import { Fragment, useState, useEffect } from "react"
 import { isSafari } from "react-device-detect"
 import { Helmet } from "react-helmet"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
@@ -10,14 +10,16 @@ import {
   COLOR_MODE_EVENT_NAME,
   COLOR_MODE_STORAGE_KEY,
   FAVICON_LINK_ELEMENT_ID,
-  FAVICON_CANVAS_DATA_ATTRIBUTE,
+  FAVICON_CANVAS_FRAME_NUMBER,
+  FAVICON_UPDATE_DELAY,
+  FAVICON_FRAME_STORAGE_KEY,
 } from "../../utils/constants"
 import Canvas from "./canvas"
 
 const Favicon = () => {
   const { favicons } = useSiteMetadata()
   const [href, setHref] = useState(() => getColorModeFavicon(favicons))
-  const canvasRef = useRef(null)
+  const [intervalId, setIntervalId] = useState(null)
   const { theme } = useThemeUI()
   const color = getColor(theme, `primary`)
 
@@ -27,39 +29,49 @@ const Favicon = () => {
       .filter(link => link.id !== FAVICON_LINK_ELEMENT_ID)
       .forEach(link => link.remove())
 
-    const observer = new MutationObserver(() => {
-      const href = canvasRef.current.getAttribute(FAVICON_CANVAS_DATA_ATTRIBUTE)
-      setHref(href)
-    })
-
     const handleVisibilityChange = () => {
       if (document.visibilityState === `hidden`) {
-        observer.observe(canvasRef.current, { attributes: true })
+        // Pull all favicon frames from local storage
+        const frames = Array.from({ length: FAVICON_CANVAS_FRAME_NUMBER }).map(
+          (_, i) =>
+            window.localStorage.getItem(`${FAVICON_FRAME_STORAGE_KEY}-${i}`)
+        )
+
+        let i = 0
+        const intervalId = setInterval(() => {
+          // Use vanilla JS to update favicon, because `setState` is too slow for inactive tab
+          const href = frames[i % FAVICON_CANVAS_FRAME_NUMBER]
+          document.getElementById(FAVICON_LINK_ELEMENT_ID).href = href
+          i++
+        }, FAVICON_UPDATE_DELAY)
+        setIntervalId(intervalId)
       }
 
       if (document.visibilityState === `visible`) {
-        observer.disconnect()
+        clearInterval(intervalId)
+        setIntervalId(null)
         const href = getColorModeFavicon(favicons)
-        setHref(href)
+        // Add hash to trick React optimization (from React standpoint we never changed `href`)
+        setHref(`${href}#${Date.now()}`)
       }
     }
 
-    const handlerColorModeChange = ({ colorMode }) =>
+    const handleColorModeChange = ({ colorMode }) =>
       setHref(favicons[colorMode])
 
     // Capture custom event emited by ColorModeButton component
-    window.addEventListener(COLOR_MODE_EVENT_NAME, handlerColorModeChange)
+    window.addEventListener(COLOR_MODE_EVENT_NAME, handleColorModeChange)
     document.addEventListener(`visibilitychange`, handleVisibilityChange)
 
     return () => {
+      window.removeEventListener(COLOR_MODE_EVENT_NAME, handleColorModeChange)
       document.removeEventListener(`visibilitychange`, handleVisibilityChange)
-      window.removeEventListener(COLOR_MODE_EVENT_NAME, handlerColorModeChange)
     }
-  }, [favicons])
+  }, [favicons, intervalId])
 
   return (
     <Fragment>
-      <Canvas ref={canvasRef} />
+      <Canvas />
       <Helmet>
         <link
           rel={isSafari ? `mask-icon` : `icon`}

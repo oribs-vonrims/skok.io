@@ -1,60 +1,60 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui"
-import { useEffect, forwardRef } from "react"
-import { useEnsuredForwardedRef } from "react-use"
+import { useEffect, useRef } from "react"
 import {
-  CANVAS_SIZE,
-  CANVAS_TIMEOUT_DELAY,
-  CANVAS_TIME_STEP,
-  FAVICON_CANVAS_DATA_ATTRIBUTE,
+  FAVICON_CANVAS_SIZE,
+  FAVICON_CANVAS_TIME_STEP,
+  FAVICON_CANVAS_FRAME_NUMBER,
+  FAVICON_FRAME_STORAGE_KEY,
 } from "../../utils/constants"
 
-const Canvas = forwardRef((props, ref) => {
-  const ensuredForwardedRef = useEnsuredForwardedRef(ref)
+const Canvas = () => {
+  const ref = useRef(null)
 
   useEffect(() => {
-    const canvas = ensuredForwardedRef.current
+    const canvas = ref.current
+
     let time = 0
-
-    const setIntervalId = setInterval(() => {
-      draw(canvas, time)
-      time += CANVAS_TIME_STEP
-    }, CANVAS_TIMEOUT_DELAY)
-
-    return () => clearInterval(setIntervalId)
-  }, [ensuredForwardedRef])
+    for (let i = 0; i < FAVICON_CANVAS_FRAME_NUMBER; i++) {
+      draw(canvas, time, i)
+      time += FAVICON_CANVAS_TIME_STEP
+    }
+  }, [])
 
   return (
     <canvas
-      ref={ensuredForwardedRef}
+      ref={ref}
       hidden={true}
-      width={CANVAS_SIZE}
-      height={CANVAS_SIZE}
+      width={FAVICON_CANVAS_SIZE}
+      height={FAVICON_CANVAS_SIZE}
       sx={{
         width: `faviconCanvas`,
         height: `faviconCanvas`,
       }}
-      {...props}
     />
   )
-})
+}
 
-const draw = (canvas, time) => {
+const draw = (canvas, time, i) => {
   const context = canvas.getContext(`2d`)
-  const rotation = (Math.PI / 8) * Math.sin(time * 2 * Math.PI) + Math.PI / 4
 
-  context.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
+  const maxAngle = Math.PI / 8
+  const initialAngle = Math.PI / 4
+  const oscillationAngle = time * 2 * Math.PI
+  const rotation = maxAngle * Math.sin(oscillationAngle) + initialAngle
+
+  context.clearRect(0, 0, FAVICON_CANVAS_SIZE, FAVICON_CANVAS_SIZE)
   context.setTransform(1, 0, 0, 1, 0, 0)
-  context.translate(CANVAS_SIZE / 2, CANVAS_SIZE / 2)
+  context.translate(FAVICON_CANVAS_SIZE / 2, FAVICON_CANVAS_SIZE / 2)
   context.rotate(rotation)
-  context.translate(-CANVAS_SIZE / 2, -CANVAS_SIZE / 2)
-  context.font = `480px Arial`
+  context.translate(-FAVICON_CANVAS_SIZE / 2, -FAVICON_CANVAS_SIZE / 2)
+  context.font = `48px Arial`
   context.textBaseline = `middle`
   context.textAlign = `center`
-  context.fillText(`👋`, CANVAS_SIZE / 2, CANVAS_SIZE / 2)
+  context.fillText(`👋`, FAVICON_CANVAS_SIZE / 2, FAVICON_CANVAS_SIZE / 2)
 
   const dataURL = canvas.toDataURL(`image/svg+xml`)
-  canvas.setAttribute(FAVICON_CANVAS_DATA_ATTRIBUTE, dataURL)
+  window.localStorage.setItem(`${FAVICON_FRAME_STORAGE_KEY}-${i}`, dataURL)
 }
 
 export default Canvas
