@@ -1,16 +1,14 @@
 import React from "react"
-import { Global } from "@emotion/core"
+import { Global } from "@emotion/react"
 import { useThemeUI } from "theme-ui"
+import { getColor } from "@theme-ui/color"
+import { isChrome } from "react-device-detect"
 import fontFaces from "../../gatsby-plugin-theme-ui/fontFaces"
-import { isChrome } from "../../utils/user-agent"
 
 const GlobalStyles = () => {
-  const {
-    theme: {
-      breakpoints: [tablet],
-      colors: { accent },
-    },
-  } = useThemeUI()
+  const { theme } = useThemeUI()
+  const tablet = theme.breakpoints[0]
+  const accent = getColor(theme, `accent`)
 
   return (
     <Global
@@ -34,7 +32,7 @@ const GlobalStyles = () => {
             // Chrome is the only browser that suports `overlay` (dusplays
             // scrollbar on top of content instead of taking up space)
             // In all other browsers always display scrollbars.
-            overflowY: isChrome() ? `overlay` : `scroll`,
+            overflowY: isChrome ? `overlay` : `scroll`,
             // Fix iOS font size issue in `CodeBlock` component
             // https://stackoverflow.com/a/22417120/3614631
             textSizeAdjust: `none`,

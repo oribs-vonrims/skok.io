@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx, Box, Flex } from "theme-ui"
 import Prism from "@theme-ui/prism"
+import { isFirefox } from "react-device-detect"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
-import { isFirefox } from "../../utils/user-agent"
 import {
   CODE_BLOCK_CLASS_NAME,
   CODE_BLOCK_CONTAINER_CLASS_NAME,
@@ -10,22 +10,6 @@ import {
 import CopyButton from "./copy-button"
 import FileName from "./file-name"
 import LanguageLabel from "./language-label"
-
-const languageRegex = new RegExp(`language-`)
-
-const getLanguage = (className, regex = languageRegex) => {
-  const firstClassName = className?.split(` `)[0]
-  const isLanguageClassName = firstClassName?.match(regex)
-
-  return isLanguageClassName ? firstClassName.replace(regex, ``) : null
-}
-
-const getBorderRadius = isFileNameVisible => ({
-  borderTopLeftRadius: isFileNameVisible ? 0 : 2,
-  borderTopRightRadius: isFileNameVisible ? 0 : 2,
-  borderBottomLeftRadius: 2,
-  borderBottomRightRadius: 2,
-})
 
 const CodeBlock = props => {
   const {
@@ -127,7 +111,7 @@ const CodeBlock = props => {
           // `div` with overflow receives focus in Firefox
           // https://bugzilla.mozilla.org/show_bug.cgi?id=1069739
           // Conditioanlly remove element from the tab order
-          {...(isFirefox() && { tabIndex: `-1` })}
+          {...(isFirefox && { tabIndex: `-1` })}
           className={CODE_BLOCK_CONTAINER_CLASS_NAME}
           sx={{
             overflow: `auto`,
@@ -169,4 +153,20 @@ const CodeBlock = props => {
     </Flex>
   )
 }
+
+const languageRegex = new RegExp(`language-`)
+const getLanguage = (className, regex = languageRegex) => {
+  const firstClassName = className?.split(` `)[0]
+  const isLanguageClassName = firstClassName?.match(regex)
+
+  return isLanguageClassName ? firstClassName.replace(regex, ``) : null
+}
+
+const getBorderRadius = isFileNameVisible => ({
+  borderTopLeftRadius: isFileNameVisible ? 0 : 2,
+  borderTopRightRadius: isFileNameVisible ? 0 : 2,
+  borderBottomLeftRadius: 2,
+  borderBottomRightRadius: 2,
+})
+
 export default CodeBlock

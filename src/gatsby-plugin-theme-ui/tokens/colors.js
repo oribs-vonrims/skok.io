@@ -1,14 +1,14 @@
-// Theme UI Deep theme
 const light = {
   text: `hsl(0, 0%, 0%)`,
   background: `hsl(0, 0%, 100%)`,
   primary: `hsl(240, 87%, 50%)`,
   secondary: `hsl(300, 100%, 40%)`,
   highlight: `hsl(300, 100%, 47%)`,
+  accent: `hsl(290, 100%, 80%)`,
   muted: `hsl(240, 100%, 98%)`,
+  gray: `hsl(210, 50%, 60%)`,
 }
 
-// Theme UI Deep theme
 const dark = {
   text: `hsl(210, 50%, 96%)`,
   background: `hsl(230, 25%, 13%)`,
@@ -20,7 +20,6 @@ const dark = {
   gray: `hsl(210, 50%, 60%)`,
 }
 
-// Night Owl Light theme
 const codeLight = {
   codeHighlight: `hsl(269, 100%, 93%)`,
   codeHighlightNumber: `hsl(302, 100%, 50%)`,
@@ -49,7 +48,6 @@ const codeLight = {
   codeNamespace: `hsl(182, 86%, 33%)`,
 }
 
-// Night Owl theme
 const codeDark = {
   codeHighlight: `hsl(260, 100%, 30%)`,
   codeHighlightNumber: `hsl(321, 100%, 50%)`,
@@ -79,12 +77,12 @@ const codeDark = {
 }
 
 export default {
-  ...dark,
-  ...codeDark,
+  ...light,
+  ...codeLight,
   modes: {
-    light: {
-      ...light,
-      ...codeLight,
+    dark: {
+      ...dark,
+      ...codeDark,
     },
   },
 }

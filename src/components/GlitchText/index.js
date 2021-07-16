@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui"
-import { keyframes } from "@emotion/core"
+import { keyframes } from "@emotion/react"
 import getRandomInt from "../../utils/get-random-int"
 
 const maxClipPath = limit => (1 / (2 - (4 * (1 - limit)) ** 0.25)) * 100
@@ -33,7 +33,7 @@ const textShadow = (minShadow, maxShadow, colors) => `
 
 const keys = keyframesNum =>
   Array.from({ length: keyframesNum + 1 }).map(
-    (_, i) => i * (100 / (keyframesNum + 1)) + "%"
+    (_, i) => i * (100 / (keyframesNum + 1)) + `%`
   )
 
 const getAnimation = (
