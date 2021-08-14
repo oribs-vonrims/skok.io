@@ -1,0 +1,280 @@
+---
+title: Gatsby robots.txt and sitemap.xml files
+description: How to generate robots.txt and sitemap.xml files for Gatsby site
+datePublished: 2021-05-01
+dateModified: 2021-05-01
+image: ./cover.jpg
+imageAlt: Husky doggo
+hasIntro: true
+---
+
+import TableOfContents from "../../../src/components/TableOfContents"
+import Tree from "../../../src/components/Tree"
+import Intro from "../../../src/components/Intro"
+
+<Intro>
+
+This is a 4 part series of posts about building SEO-optimized Gatsby blog with [theme-ui](https://theme-ui.com/getting-started) and [MDX](https://mdxjs.com).
+
+- Part 1: [How to configure `gatsby-config.js` and `gatsby-node.js`](/)
+- Part 2: [How to add Page components and keep them DRY with GraphQL fragments](/)
+- Part 3: [How to add Twitter, Open Graph, and Schema.org markup with SEO component](/)
+- Part 4: How to generate `sitemap.xml` and `robots.txt`
+
+In part #4, we will learn about `sitemap.xml` and `robots.txt` files.
+
+At any point of time feel free to checkout the source code in [GitHub](https://github/iamskok/gatsby-seo) or
+the [live blog](https://gatsby-seo-draft.netlify.com) example.
+
+</Intro>
+
+<TableOfContents
+  items={props.tableOfContentsItems}
+  ids={props.tableOfContentsHeaderIds}
+/>
+
+## sitemap.xml
+
+`sitemap.xml` is a way to provide more information for search engines about pages on your website. Sitemap is a file that lists URLs for a website along with additional metadata about each URL.
+
+To generate `sitemap.xml` we will need to install [gatsby-plugin-sitemap](https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-plugin-sitemap) plugin.
+
+```sh
+yarn add gatsby-plugin-sitemap
+```
+
+Add `gatsby-plugin-sitemap` in `gatsby-config.js`.
+
+```js
+// ✂️
+module.exports = {
+  plugins: [
+    `gatsby-plugin-sitemap`,
+    // ✂️
+  ],
+}
+```
+
+`gatsby-plugin-sitemap` by default expects site URL from `siteMetadata.siteUrl`, so we don't need to do anything else. It's important to note that this plugin generates sitemap files only in `production` mode. To validate generated `sitemap.xml` file you will need to build and serve the site.
+
+```sh
+gatsby build && gatsby serve
+```
+
+Navigate to `http://localhost:9000/sitemap/sitemap-index.xml` and you should see:
+
+```xml
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://gatsby-seo.netlify.app/sitemap/sitemap-0.xml</loc>
+  </sitemap>
+</sitemapindex>
+```
+
+What you see is not the actual sitemap, it's a sitemap index page. According to Google
+[single `sitemap.xml`](https://developers.google.com/search/docs/advanced/sitemaps/build-sitemap#sitemapformat)
+is limited to 50MB (uncompressed) and 50,000 URLs. Originally these limits were created to
+ensure that your web server won't be overloaded by serving large files to search engines.
+Sitemap index page solves this issue, by letting you break down your sitemap into smaller
+pieces. For those of you who is interested to know what will be the max amount of URLs
+submitted with a single sitemap index check out this [StackOverflow answer](https://stackoverflow.com/a/34972582/3614631).
+
+To open the actual `sitemap.xml` copy the URL from the `loc` node and open it in browser `http://localhost:9000/sitemap/sitemap-0.xml` (production URL was replaced with localhost).
+
+```xml
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+  xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"
+>
+  <url>
+    <loc>https://gatsby-seo.netlify.app/</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gatsby-seo.netlify.app/blog/siberian-husky/</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  // ✂️
+</urlset>
+```
+
+I did some reading and it turns out `changefreq` and `priority` are not used by Google any more.
+We can safely remove this bloat from `sitemap.xml` and add what's actually important - last modified date `lastmod`.
+Let's update `gatsby-config.js` file.
+
+```jsx
+const path = require("path")
+const siteMetadata = require("./site-metadata")
+const slashify = require("./src/helpers/slashify")
+
+// ✂️
+const {
+  NODE_ENV,
+  SITE_URL,
+  URL: NETLIFY_SITE_URL = SITE_URL,
+  DEPLOY_PRIME_URL: NETLIFY_DEPLOY_URL = NETLIFY_SITE_URL,
+  CONTEXT: NETLIFY_ENV = NODE_ENV,
+} = process.env
+const isNetlifyProduction = NETLIFY_ENV === `production`
+const siteUrl = isNetlifyProduction ? NETLIFY_SITE_URL : NETLIFY_DEPLOY_URL
+
+module.exports = {
+  siteMetadata: {
+    ...siteMetadata,
+    siteUrl,
+  },
+  plugins: [
+    // ✂️
+    {
+      resolve: `gatsby-plugin-sitemap`,
+      options: {
+        query: `{
+          allMdx {
+            nodes {
+              frontmatter {
+                published
+                modified
+              }
+              fields {
+                slug
+              }
+            }
+          }
+        }`,
+        resolveSiteUrl: () => siteUrl,
+        resolvePages: ({ allMdx: { nodes: mdxNodes } }) => {
+          const { pages } = siteMetadata
+          const blogPathName = pages.blog.pathName
+
+          const allPages = Object.values(pages).reduce((acc, { pathName }) => {
+            if (pathName) {
+              acc.push({ path: slashify(pathName) })
+            }
+            return acc
+          }, [])
+
+          const allArticles = mdxNodes.map(
+            ({ frontmatter: { published, modified }, fields: { slug } }) => ({
+              path: slashify(blogPathName, slug),
+              lastmod: modified ? modified : published,
+            })
+          )
+
+          return [...allPages, ...allArticles]
+        },
+        serialize: ({ path: url, lastmod }) => ({
+          url,
+          lastmod,
+        }),
+      },
+    },
+}
+```
+
+We fetch and format (thanks to `slashify` function) all page and article URLs.
+Then we fetch last modified date for each article and create a sitemap entry for each article. When article doesn't have last
+modified date we fallback to the published date.
+
+With the above changes our `sitemap.xml` should look like this:
+
+```xml
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+  xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  <url>
+    <loc>https://gatsby-seo-draft.netlify.app/</loc>
+  </url>
+  <url>
+    <loc>https://gatsby-seo-draft.netlify.app/blog/siberian-husky/</loc>
+    <lastmod>2017-02-02T00:00:00.000Z</lastmod>
+  </url>
+  // ✂️
+</urlset>
+```
+
+## robots.txt
+
+To instruct search engines how to crawl pages on your website there is `robots.txt` file. It indicates whether certain user agent can or cannot crawl parts of a website. These crawl instructions are specified by `disallow` and `allow` directives for all or certain user agents.
+
+To generate `robots.txt` install [gatsby-plugin-robots-txt](https://www.gatsbyjs.com/plugins/gatsby-plugin-robots-txt/):
+
+```sh
+yarn add gatsby-plugin-robots-txt
+```
+
+Update `gatsby-config.js`:
+
+```js
+// ✂️
+const {
+  NODE_ENV,
+  SITE_URL,
+  URL: NETLIFY_SITE_URL = SITE_URL,
+  DEPLOY_PRIME_URL: NETLIFY_DEPLOY_URL = NETLIFY_SITE_URL,
+  CONTEXT: NETLIFY_ENV = NODE_ENV,
+} = process.env
+// ✂️
+
+module.exports = {
+  // ✂️
+  plugins: [
+    // ✂️
+    {
+      resolve: `gatsby-plugin-robots-txt`,
+      options: {
+        resolveEnv: () => NETLIFY_ENV,
+        env: {
+          production: {
+            policy: [{ userAgent: `*` }],
+          },
+          "branch-deploy": {
+            policy: [{ userAgent: `*`, disallow: [`/`] }],
+          },
+          "deploy-preview": {
+            policy: [{ userAgent: `*`, disallow: [`/`] }],
+          },
+        },
+      },
+    },
+    // ...
+  ],
+}
+```
+
+With Netlify you can make sure that search engines do not have access to the development version of your website.
+Will can rely on `NETLIFY_ENV` environment variable. When `NETLIFY_ENV` value is `production` we allow all user
+agents to access all URLs. When `NETLIFY_ENV` value is `branch-deploy` or `deploy-preview` we deny access
+to all URLs and user agents.
+
+With this configuration your production `robots.txt` will look, like:
+
+```
+User-agent: *
+Sitemap: https://gatsby-seo.netlify.app/sitemap/sitemap-index.xml
+Host: https://gatsby-seo.netlify.app
+```
+
+Branch deploy `NETLIFY_ENV`:
+
+```
+User-agent: *
+Disallow: /
+Sitemap: https://new-feature--gatsby-seo.netlify.app/sitemap/sitemap-index.xml
+Host: https://new-feature--gatsby-seo.netlify.app
+```
+
+Deploy preview `NETLIFY_ENV`:
+
+```
+User-agent: *
+Disallow: /
+Sitemap: https://deploy-preview-77--gatsby-seo.netlify.app/sitemap/sitemap-index.xml
+Host: https://deploy-preview-77--gatsby-seo.netlify.app
+```

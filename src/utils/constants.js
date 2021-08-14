@@ -2,14 +2,18 @@ const CODE_BLOCK_COPY_CLICK_TIMEOUT = 3000
 const CODE_BLOCK_CLASS_NAME = `code-block`
 const CODE_BLOCK_CONTAINER_CLASS_NAME = `code-block-container`
 const CODE_BLOCK_SCROLL_STEP = 100
+
 const SCROLL_PROVIDER_THROTTLE_DEPLAY = 200
+
 const REGISTERED_HIT_ENDPOINT = `/.netlify/functions/register-hit`
+
 const IMAGES_PATH = `./src/assets/images`
-const POSTS_PATH = `./posts`
+const POSTS_PATH = `./content/posts`
 const POST_TEMPLATE_PATH = `./src/templates/post/index.js`
+
 const COLOR_MODE_EVENT_NAME = `colormode`
-// Theme UI color mode key
 const COLOR_MODE_STORAGE_KEY = `theme-ui-color-mode`
+
 const FAVICON_FRAME_STORAGE_KEY = `favicon-frame`
 const FAVICON_CANVAS_SIZE = 64
 const FAVICON_UPDATE_DELAY = 1000

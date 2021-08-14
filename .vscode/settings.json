@@ -7,6 +7,5 @@
   "editor.insertSpaces": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": true
-  },
-  "explorer.confirmDelete": false
+  }
 }

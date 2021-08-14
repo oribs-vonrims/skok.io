@@ -1,0 +1,569 @@
+---
+title: gatsby-config.js & gatsby-node.js file
+description: How to configure `gatsby-config.js`, `gatsby-node.js`, and `useSiteMetadata` hook
+datePublished: 2021-05-01
+dateModified: 2021-05-01
+image: ./cover.jpg
+imageAlt: Husky doggo
+hasIntro: true
+---
+
+import { Embed } from "theme-ui" // Is it required?
+import TableOfContents from "../../../src/components/TableOfContents"
+import Tree from "../../../src/components/Tree"
+import Intro from "../../../src/components/Intro"
+
+<Intro>
+
+This is a 4 part series of posts about building [SEO-optimized Gatsby blog](https://gatsby-seo-draft.netlify.com)
+with [theme-ui](https://theme-ui.com/getting-started) and [MDX](https://mdxjs.com).
+
+- Part 1: How to configure `gatsby-config.js` and `gatsby-node.js`
+- Part 2: [How to add Page components and keep them DRY with GraphQL fragments](/)
+- Part 3: [How to add Twitter, Open Graph, and Schema.org markup with SEO component](/)
+- Part 4: [How to generate `sitemap.xml` and `robots.txt`](/)
+
+In part #1, we will prepare the foundation for the whole project. It consists of installing plugins,
+and configuring them in `gatsby-config.js`. We will create `useSiteMetadata`
+react hook for retrieving SEO-related data from `gatsby-config.js`. After this
+we will create `gatsby-node.js` file that will take care of generating blog post pages and a few other things.
+And lastly, we will create a utility function that will help us deal with URL trailing slashes.
+
+At any point of time feel free to checkout the source code in [GitHub](https://github/iamskok/gatsby-seo) or
+the [live blog](https://gatsby-seo-draft.netlify.com) example.
+
+Make yourself familiar with the folder structure and the files we will create in part 1:
+
+{" "}
+<Tree>
+  <Tree.Folder name="src">
+    <Tree.Folder name="helpers">
+      <Tree.File name="slashify.js" />
+    </Tree.Folder>
+    <Tree.Folder name="hooks">
+      <Tree.File name="useSiteMetadata.js" />
+    </Tree.Folder>
+  </Tree.Folder>
+  <Tree.Folder name="static">
+    <Tree.File name="logo.jpg" />
+  </Tree.Folder>
+  <Tree.File name=".nvmrc" />
+  <Tree.File name=".env.development" />
+  <Tree.File name=".env.production" />
+  <Tree.File name="site-metadata.js" />
+  <Tree.File name="gatsby-config.js" />
+  <Tree.File name="gatsby-node.js" />
+  <Tree.File name="package.json" />
+</Tree>
+
+</Intro>
+
+<TableOfContents
+  items={props.tableOfContentsItems}
+  ids={props.tableOfContentsHeaderIds}
+/>
+
+## Dependencies
+
+First things first, let's install project dependencies:
+
+```sh
+yarn add \
+  react \
+  react-dom \
+  gatsby \
+  gatsby-source-filesystem \
+  gatsby-plugin-sharp \
+  gatsby-transformer-sharp \
+  gatsby-plugin-image \
+  theme-ui \
+  gatsby-plugin-theme-ui \
+  @mdx-js/mdx \
+  @mdx-js/react \
+  gatsby-plugin-mdx \
+  dotenv
+```
+
+## Site Metadata
+
+Let's start with creating `./site-metadata.js`. It will be a central place for keeping all SEO-related data.
+
+```js
+module.exports = {
+  siteName: `Gatsby SEO`,
+  firstName: `Jane`,
+  lastName: `Doe`,
+  logo: {
+    pathName: `logo.jpg`,
+    width: 640,
+    height: 640,
+  },
+  language: `en_US`,
+  socialMedia: {
+    twitter: `https://twitter.com/gatsbyjs`,
+    github: `https://github.com/gatsbyjs`,
+  },
+  address: {
+    addressCountry: `US`,
+    addressLocality: `Los Angeles`,
+    addressRegion: `CA`,
+  },
+  speakableSelector: [`[data-speakable="true"]`],
+  pages: {
+    home: {
+      id: `home`,
+      pathName: `/`,
+      title: `Jane Doe`,
+      description: `Jane Doe's place on the web`,
+      image: `./src/images/home.jpg`,
+      imageAlt: `Two corgis sitting next to each other`,
+      breadcrumb: `Home`,
+      type: `WebPage`,
+    },
+    blog: {
+      id: `blog`,
+      pathName: `blog`,
+      title: `Blog`,
+      description: `Jane Doe's blog about software engineering`,
+      image: `./src/images/blog.jpg`,
+      imageAlt: `Cute brown Retriever is licking it's nose`,
+      breadcrumb: `Blog`,
+      type: `Blog`,
+    },
+    contact: {
+      id: `contact`,
+      pathName: `contact`,
+      title: `Contact`,
+      description: `Jane Doe's contact information`,
+      image: `./src/images/contact.jpg`,
+      imageAlt: `Bulldog is chilling on the ground`,
+      breadcrumb: `Contact`,
+      type: `ContactPage`,
+    },
+    about: {
+      id: `about`,
+      pathName: `about`,
+      title: `About`,
+      description: `Jane Doe's biography`,
+      image: `./src/images/about.jpg`,
+      imageAlt: `French bulldog is hanging out on the playground`,
+      breadcrumb: `About`,
+      type: `AboutPage`,
+    },
+    article: {
+      id: `article`,
+      type: `Article`,
+    },
+  },
+}
+```
+
+- `speakableSelector` is a selector that will tell search engines and other assistive technologies that a particular section of the page is "[speakable](https://developers.google.com/search/docs/data-types/speakable)".
+- `pathName` is a URL pathname without slash `/`.
+- `breadcrumb` is a breadcrumb title that will be displayed in SERP.
+- `image` is the relative path to the cover image of the page.
+- `imageAlt` is the text description for the cover image.
+- `language` the language of your content. Has to have a format of `language_TERRITORY`.
+- `type` is schema.org page type (don't worry too much about it just yet, we will cover it later).
+
+Go ahead and replace all the values with your personal information. Don't forget to create `static` folder in the root of the project and add the desired logo image inside of it.
+
+## `gatsby-config.js`
+
+The next step will be to configure all the installed plugins in `gatsby-config.js`.
+
+```js
+const path = require("path")
+const siteMetadata = require("./site-metadata")
+
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
+const {
+  NODE_ENV,
+  SITE_URL,
+  URL: NETLIFY_SITE_URL = SITE_URL,
+  DEPLOY_PRIME_URL: NETLIFY_DEPLOY_URL = NETLIFY_SITE_URL,
+  CONTEXT: NETLIFY_ENV = NODE_ENV,
+} = process.env
+const isNetlifyProduction = NETLIFY_ENV === `production`
+const siteUrl = isNetlifyProduction ? NETLIFY_SITE_URL : NETLIFY_DEPLOY_URL
+
+module.exports = {
+  siteMetadata: {
+    ...siteMetadata,
+    siteUrl,
+  },
+  plugins: [
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `images`,
+        path: path.resolve(`./src/images`),
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `articles`,
+        path: path.resolve(`./articles`),
+      },
+    },
+    {
+      resolve: `gatsby-plugin-sharp`,
+      options: {
+        useMozJpeg: true,
+        defaultQuality: 100,
+      },
+    },
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-image`,
+    `gatsby-plugin-mdx`,
+    `gatsby-plugin-theme-ui`,
+  ],
+}
+```
+
+To keep `gatsby-config.js` file concise we scoped all SEO related data in a sepatate file `site-metadata.js`. Now we need to require it and spread all of it's properties under `siteMetadata` key. This way we will be able to query this data using GraphQL.
+
+Require `path` and `dotenv` packages. Based on the environment we will use different `siteUrl` value. This will make local debugging much easier. Go ahead and create `.env.development` with `SITE_URL` of `http://localhost:8000` and `.env.production` with `SITE_URL` of `https://gatsby-seo.netlify.app` in the root of the project.
+
+```js
+const {
+  NODE_ENV,
+  SITE_URL,
+  URL: NETLIFY_SITE_URL = SITE_URL,
+  DEPLOY_PRIME_URL: NETLIFY_DEPLOY_URL = NETLIFY_SITE_URL,
+  CONTEXT: NETLIFY_ENV = NODE_ENV,
+} = process.env
+const isNetlifyProduction = NETLIFY_ENV === `production`
+const siteUrl = isNetlifyProduction ? NETLIFY_SITE_URL : NETLIFY_DEPLOY_URL
+```
+
+The above block of code is required for Netlify deployments. It's going to replace `siteUrl` value with Netlify URLs, which are autogenerated on PR preview or branch deployments. You can read more about Netlify Deploy URLs and environment variables in their [documentation](https://docs.netlify.com/configure-builds/environment-variables/#deploy-urls-and-metadata).
+
+- [gatsby-source-filesystem](https://www.gatsbyjs.com/plugins/gatsby-source-filesystem/) plugin is used to source data from local filesystem, so we are configuring it for `./articles` and `./images` directories.
+- [gatsby-plugin-sharp](https://www.gatsbyjs.com/plugins/gatsby-plugin-sharp/) exposes image processing functions of Sharp (Node.js image processing package for resizing JPEG, PNG, WebP, AVIF and TIFF images).
+- [gatsby-transformer-sharp](https://www.gatsbyjs.com/plugins/gatsby-transformer-sharp/) creates `ImageSharp` nodes from images that are supported by the Sharp library and provides GraphQL fields for resizing, cropping, and creating responsive images.
+- [gatsby-plugin-image](https://www.gatsbyjs.com/plugins/gatsby-plugin-image/) produces responsive images in multiple sizes and formats.
+- [gatsby-plugin-mdx](https://www.gatsbyjs.com/plugins/gatsby-plugin-mdx/) adds MDX support.
+- [gatsby-plugin-theme-ui](https://theme-ui.com/packages/gatsby-plugin/) adds Theme UI support (Theme UI is a library for creating themeable user interfaces based on constraint-based design principles).
+
+## useSiteMetadata hook
+
+We have already defined all the required SEO data in `site-metadata.js` and now we need a conviniet way to retrieve it from React components. For this purpose Gatsby has `useStaticQuery` hook that takes a GraphQL query and returns back the data. Create `useSiteMetadata.js` in `./src/hooks`:
+
+```js
+import { useStaticQuery, graphql } from "gatsby"
+
+const useSiteMetadata = () => {
+  const {
+    site: { siteMetadata },
+  } = useStaticQuery(
+    graphql`
+      query {
+        site {
+          siteMetadata {
+            siteUrl
+            siteName
+            firstName
+            lastName
+            logo {
+              pathName
+              width
+              height
+            }
+            language
+            socialMedia {
+              twitter
+              github
+            }
+            address {
+              addressCountry
+              addressLocality
+              addressRegion
+            }
+            speakableSelector
+            pages {
+              home {
+                id
+                pathName
+                title
+                description
+                imageAlt
+                breadcrumb
+                type
+              }
+              blog {
+                id
+                pathName
+                title
+                description
+                imageAlt
+                breadcrumb
+                type
+              }
+              contact {
+                id
+                pathName
+                title
+                description
+                imageAlt
+                breadcrumb
+                type
+              }
+              about {
+                id
+                pathName
+                title
+                description
+                imageAlt
+                breadcrumb
+                type
+              }
+              article {
+                id
+                type
+              }
+            }
+          }
+        }
+      }
+    `
+  )
+
+  return siteMetadata
+}
+
+export default useSiteMetadata
+```
+
+We listed every property from `gatsby-config.js` `siteMetadata` object and now we can use it in every react component, like so:
+
+```jsx
+const Welcome = () => {
+  const { firstName } = useSiteMetadata()
+  return <h1>Hello! My name is {firstName}</h1>
+}
+```
+
+<Embed
+  title="SiteMetadata GraphQL query example"
+  src="https://graphiql.linte.rs/___graphql?query=query%20SiteMetadata%20%7B%0A%20%20site%20%7B%0A%20%20%20%20siteMetadata%20%7B%0A%20%20%20%20%20%20siteUrl%0A%20%20%20%20%20%20siteName%0A%20%20%20%20%20%20firstName%0A%20%20%20%20%20%20lastName%0A%20%20%20%20%20%20logo%20%7B%0A%20%20%20%20%20%20%20%20pathName%0A%20%20%20%20%20%20%20%20width%0A%20%20%20%20%20%20%20%20height%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20language%0A%20%20%20%20%20%20socialMedia%20%7B%0A%20%20%20%20%20%20%20%20twitter%0A%20%20%20%20%20%20%20%20github%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20address%20%7B%0A%20%20%20%20%20%20%20%20addressCountry%0A%20%20%20%20%20%20%20%20addressLocality%0A%20%20%20%20%20%20%20%20addressRegion%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20speakableSelector%0A%20%20%20%20%20%20pages%20%7B%0A%20%20%20%20%20%20%20%20home%20%7B%0A%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20pathName%0A%20%20%20%20%20%20%20%20%20%20title%0A%20%20%20%20%20%20%20%20%20%20description%0A%20%20%20%20%20%20%20%20%20%20imageAlt%0A%20%20%20%20%20%20%20%20%20%20breadcrumb%0A%20%20%20%20%20%20%20%20%20%20type%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20blog%20%7B%0A%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20pathName%0A%20%20%20%20%20%20%20%20%20%20title%0A%20%20%20%20%20%20%20%20%20%20description%0A%20%20%20%20%20%20%20%20%20%20imageAlt%0A%20%20%20%20%20%20%20%20%20%20breadcrumb%0A%20%20%20%20%20%20%20%20%20%20type%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20contact%20%7B%0A%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20pathName%0A%20%20%20%20%20%20%20%20%20%20title%0A%20%20%20%20%20%20%20%20%20%20description%0A%20%20%20%20%20%20%20%20%20%20imageAlt%0A%20%20%20%20%20%20%20%20%20%20breadcrumb%0A%20%20%20%20%20%20%20%20%20%20type%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20about%20%7B%0A%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20pathName%0A%20%20%20%20%20%20%20%20%20%20title%0A%20%20%20%20%20%20%20%20%20%20description%0A%20%20%20%20%20%20%20%20%20%20imageAlt%0A%20%20%20%20%20%20%20%20%20%20breadcrumb%0A%20%20%20%20%20%20%20%20%20%20type%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20article%20%7B%0A%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20type%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A&operationName=SiteMetadata"
+/>
+
+## gatsby-node.js
+
+Gatsby exposes multiple APIs that are accessible from `gatsby-node.js`. Code in `gatsby-node.js` is execute only once during the build of the site. We will do three things here:
+
+1. Generate slugs for article pages based on the MDX file paths.
+2. Dynamically create article pages from MDX files.
+3. Pass absolute image paths from `siteMetadata` in page component `context`. (This way will be able to access it from page queries. It will become handy when we will be resizing images for social media cards.)
+
+```js
+const path = require("path")
+const { createFilePath } = require("gatsby-source-filesystem")
+const { pages } = require("./site-metadata")
+const slashify = require("./src/helpers/slashify")
+
+exports.onCreateNode = ({ node, getNode, actions: { createNodeField } }) => {
+  if (node.internal.type === `Mdx`) {
+    const value = createFilePath({ node, getNode }).replace(/\//g, ``)
+
+    createNodeField({
+      name: `slug`,
+      value,
+      node,
+    })
+  }
+}
+
+exports.createPages = ({ actions: { createPage }, graphql }) =>
+  graphql(`
+    query {
+      allMdx {
+        edges {
+          node {
+            id
+            fields {
+              slug
+            }
+          }
+        }
+      }
+    }
+  `).then(({ data, errors }) => {
+    if (errors) Promise.reject(errors)
+
+    data.allMdx.edges.forEach(
+      ({
+        node: {
+          id,
+          fields: { slug },
+        },
+      }) => {
+        createPage({
+          path: slashify(pages.blog.pathName, slug),
+          component: path.resolve(`src/templates/article.jsx`),
+          context: { id, slug },
+        })
+      }
+    )
+  })
+
+exports.onCreatePage = ({ page, actions: { createPage, deletePage } }) => {
+  const pagesMetadata = Object.values(pages)
+    .map(({ pathName, image }) => [slashify(pathName), image])
+    .filter(([pathName, image]) => pathName && image)
+
+  pagesMetadata.forEach(([pathName, image]) => {
+    if (page.path === pathName) {
+      deletePage(page)
+      createPage({
+        ...page,
+        context: {
+          image: path.join(process.cwd(), image),
+        },
+      })
+    }
+  })
+}
+```
+
+### onCreateNode API
+
+[onCreateNode](https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateNode) is called when a new node is created. We will use this hook to extend the existing MDX node with the `slug` field.
+
+We start with sorting out all nodes of `Mdx` type. [createFilePath](https://www.gatsbyjs.com/plugins/gatsby-source-filesystem/#createfilepath) from `gatsby-source-filesystem` plugin is used to retrieve the file path of the node. Then we need to remove all slashes (adding slashes to all URLs and file paths will be handled by `slashify` helper function). Once we formatted the file path we need to add a `slug` field to the current MDX node by calling [createNodeField](https://www.gatsbyjs.com/docs/reference/config-files/actions/#createNodeField).
+
+### createPages API
+
+[createPages](https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#createPages) API is used to generate article pages. We shouldn't worry about the rest of the pages, because Gatsby will automatically do it for all of the components located in `./src/pages` directory.
+
+Gatsby API passes a collection of actions that can be individually extracted by using ES6 object destructuring. To generate pages we will need to destructure `graphql`, and `createPage` from the `actions` object.
+
+We query `slug` and `id` from every MDX node and loop over the items in the `data` array. For every item we call `createPage` with:
+
+- `path` that has to be a valid URL starting with a forward slash (`slashify` takes care of it). E.g. `/blog/pug/`
+- `component` the absolute path to the component for this page
+- `context` context data for this page. It will be accessible as `pageContext` prop in the React page component as well as an argument in the graphql query.
+
+[AllMdx GraphiQL query](http://localhost:8000/___graphql?query=query%20AllMdx%20%7B%0A%20%20allMdx%20%7B%0A%20%20%20%20edges%20%7B%0A%20%20%20%20%20%20node%20%7B%0A%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20fields%20%7B%0A%20%20%20%20%20%20%20%20%20%20slug%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A&operationName=AllMdx&explorerIsOpen=false)
+
+### onCreatePage API
+
+[onCreatePage](https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreatePage) is a hook that's called when a new page is created. As I mentioned before Gatsby will automatically create pages for the components located in `./src/pages`, so in order to modify their context we will have to delete the originally generated page and create it again with the data we need.
+
+To make it happen we are destructuring `page` (object that contains original page data), `createPage`, and `deletePage` functions from the `actions`. Then we create `pagesMetadata` which is an array of tuples from `siteMetadata.pages` that contains of `pathName` and `image`. After that we loop over all of the tuples and check if the current page path matches one of the `pagesMetadata` paths. When it matches we delete this page and re-create it again with `page` data and `context` that contains an absolute image path from `siteMetadata.pages`.
+
+### URL Trailing Slashes
+
+A trailing slash is a forward slash `/` placed at the end of a URL. The trailing slash is used to distinguish a directory `/blog/` from a file `/blog/index.html`. This is a standard behavior of a web-server, but depending on the web server it can handle trailing slashes differently. To enforce this behavior in Netlify make sure that [Pretty URLs](https://docs.netlify.com/routing/redirects/redirect-options/#trailing-slash) option is enabled.
+
+Inconsistent trailing slashes means that you are able to access a version of a page like `/blog/` and `/blog` without being redirected. The issue with it is that Google treats these pages as two different instances.
+
+To address this issue we are going to write `./src/helpers/slashify.js` helper function and we will use it in all times when we contruct URLs, file paths or pathnames.
+
+`slashify` has to take any number of arguments and it needs a way to identify a difference between a URL, a pathname and a file pathname.
+
+```js
+const isHttpUrl = str => {
+  try {
+    return new URL(str) && Boolean(str.match(/http(s?):\/\//))
+  } catch (_error) {
+    return false
+  }
+}
+
+const isFilePathName = str => str?.split(`.`).filter(Boolean).length > 1
+
+const slashify = (...items) => {
+  const length = items.length
+
+  if (length === 1) {
+    const item = items[0]
+    if (item === `/`) {
+      return `/`
+    }
+
+    if (isHttpUrl(item)) {
+      return item
+    }
+
+    if (isFilePathName(item)) {
+      return `/${item}`
+    }
+
+    return `/${item}/`
+  } else {
+    return items.reduce((acc, item, index) => {
+      if (isHttpUrl(item)) {
+        if (index !== 0) {
+          throw Error(`HTTP URL has to be passed as the first argument`)
+        } else {
+          return item + `/`
+        }
+      }
+
+      if (isFilePathName(item)) {
+        if (index !== length - 1) {
+          throw Error(`File pathname has to be passed as the last argument`)
+        } else {
+          return acc + item
+        }
+      }
+
+      if (index === 0) {
+        return `/${item}/`
+      } else {
+        return acc + item + `/`
+      }
+    }, ``)
+  }
+}
+
+module.exports = slashify
+```
+
+To verify that a string is a valid URL we will leverage [`URL` constructor](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL).
+
+```js
+const isHttpUrl = str => {
+  try {
+    return new URL(str) && Boolean(str.match(/http(s?):\/\//))
+  } catch (_error) {
+    return false
+  }
+}
+```
+
+> [Optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) operator that we are using in `isFilePathName` function is supported in Node.js 14 and above.
+> At the time of publishing this post Netlify by default executes code in Node.js 12. The easiest way to change Node.js version will be to create `.nvmrc` file wuth the desired version at the root of the project.
+> `echo "16.3.0" > .nvmrc`
+
+`isHttpUrl` takes a string that is passed in the URL constructor and when it's not valid the constructor will throw an error that will fall in the `catch` block. `.match` is required to make sure that the URL starts with `http` or `https` as well as it includes `//` part. The reason for doing it is because `new URL(`http:example.com`)` will not throw an error.
+
+`isFilePathName` is used to validate a file pathname. `str?` handles `undefined` argument being passed to the function. `.filter(Boolean)` makes sure that the pathname does not end with a (`.`). `"example.".split(".")` will return `["example", ""]`
+
+Once we have `isHttpUrl` and `isFilePathName` in place we can compose `slashify` function that will cover:
+
+- `/`
+- Single path name
+- Pathname + pathname
+- Site URL + file pathname
+- Site URL + pathname
+- Site URL + pathname + pathName
+
+As well as other cases that we don't really care about with the current URL structure.
+
+Usage examples:
+
+| Description               | Example                                                         | Result                                         |
+| ------------------------- | --------------------------------------------------------------- | ---------------------------------------------- |
+| Pathname                  | `slashify('blog')`                                              | '/blog/'                                       |
+| Pathname + pathname       | `slashify('blog', 'article')`                                   | '/blog/article/'                               |
+| URL + file pathname       | `slashify('https://gatsby-seo.netlify.app', 'cover.jpg')`       | 'https://gatsby-seo.netlify.app/cover.jpg'     |
+| URL + pathname            | `slashify('https://gatsby-seo.netlify.app', 'blog')`            | 'https://gatsby-seo.netlify.app/blog/'         |
+| URL + pathname + pathname | `slashify('https://gatsby-seo.netlify.app', 'blog', 'article')` | 'https://gatsby-seo.netlify.app/blog/article/' |
+| `/`                       | `slashify('/')`                                                 | '/'                                            |
