@@ -1,6 +1,7 @@
 /** @jsx jsx */
-import { jsx, Flex } from "theme-ui"
+import { jsx } from "theme-ui"
 import { useState, useEffect, Fragment } from "react"
+import CodeBlock from "../../../../src/components/code-block"
 import Select from "../select"
 import { REGEX_PATTERN, SITE_METADATA } from "../constants"
 
@@ -113,9 +114,7 @@ const OpenGraphPlayground = () => {
   return (
     <Fragment>
       <Select onChange={handlePageSelection} />
-      <Flex sx={{ overflowX: `auto` }}>
-        <pre>{renderPreContent(state)}</pre>
-      </Flex>
+      <CodeBlock className="language-html">{renderPreContent(state)}</CodeBlock>
     </Fragment>
   )
 }

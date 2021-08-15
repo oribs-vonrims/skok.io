@@ -10,13 +10,7 @@ const Select = ({ onChange }) => {
         flexDirection: `column`,
       }}
     >
-      <span
-        sx={{
-          fontWeight: `bold`,
-        }}
-      >
-        Select Page Template:
-      </span>
+      <span>Select Page Template:</span>
       <ThemeUiSelect onChange={onChange}>
         {PAGE_LABELS.map(label => (
           <option key={label} value={label.toLowerCase()}>

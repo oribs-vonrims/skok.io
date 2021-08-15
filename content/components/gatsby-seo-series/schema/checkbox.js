@@ -1,12 +1,31 @@
 /** @jsx jsx */
-import { jsx, Label, Checkbox as ThemeUiCheckbox } from "theme-ui"
+import { jsx, Flex, Checkbox as ThemeUiCheckbox } from "theme-ui"
 
 const Checkbox = ({ label, onChange, isChecked }) => {
   return (
-    <Label>
-      <span sx={{ fontWeight: `bold` }}>{label}</span>
-      <ThemeUiCheckbox onChange={onChange} defaultChecked={isChecked} />
-    </Label>
+    <Flex
+      as="label"
+      sx={{
+        alignItems: `center`,
+      }}
+    >
+      <ThemeUiCheckbox
+        onChange={onChange}
+        defaultChecked={isChecked}
+        sx={{
+          "input:focus ~ &": {
+            backgroundColor: `transparent`,
+          },
+          "input:focus-visible ~ &": {
+            backgroundColor: `highlight`,
+          },
+          path: {
+            color: `primary`,
+          },
+        }}
+      />
+      <span>{label}</span>
+    </Flex>
   )
 }
 

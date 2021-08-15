@@ -32,7 +32,6 @@ the [live blog](https://gatsby-seo-draft.netlify.com) example.
 
 Make yourself familiar with the folder structure and the files we will create in part 2:
 
-{" "}
 <Tree>
   <Tree.Folder name="articles" open={false}>
     <Tree.Folder name="golden-retriver">
@@ -363,6 +362,8 @@ export default Twitter
 
 To learn more about twitter cards check out their [documentation](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/markup)
 
+<TwitterPlayground />
+
 ### OpenGraph component
 
 The Open Graph protocol is supported by a wide range of social media platforms that includes Facebook (it also created this protocol in 2010), LinkedIn, Pinterest, Twitter (when Twitter can't find twitter meta tags it will fall back into using Open Graph meta tags), and others. To learn more about it you can have a look at [Open Graph protocol documention](https://ogp.me/)
@@ -479,6 +480,8 @@ Take a look at this example:
 In the above example we created `PostalAddress` schema and then referenced it inside of the `Person` and `Organization` schemas by passing its node identifier ID. If we don't use node identifiers we end up duplicating the whole `PostalAddress` object in `Person` and `Organization` schemas.
 
 Node identifier value can be pretty much anything, but the common practice is to use the domain name and the hash with a schema type name https://example.com/#schema.
+
+<OpenGraphPlayground />
 
 ### SchemaOrg component
 
@@ -687,6 +690,8 @@ To conditionally add properties to the object we are leveraging `Object.assign`.
 Once all the schemas are constructed we are creating a node array using `@graph` and fill it in with schemas. The only edge case is `BreadcrumbList` schema that shouldn't be added to the home page, so we are excluding it by checking `isHome`.
 
 Each one of these schemas can contain other properties, so I will highly recommend to check [schema.org](https://schema.org/docs/full.html) documentation and tweak it for your own needs.
+
+<SchemaPlayground />
 
 ## SEO Meta Tags Validation
 

@@ -35,6 +35,7 @@ const CodeBlock = props => {
   const isFileNameVisible = Boolean(fileName)
   const isCopyButtonVisible = truthy.includes(copy)
   const tabIndex = Number(truthy.includes(focus)) - 1
+  const isOneLiner = children.split(`\n`).filter(Boolean).length === 1
 
   return (
     <Flex
@@ -93,7 +94,7 @@ const CodeBlock = props => {
             content={children}
             sx={{
               position: `absolute`,
-              top: 4,
+              top: isOneLiner ? `12px` : 4,
               right: 2,
               zIndex: `codeBlockCopyButton`,
             }}

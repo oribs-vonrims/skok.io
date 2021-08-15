@@ -15,7 +15,7 @@ import useSiteMetadata from "../../hooks/useSiteMetadata"
 import Layout from "../../components/Layout"
 import PostMeta from "../../components/PostMeta"
 import Pagination from "../../components/Pagination"
-import scrollCodeBlock from "../../components/CodeBlock/scroller"
+import scrollCodeBlock from "../../components/code-block/scroller"
 import ScrollProgress from "../../components/ScrollProgress"
 
 const Post = ({
@@ -57,7 +57,7 @@ const Post = ({
     return () => setIsSmoothScroll(false)
   }, [])
 
-  // Add event listeners for CodeBlock scroll
+  // Add event listeners for CodeBlock horizontal scrolling
   useKey(`ArrowLeft`, event => scrollCodeBlock(event, `left`))
   useKey(`ArrowRight`, event => scrollCodeBlock(event, `right`))
 

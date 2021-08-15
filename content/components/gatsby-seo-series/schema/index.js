@@ -1,6 +1,7 @@
 /** @jsx jsx */
-import { jsx, Flex } from "theme-ui"
+import { jsx } from "theme-ui"
 import { useState, useReducer, Fragment } from "react"
+import CodeBlock from "../../../../src/components/code-block"
 import Select from "../select"
 import { Checkbox, checkboxList } from "./checkbox"
 import {
@@ -209,9 +210,9 @@ const SchemaOrgPlayground = () => {
             isChecked={isChecked}
           />
         ))}
-      <Flex sx={{ overflowX: `auto` }}>
-        <pre>{JSON.stringify(composeSchema(state), null, 2)}</pre>
-      </Flex>
+      <CodeBlock className="language-json">
+        {JSON.stringify(composeSchema(state), null, 2)}
+      </CodeBlock>
     </Fragment>
   )
 }

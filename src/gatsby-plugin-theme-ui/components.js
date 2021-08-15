@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui"
-import CodeBlock from "../components/CodeBlock"
+import CodeBlock from "../components/code-block"
 import Heading from "../components/Heading"
 import Link from "../components/Link"
 
