@@ -3,6 +3,7 @@ import { jsx, Box, Flex } from "theme-ui"
 import Prism from "@theme-ui/prism"
 import { isFirefox } from "react-device-detect"
 import useSiteMetadata from "../../hooks/useSiteMetadata"
+import ScrollX from "../scroll-x"
 import {
   CODE_BLOCK_CLASS_NAME,
   CODE_BLOCK_CONTAINER_CLASS_NAME,
@@ -108,30 +109,13 @@ const CodeBlock = props => {
           ...getBorderRadius(isFileNameVisible),
         }}
       >
-        <Box
+        <ScrollX
           // `div` with overflow receives focus in Firefox
           // https://bugzilla.mozilla.org/show_bug.cgi?id=1069739
           // Conditioanlly remove element from the tab order
           {...(isFirefox && { tabIndex: `-1` })}
           className={CODE_BLOCK_CONTAINER_CLASS_NAME}
-          sx={{
-            overflow: `auto`,
-            scrollbarColor: ({ colors: { primary, gray } }) =>
-              `${primary} ${gray}`,
-            scrollbarWidth: `thin`,
-            "&::-webkit-scrollbar": {
-              height: `codeBlockScrollBar`,
-            },
-            "&::-webkit-scrollbar-track": {
-              backgroundColor: `gray`,
-              borderRadius: 2,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: `primary`,
-              borderRadius: 2,
-            },
-            ...getBorderRadius(isFileNameVisible),
-          }}
+          sx={{ ...getBorderRadius(isFileNameVisible) }}
         >
           <Prism
             className={prismClassName}
@@ -149,7 +133,7 @@ const CodeBlock = props => {
           >
             {children}
           </Prism>
-        </Box>
+        </ScrollX>
       </Box>
     </Flex>
   )

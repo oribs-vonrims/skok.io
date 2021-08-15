@@ -12,7 +12,6 @@ const Folder = ({ children, name, open = true }) => {
   const folderStyles = {
     marginRight: 2,
     fontSize: theme => theme.sizes.treeIcon,
-    cursor: `pointer`,
   }
 
   return (
@@ -21,6 +20,7 @@ const Folder = ({ children, name, open = true }) => {
         onClick={handleClick}
         sx={{
           alignItems: `center`,
+          cursor: `pointer`,
         }}
       >
         {isOpened ? (
