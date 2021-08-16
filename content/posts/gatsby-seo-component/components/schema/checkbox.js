@@ -1,5 +1,6 @@
 /** @jsx jsx */
-import { jsx, Flex, Checkbox as ThemeUiCheckbox } from "theme-ui"
+import { jsx, Flex } from "theme-ui"
+import DefaultCheckbox from "../../../../../src/components/checkbox"
 
 const Checkbox = ({ label, onChange, isChecked }) => {
   return (
@@ -9,7 +10,7 @@ const Checkbox = ({ label, onChange, isChecked }) => {
         alignItems: `center`,
       }}
     >
-      <ThemeUiCheckbox
+      <DefaultCheckbox
         onChange={onChange}
         defaultChecked={isChecked}
         sx={{
