@@ -1,98 +1,37 @@
 ---
 title: Gatsby SEO component
 description: How to add Twitter, Open Graph, and Schema.org markup to Gatsby SEO component
-datePublished: 2021-05-01
-dateModified: 2021-05-01
+datePublished: 2021-08-17
+dateModified: 2021-08-17
 image: ./cover.jpg
 imageAlt: Husky doggo
 hasIntro: true
 ---
 
 import TableOfContents from "../../../src/components/TableOfContents"
-import Tree from "../../../src/components/Tree"
 import Intro from "../../../src/components/Intro"
-import TwitterPlayground from "../../components/gatsby-seo-series/twitter"
-import OpenGraphPlayground from "../../components/gatsby-seo-series/open-graph"
-import SchemaPlayground from "../../components/gatsby-seo-series/schema"
+import SeriesIntro from "../../components/gatsby-seo-series/series-intro"
+import CompletedProjectedLinks from "../../components/gatsby-seo-series/completed-project-links"
+import TwitterPlayground from "./components/twitter"
+import OpenGraphPlayground from "./components/open-graph"
+import SchemaPlayground from "./components/schema"
+import ProjectTreePartThree from "./components/project-tree"
 
 <Intro>
 
-This is a 4 part series of posts about building SEO-optimized Gatsby blog with [theme-ui](https://theme-ui.com/getting-started) and [MDX](https://mdxjs.com).
-
-- Part 1: [How to configure `gatsby-config.js` and `gatsby-node.js`](/)
-- Part 2: [How to add Page components and keep them DRY with GraphQL fragments](/)
-- Part 3: How to add Twitter, Open Graph, and Schema.org markup with SEO component
-- Part 4: [How to generate `sitemap.xml` and `robots.txt`](/)
+{" "}
+<SeriesIntro part="3" />
 
 In part #3, we will create `SEO` component that will generate Twitter, Open Graph, and Schema.org meta tags
 based on the page component its imported in. We will also cover tools for validating the markup.
 
-At any point of time feel free to checkout the source code in [GitHub](https://github/iamskok/gatsby-seo) or
-the [live blog](https://gatsby-seo-draft.netlify.com) example.
+{" "}
+<CompletedProjectedLinks />
 
 Make yourself familiar with the folder structure and the files we will create in part 2:
 
-<Tree>
-  <Tree.Folder name="articles" open={false}>
-    <Tree.Folder name="golden-retriver">
-      <Tree.File name="index.mdx" />
-      <Tree.File name="cover.jpg" />
-    </Tree.Folder>
-    <Tree.Folder name="pug" open={false}>
-      <Tree.File name="index.mdx" />
-      <Tree.File name="cover.jpg" />
-    </Tree.Folder>
-    <Tree.Folder name="siberian-husky" open={false}>
-      <Tree.File name="index.mdx" />
-      <Tree.File name="cover.jpg" />
-    </Tree.Folder>
-  </Tree.Folder>
-  <Tree.Folder name="src">
-    <Tree.Folder name="components">
-      <Tree.File name="Layout.jsx" />
-      <Tree.File name="Nav.jsx" />
-      <Tree.Folder name="SEO">
-        <Tree.File name="DefaultMeta.jsx" />
-        <Tree.File name="OpenGraph.jsx" />
-        <Tree.File name="SchemaOrg.jsx" />
-        <Tree.File name="Twitter.jsx" />
-        <Tree.File name="getActivePages.js" />
-        <Tree.File name="getCurrentUrl.js" />
-        <Tree.File name="getImageUrls.js" />
-        <Tree.File name="index.jsx" />
-      </Tree.Folder>
-    </Tree.Folder>
-    <Tree.Folder name="pages" open={false}>
-      <Tree.File name="about.jsx" />
-      <Tree.File name="blog.jsx" />
-      <Tree.File name="contact.jsx" />
-      <Tree.File name="index.jsx" />
-    </Tree.Folder>
-    <Tree.Folder name="templates" open={false}>
-      <Tree.File name="article.jsx" />
-    </Tree.Folder>
-    <Tree.Folder name="fragments" open={false}>
-      <Tree.File name="FrontmatterFields.js" />
-      <Tree.File name="ImageUrlFields.js" />
-    </Tree.Folder>
-    <Tree.Folder name="helpers" open={false}>
-      <Tree.File name="slashify.js" />
-    </Tree.Folder>
-    <Tree.Folder name="hooks" open={false}>
-      <Tree.File name="useSiteMetadata.js" />
-    </Tree.Folder>
-  </Tree.Folder>
-  <Tree.Folder name="static" open={false}>
-    <Tree.File name="logo.jpg" />
-  </Tree.Folder>
-  <Tree.File name=".nvmrc" />
-  <Tree.File name=".env.development" />
-  <Tree.File name=".env.production" />
-  <Tree.File name="site-metadata.js" />
-  <Tree.File name="gatsby-config.js" />
-  <Tree.File name="gatsby-node.js" />
-  <Tree.File name="package.json" />
-</Tree>
+{" "}
+<ProjectTreePartThree />
 
 </Intro>
 
@@ -105,7 +44,7 @@ Make yourself familiar with the folder structure and the files we will create in
 
 `SEO` component receives data from every page and acts as a wrapper for other smaller components. Based on the collected data it constructs `imageUrls`, `activePages`, and `url` objects and string that are passed down the components tree to `DefaultMeta`, `Twitter`, `OpenGraph`, and `SchemaOrg`.
 
-```jsx
+```jsx fileName=src/components/SEO/index.js
 import React from "react"
 import DefaultMeta from "./DefaultMeta"
 import OpenGraph from "./OpenGraph"
@@ -217,7 +156,7 @@ export default SEO
 
 After appling `ImageUrlFields` fragment on a File node we get back a deeply nested object with multiple relative paths. The purpose of `getImageUrls` function is to generate a URL for every path and pack it in a consice object.
 
-```js
+```js fileName=src/components/SEO/getImageUrls.js
 const getImageUrls = ({ images, siteUrl }) =>
   Object.entries(images).reduce((acc, image) => {
     const [
@@ -243,7 +182,7 @@ Various page types require different markup templates. E.g. we need to generate 
 
 `getActivePages` helper takes care of identifing the origin (page type) of the data it receives by checking `pageId` prop against a list of all pages defined in `site-metadata.js`. Later on we will rely on it's output to map pages with their corresponding templates.
 
-```js
+```js fileName=src/components/SEO/getImageUrls.js
 const getActivePages = ({ pages, pageId }) =>
   Object.entries(pages).reduce((acc, page) => {
     const [name, { id }] = page
@@ -262,7 +201,7 @@ export default getActivePages
 
 `getCurrentUrl` returns active URL based on the output from `getActivePages` helper.
 
-```js
+```js fileName=src/components/SEO/getCurrentUrl.js
 import slashify from "../../helpers/slashify"
 
 const getCurrentUrl = ({
@@ -287,13 +226,13 @@ export default getCurrentUrl
 
 Before adding `DefaultMeta` component we will need to install [`react-helmet`](https://github.com/nfl/react-helmet) and it's Gatsby plugin [`gatsby-plugin-react-helmet`](https://www.gatsbyjs.com/plugins/gatsby-plugin-react-helmet/):
 
-```sh
+```
 yarn add react-helmet gatsby-plugin-react-helmet
 ```
 
 And update `gatsby-config.js`:
 
-```js
+```js fileName=gatsby-config.js
 // ✂️
 module.exports = {
   // ✂️
@@ -306,7 +245,7 @@ module.exports = {
 
 `react-helmet` is a document head manager for React, and `gatsby-plugin-react-helmet` provides a drop-in support for server rendering data added with React Helmet.
 
-```jsx
+```jsx fileName=src/components/SEO/DefaultMeta.js
 import React from "react"
 import Helmet from "react-helmet"
 
@@ -330,7 +269,7 @@ export default DefaultMeta
 
 <!-- Add screenshot of https://cards-dev.twitter.com/validator -->
 
-```jsx
+```jsx fileName=src/components/SEO/Twitter.js
 import React from "react"
 import { Helmet } from "react-helmet"
 
@@ -370,7 +309,7 @@ The Open Graph protocol is supported by a wide range of social media platforms t
 
 `OpenGraph` component conditionally renderes the given data based on the page type it is included in. This is when `activePages` object becomes handy.
 
-```jsx
+```jsx fileName=src/components/SEO/OpenGraph.js
 import React from "react"
 import { Helmet } from "react-helmet"
 
@@ -422,6 +361,8 @@ These tags will be rendered only in the `Article` template:
 - `article:author` author of the article.
 - `article:published_time` publish time of the article.
 - `article:modified_time` modified time of the article.
+
+<OpenGraphPlayground />
 
 ### What is Schema.org?
 
@@ -481,13 +422,11 @@ In the above example we created `PostalAddress` schema and then referenced it in
 
 Node identifier value can be pretty much anything, but the common practice is to use the domain name and the hash with a schema type name https://example.com/#schema.
 
-<OpenGraphPlayground />
-
 ### SchemaOrg component
 
 In `SchemaOrg` component we generate address, person, organization, breadcrumb, and page (`WebPage`, `Blog`, `ContactPage`, `AboutPage`, or `Article` schema based on the page type) schemas, link them together and compose into single JSON object.
 
-```jsx
+```jsx fileName=src/components/SEO/SchemaOrg.js
 import React from "react"
 import Helmet from "react-helmet"
 import slashify from "../../helpers/slashify"
@@ -661,11 +600,13 @@ const SchemaOrg = ({
 export default SchemaOrg
 ```
 
-`PostalAddress` schema is defined by `country`, `locality`, and `region`.
+- `PostalAddress` consists of `country`, `locality`, and `region` fields
+- `Person` consists of `name`, `url` (root URL), `sameAs` (list of social media profiles) and `address` (reference to the previously defined `PostalAddress` schema) fields
+- `Organization` consists of `url`, `name`, `address` (reference to the `PostalAddress` schema), and `logo` fields
 
-`Person` schema is defined by `name`, `url` (root URL), `sameAs` (list of social media profiles) and `address` (reference to the previously defined `PostalAddress` schema) fields.
-
-`Organization` schema is defined by `url`, `name`, `address` (reference to the `PostalAddress` schema), and `logo`.
+> Add `logo.jpg` image in `./static` directory. Every file you put into that folder will be
+> copied into the public folder. E.g. if you add a file named `dog.jpg` to the static folder,
+> it’ll be copied to `public/dog.jpg` and will be available at `https://<SITE_URL>/dog.jpg` URL.
 
 Once we are done with smaller pieces we can start working on the page type schema. It will be a reusable schema that will handle `WebPage`, `Blog`, `ContactPage`, `AboutPage`, and `Article` schemas altogether. Here is the list of properties that
 are shared in all of the above schemas:
@@ -693,7 +634,7 @@ Each one of these schemas can contain other properties, so I will highly recomme
 
 <SchemaPlayground />
 
-## SEO Meta Tags Validation
+## SEO Component Validation
 
 To validate Twitter meta tags we will use [Twitter Card Validator](https://cards-dev.twitter.com/validator) tool made by Twitter (dah!). Make sure that you are testing production URLs, because this tool respects `robots.txt` settings (we will cover it in [part 4 of the series](/gatsby-sitemap-and-robots-txt-files)) and will not render a card if you `Disallow` bot access to your website.
 

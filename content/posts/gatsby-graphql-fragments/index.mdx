@@ -1,85 +1,35 @@
 ---
 title: Gatsby GraphQL Fragments
 description: How to add page components and keep them DRY with GraphQL fragments
-datePublished: 2021-05-01
-dateModified: 2021-05-01
+datePublished: 2021-08-16
+dateModified: 2021-08-16
 image: ./cover.jpg
 imageAlt: Husky doggo
 ---
 
-import { Embed } from "theme-ui" // Is it required?
 import TableOfContents from "../../../src/components/TableOfContents"
-import Tree from "../../../src/components/Tree"
 import Intro from "../../../src/components/Intro"
+import SeriesIntro from "../../components/gatsby-seo-series/series-intro"
+import GraphiQLIframe from "../../components/gatsby-seo-series/graphiql-iframe"
+import CompletedProjectedLinks from "../../components/gatsby-seo-series/completed-project-links"
+import ProjectTreePartTwo from "./components/project-tree"
+import PageComponentsTable from "./components/page-components-table"
 
 <Intro>
 
-This is a 4 part series of posts about building SEO-optimized Gatsby blog with [theme-ui](https://theme-ui.com/getting-started) and [MDX](https://mdxjs.com).
-
-- Part 1: [How to configure `gatsby-config.js` and `gatsby-node.js`](/)
-- Part 2: How to add Page components and keep them DRY with GraphQL fragments
-- Part 3: [How to add Twitter, Open Graph, and Schema.org markup with SEO component](/)
-- Part 4: [How to generate `sitemap.xml` and `robots.txt`](/)
+{" "}
+<SeriesIntro part="2" />
 
 In part #2, we will create five page components and will get familiar with the concept of GraphQL fragments and aliases.
 We will also create `Layout` and `Nav` components. And create MDX files with frontmatter fields for the blog posts.
 
-At any point of time feel free to checkout the source code in [GitHub](https://github/iamskok/gatsby-seo) or
-the [live blog](https://gatsby-seo-draft.netlify.com) example.
+{" "}
+<CompletedProjectedLinks />
 
 Make yourself familiar with the folder structure and the files we will create in part 2:
 
-<Tree>
-  <Tree.Folder name="articles">
-    <Tree.Folder name="golden-retriver">
-      <Tree.File name="index.mdx" />
-      <Tree.File name="cover.jpg" />
-    </Tree.Folder>
-    <Tree.Folder name="pug" open={false}>
-      <Tree.File name="index.mdx" />
-      <Tree.File name="cover.jpg" />
-    </Tree.Folder>
-    <Tree.Folder name="siberian-husky" open={false}>
-      <Tree.File name="index.mdx" />
-      <Tree.File name="cover.jpg" />
-    </Tree.Folder>
-  </Tree.Folder>
-  <Tree.Folder name="src">
-    <Tree.Folder name="components">
-      <Tree.File name="Layout.jsx" />
-      <Tree.File name="Nav.jsx" />
-    </Tree.Folder>
-    <Tree.Folder name="pages">
-      <Tree.File name="about.jsx" />
-      <Tree.File name="blog.jsx" />
-      <Tree.File name="contact.jsx" />
-      <Tree.File name="index.jsx" />
-    </Tree.Folder>
-    <Tree.Folder name="templates">
-      <Tree.File name="article.jsx" />
-    </Tree.Folder>
-    <Tree.Folder name="fragments">
-      <Tree.File name="FrontmatterFields.js" />
-      <Tree.File name="ImageUrlFields.js" />
-    </Tree.Folder>
-    <Tree.Folder name="helpers" open={false}>
-      <Tree.File name="slashify.js" />
-    </Tree.Folder>
-    <Tree.Folder name="hooks" open={false}>
-      <Tree.File name="useSiteMetadata.js" />
-    </Tree.Folder>
-  </Tree.Folder>
-  <Tree.Folder name="static" open={false}>
-    <Tree.File name="logo.jpg" />
-  </Tree.Folder>
-  <Tree.File name=".nvmrc" />
-  <Tree.File name=".env.development" />
-  <Tree.File name=".env.production" />
-  <Tree.File name="site-metadata.js" />
-  <Tree.File name="gatsby-config.js" />
-  <Tree.File name="gatsby-node.js" />
-  <Tree.File name="package.json" />
-</Tree>
+{" "}
+<ProjectTreePartTwo />
 
 </Intro>
 
@@ -92,13 +42,7 @@ Make yourself familiar with the folder structure and the files we will create in
 
 The blog we are building consist of 5 pages:
 
-| Page    | URL path    | Component path              |
-| ------- | ----------- | --------------------------- |
-| Home    | `/`         | `src/pages/index.jsx`       |
-| Blog    | `/blog/`    | `src/pages/blog.jsx`        |
-| Article | `/article/` | `src/templates/article.jsx` |
-| Contact | `/contact/` | `src/pages/contact.jsx`     |
-| About   | `/about/`   | `src/pages/about.jsx`       |
+<PageComponentsTable />
 
 Each one of these pages is going to have an appropriate Open Graph, Twitter, and Schema.org markup
 that will be included in the `SEO` component in the [part 3](/blog/gatsby-seo-3) of the series.
@@ -108,7 +52,7 @@ Every blog post will have it's own folder with `index.mdx` and a cover image.
 
 All page components will be stored in `src/pages` and will be the main data entry point.
 
-```jsx
+```jsx fileName=src/pages/index.js
 /** @jsx jsx */
 import { jsx, Themed } from "theme-ui"
 import { graphql } from "gatsby"
@@ -174,7 +118,7 @@ We will use 1600 pixels as our width baseline.
 
 Create `ImageUrlFields.js` file in `src/fragments`:
 
-```js
+```js fileName=src/fragments/ImageUrlFields.js
 import { graphql } from "gatsby"
 
 export const ImageUrlFields = graphql`
@@ -217,16 +161,16 @@ export const ImageUrlFields = graphql`
 
 To create a fragment, we define it in a query and export it as a named `export`, which makes it globally available (there is no need to import fragments before using them) regardless of its location in the project. All fragments must have unique names.
 
-<Embed
+<GraphiQLIframe
   title="Home page ImageUrlFields GraphQL fragment example"
-  src="https://graphiql.linte.rs/___graphql?query=query%20(%24image%3A%20String)%20%7B%0A%20%20file(absolutePath%3A%20%7Beq%3A%20%24image%7D)%20%7B%0A%20%20%20%20childImageSharp%20%7B%0A%20%20%09%09...ImageUrlFields%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A%0Afragment%20ImageUrlFields%20on%20ImageSharp%20%7B%0A%20%20twitter%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20800%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20openGraph%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20838%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg1x1%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201600%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg4x3%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201200%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg16x9%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20900%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%7D%0A&operationName=Blog&explorerIsOpen=false&variables=%7B%0A%20%20%22image%22%3A%20%22%2Fapp%2Fsrc%2Fimages%2Fhome.jpg%22%0A%7D"
+  query="query%20(%24image%3A%20String)%20%7B%0A%20%20file(absolutePath%3A%20%7Beq%3A%20%24image%7D)%20%7B%0A%20%20%20%20childImageSharp%20%7B%0A%20%20%09%09...ImageUrlFields%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A%0Afragment%20ImageUrlFields%20on%20ImageSharp%20%7B%0A%20%20twitter%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20800%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20openGraph%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20838%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg1x1%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201600%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg4x3%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201200%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg16x9%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20900%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%7D%0A&operationName=Blog&explorerIsOpen=false&variables=%7B%0A%20%20%22image%22%3A%20%22%2Fapp%2Fsrc%2Fimages%2Fhome.jpg%22%0A%7D"
 />
 
 ## Contact Page Component
 
 `Contact` page is almost identical to the [`Home` page component](#home-page-header). The only difference is that we get the data from `siteMetadata.pages.contact` instead of `siteMetadata.pages.home` in `useSiteMetadata` hook.
 
-```jsx
+```jsx fileName=src/pages/contact.js
 /** @jsx jsx */
 import { jsx, Themed } from "theme-ui"
 import { graphql } from "gatsby"
@@ -274,16 +218,16 @@ export const query = graphql`
 export default Contact
 ```
 
-<Embed
+<GraphiQLIframe
   title="Contact page ImageUrlFields GraphQL fragment example"
-  src="https://graphiql.linte.rs/___graphql?query=query%20(%24image%3A%20String)%20%7B%0A%20%20file(absolutePath%3A%20%7Beq%3A%20%24image%7D)%20%7B%0A%20%20%20%20childImageSharp%20%7B%0A%20%20%09%09...ImageUrlFields%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A%0Afragment%20ImageUrlFields%20on%20ImageSharp%20%7B%0A%20%20twitter%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20800%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20openGraph%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20838%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg1x1%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201600%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg4x3%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201200%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg16x9%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20900%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%7D%0A&operationName=Blog&explorerIsOpen=false&variables=%7B%0A%20%20%22image%22%3A%20%22%2Fapp%2Fsrc%2Fimages%2Fcontact.jpg%22%0A%7D"
+  query="query%20(%24image%3A%20String)%20%7B%0A%20%20file(absolutePath%3A%20%7Beq%3A%20%24image%7D)%20%7B%0A%20%20%20%20childImageSharp%20%7B%0A%20%20%09%09...ImageUrlFields%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A%0Afragment%20ImageUrlFields%20on%20ImageSharp%20%7B%0A%20%20twitter%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20800%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20openGraph%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20838%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg1x1%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201600%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg4x3%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201200%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg16x9%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20900%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%7D%0A&operationName=Blog&explorerIsOpen=false&variables=%7B%0A%20%20%22image%22%3A%20%22%2Fapp%2Fsrc%2Fimages%2Fcontact.jpg%22%0A%7D"
 />
 
 ## About Page Component
 
 `About` page is almost identical to the [`Home` page component](#home-page-header), but this time we get the data from `siteMetadata.pages.about`.
 
-```jsx
+```jsx fileName=src/pages/about.js
 /** @jsx jsx */
 import { jsx, Themed } from "theme-ui"
 import { graphql } from "gatsby"
@@ -331,16 +275,16 @@ export const query = graphql`
 export default About
 ```
 
-<Embed
+<GraphiQLIframe
   title="About page ImageUrlFields GraphQL fragment example"
-  src="https://graphiql.linte.rs/___graphql?query=query%20(%24image%3A%20String)%20%7B%0A%20%20file(absolutePath%3A%20%7Beq%3A%20%24image%7D)%20%7B%0A%20%20%20%20childImageSharp%20%7B%0A%20%20%09%09...ImageUrlFields%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A%0Afragment%20ImageUrlFields%20on%20ImageSharp%20%7B%0A%20%20twitter%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20800%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20openGraph%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20838%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg1x1%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201600%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg4x3%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201200%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg16x9%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20900%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%7D%0A&operationName=Blog&explorerIsOpen=false&variables=%7B%0A%20%20%22image%22%3A%20%22%2Fapp%2Fsrc%2Fimages%2Fabout.jpg%22%0A%7D"
+  query="query%20(%24image%3A%20String)%20%7B%0A%20%20file(absolutePath%3A%20%7Beq%3A%20%24image%7D)%20%7B%0A%20%20%20%20childImageSharp%20%7B%0A%20%20%09%09...ImageUrlFields%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A%0Afragment%20ImageUrlFields%20on%20ImageSharp%20%7B%0A%20%20twitter%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20800%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20openGraph%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20838%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg1x1%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201600%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg4x3%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201200%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg16x9%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20900%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%7D%0A&operationName=Blog&explorerIsOpen=false&variables=%7B%0A%20%20%22image%22%3A%20%22%2Fapp%2Fsrc%2Fimages%2Fabout.jpg%22%0A%7D"
 />
 
 ## Blog Page component
 
 In the `Blog` page component we need to get all MDX nodes (our articles) and [sort](https://www.gatsbyjs.com/docs/graphql-reference/#sort) them in the descending order by the `frontmatter___published` field defined in the article frontmatter. After this we query for `slug` node and `FrontmatterFields` (GraphQL fragment) fields of the MDX nodes and loop over them to generate a list of all articles.
 
-```jsx
+```jsx fileName=src/pages/blog.js
 /** @jsx jsx */
 import { jsx, Themed } from "theme-ui"
 import { graphql } from "gatsby"
@@ -432,9 +376,9 @@ export const query = graphql`
 export default Blog
 ```
 
-<Embed
+<GraphiQLIframe
   title="Blog page GraphQL query example"
-  src="https://graphiql.linte.rs/___graphql?query=query%20(%24image%3A%20String)%20%7B%0A%20%20file(absolutePath%3A%20%7Beq%3A%20%24image%7D)%20%7B%0A%20%20%20%20childImageSharp%20%7B%0A%20%20%20%20%20%20...ImageUrlFields%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20allMdx(sort%3A%20%7Border%3A%20DESC%2C%20fields%3A%20%5Bfrontmatter___published%5D%7D)%20%7B%0A%20%20%20%20edges%20%7B%0A%20%20%20%20%20%20node%20%7B%0A%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20fields%20%7B%0A%20%20%20%20%20%20%20%20%20%20slug%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20frontmatter%20%7B%0A%20%20%20%20%20%20%20%20%20%20...FrontmatterFields%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A%0Afragment%20FrontmatterFields%20on%20MdxFrontmatter%20%7B%0A%20%20title%0A%20%20description%0A%20%20published(formatString%3A%20%22MMMM%20DD%2C%20YYYY%22)%0A%20%20modified(formatString%3A%20%22MMMM%20DD%2C%20YYYY%22)%0A%20%20image%20%7B%0A%20%20%20%20childImageSharp%20%7B%0A%20%20%20%20%20%20gatsbyImageData(width%3A%20800%2C%20placeholder%3A%20BLURRED%2C%20formats%3A%20%5BAUTO%2C%20WEBP%2C%20AVIF%5D)%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20imageAlt%0A%7D%0A%0Afragment%20ImageUrlFields%20on%20ImageSharp%20%7B%0A%20%20twitter%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20800%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20openGraph%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20838%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg1x1%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201600%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg4x3%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201200%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg16x9%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20900%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%7D%0A%0A&operationName=Blog&explorerIsOpen=false&variables=%7B%0A%20%20%22image%22%3A%20%22%2Fapp%2Fsrc%2Fimages%2Fblog.jpg%22%0A%7D"
+  query="query%20(%24image%3A%20String)%20%7B%0A%20%20file(absolutePath%3A%20%7Beq%3A%20%24image%7D)%20%7B%0A%20%20%20%20childImageSharp%20%7B%0A%20%20%20%20%20%20...ImageUrlFields%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20allMdx(sort%3A%20%7Border%3A%20DESC%2C%20fields%3A%20%5Bfrontmatter___published%5D%7D)%20%7B%0A%20%20%20%20edges%20%7B%0A%20%20%20%20%20%20node%20%7B%0A%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20fields%20%7B%0A%20%20%20%20%20%20%20%20%20%20slug%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20frontmatter%20%7B%0A%20%20%20%20%20%20%20%20%20%20...FrontmatterFields%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A%0Afragment%20FrontmatterFields%20on%20MdxFrontmatter%20%7B%0A%20%20title%0A%20%20description%0A%20%20published(formatString%3A%20%22MMMM%20DD%2C%20YYYY%22)%0A%20%20modified(formatString%3A%20%22MMMM%20DD%2C%20YYYY%22)%0A%20%20image%20%7B%0A%20%20%20%20childImageSharp%20%7B%0A%20%20%20%20%20%20gatsbyImageData(width%3A%20800%2C%20placeholder%3A%20BLURRED%2C%20formats%3A%20%5BAUTO%2C%20WEBP%2C%20AVIF%5D)%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20imageAlt%0A%7D%0A%0Afragment%20ImageUrlFields%20on%20ImageSharp%20%7B%0A%20%20twitter%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20800%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20openGraph%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20838%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg1x1%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201600%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg4x3%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201200%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg16x9%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20900%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%7D%0A%0A&operationName=Blog&explorerIsOpen=false&variables=%7B%0A%20%20%22image%22%3A%20%22%2Fapp%2Fsrc%2Fimages%2Fblog.jpg%22%0A%7D"
 />
 
 ## FrontmatterFields GraphQL Fragment
@@ -454,7 +398,7 @@ imageAlt: Golden Retriever puppy
 
 Create `FrontmatterFields.js` file in `src/fragments`:
 
-```js
+```js fileName=src/fragments/FrontmatterFields.js
 import { graphql } from "gatsby"
 
 export const FrontmatterFields = graphql`
@@ -485,7 +429,7 @@ export const FrontmatterFields = graphql`
 
 `Article` component receives MDX file and renders it.
 
-```jsx
+```jsx fileName=src/templates/article.js
 /** @jsx jsx */
 import { jsx, Themed, Flex } from "theme-ui"
 import { graphql } from "gatsby"
@@ -566,16 +510,16 @@ In `Article` component we pass `body` (all MDX file content without frontmatter 
 <!-- UPDATE MDX NODE ID -->
 <!-- ID NODES ARE REGENERATED EACH TIME -->
 
-<Embed
+<GraphiQLIframe
   title="Article page GraphQL query example"
-  src="https://graphiql.linte.rs/___graphql?query=%23%20Article%20MDX%20Node%20IDs%0A%0A%23%20Pugs%20-%20%60d28f21df-4ae7-5d1e-ab57-be666874dfdb%60%0A%23%20Siberian%20Husky%20-%20%60f836cff0-b39b-50f2-a3ad-0f88375e4547%60%0A%23%20Golden%20Retriever%20-%20%600285a08c-6e70-5bbc-9286-439cb2222ca6%60%0A%0Aquery%20(%24id%3A%20String!)%20%7B%0A%20%20mdx(id%3A%20%7Beq%3A%20%24id%7D)%20%7B%0A%20%20%20%20body%0A%20%20%20%20frontmatter%20%7B%0A%20%20%20%20%20%20...FrontmatterFields%0A%20%20%20%20%20%20image%20%7B%0A%20%20%20%20%20%20%20%20childImageSharp%20%7B%0A%20%20%20%20%20%20%20%20%20%20...ImageUrlFields%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A%0Afragment%20FrontmatterFields%20on%20MdxFrontmatter%20%7B%0A%20%20title%0A%20%20description%0A%20%20published(formatString%3A%20%22MMMM%20DD%2C%20YYYY%22)%0A%20%20modified(formatString%3A%20%22MMMM%20DD%2C%20YYYY%22)%0A%20%20image%20%7B%0A%20%20%20%20childImageSharp%20%7B%0A%20%20%20%20%20%20gatsbyImageData(width%3A%20800%2C%20placeholder%3A%20BLURRED%2C%20formats%3A%20%5BAUTO%2C%20WEBP%2C%20AVIF%5D)%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20imageAlt%0A%7D%0A%0Afragment%20ImageUrlFields%20on%20ImageSharp%20%7B%0A%20%20twitter%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20800%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20openGraph%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20838%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg1x1%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201600%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg4x3%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201200%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg16x9%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20900%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%7D%0A&operationName=Blog&explorerIsOpen=false&variables=%7B%0A%20%20%22id%22%3A%20%22d28f21df-4ae7-5d1e-ab57-be666874dfdb%22%0A%7D"
+  query="%23%20Article%20MDX%20Node%20IDs%0A%0A%23%20Pugs%20-%20%60d28f21df-4ae7-5d1e-ab57-be666874dfdb%60%0A%23%20Siberian%20Husky%20-%20%60f836cff0-b39b-50f2-a3ad-0f88375e4547%60%0A%23%20Golden%20Retriever%20-%20%600285a08c-6e70-5bbc-9286-439cb2222ca6%60%0A%0Aquery%20(%24id%3A%20String!)%20%7B%0A%20%20mdx(id%3A%20%7Beq%3A%20%24id%7D)%20%7B%0A%20%20%20%20body%0A%20%20%20%20frontmatter%20%7B%0A%20%20%20%20%20%20...FrontmatterFields%0A%20%20%20%20%20%20image%20%7B%0A%20%20%20%20%20%20%20%20childImageSharp%20%7B%0A%20%20%20%20%20%20%20%20%20%20...ImageUrlFields%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A%0Afragment%20FrontmatterFields%20on%20MdxFrontmatter%20%7B%0A%20%20title%0A%20%20description%0A%20%20published(formatString%3A%20%22MMMM%20DD%2C%20YYYY%22)%0A%20%20modified(formatString%3A%20%22MMMM%20DD%2C%20YYYY%22)%0A%20%20image%20%7B%0A%20%20%20%20childImageSharp%20%7B%0A%20%20%20%20%20%20gatsbyImageData(width%3A%20800%2C%20placeholder%3A%20BLURRED%2C%20formats%3A%20%5BAUTO%2C%20WEBP%2C%20AVIF%5D)%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20imageAlt%0A%7D%0A%0Afragment%20ImageUrlFields%20on%20ImageSharp%20%7B%0A%20%20twitter%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20800%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20openGraph%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20838%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg1x1%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201600%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg4x3%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%201200%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%20%20schemaOrg16x9%3A%20gatsbyImageData(%0A%20%20%20%20layout%3A%20FIXED%0A%20%20%20%20width%3A%201600%0A%20%20%20%20height%3A%20900%0A%20%20%20%20formats%3A%20%5BJPG%5D%0A%20%20)%0A%7D%0A&operationName=Blog&explorerIsOpen=false&variables=%7B%0A%20%20%22id%22%3A%20%22d28f21df-4ae7-5d1e-ab57-be666874dfdb%22%0A%7D"
 />
 
 ### Layout component
 
 `Layout` component in Gatsby is used to share common styles and components between the pages. We use it to include `Nav` and `SEO` components for every page.
 
-```jsx
+```jsx fileName=src/components/Layout/index.js
 /** @jsx jsx */
 import { jsx, Flex } from "theme-ui"
 import { Fragment } from "react"
@@ -632,7 +576,7 @@ Not every page will require `SEO` component. If you ever decide to add a 404 pag
 
 Inside of the `Nav` component we utilize `useSiteMetadata` hook to get all of the pathnames. Then we wrap them in `slashify` helper (to make sure that they are properly formated) and pass them as a `to` prop of a Gatsby `Link` component.
 
-```jsx
+```jsx fileName=src/components/Nav/index.js
 /** @jsx jsx */
 import { jsx } from "theme-ui"
 import Link from "gatsby"

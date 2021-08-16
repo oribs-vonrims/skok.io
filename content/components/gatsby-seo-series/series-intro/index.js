@@ -6,8 +6,8 @@ import slashify from "../../../../src/utils/slashify"
 const SeriesIntro = ({ part }) => (
   <Fragment>
     <Themed.p>
-      This is a 4 part series of posts about building SEO-optimized Gatsby blog
-      with <Link href="https://mdxjs.com">MDX</Link>.
+      This is post {part} of a 4 part series about building SEO-optimized Gatsby
+      blog with <Link href="https://mdxjs.com">MDX</Link>.
     </Themed.p>
     <Themed.ul>
       <Themed.li>

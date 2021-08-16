@@ -1,30 +1,33 @@
 ---
 title: Gatsby robots.txt and sitemap.xml files
 description: How to generate robots.txt and sitemap.xml files for Gatsby site
-datePublished: 2021-05-01
-dateModified: 2021-05-01
+datePublished: 2021-08-18
+dateModified: 2021-08-18
 image: ./cover.jpg
 imageAlt: Husky doggo
 hasIntro: true
 ---
 
 import TableOfContents from "../../../src/components/TableOfContents"
-import Tree from "../../../src/components/Tree"
 import Intro from "../../../src/components/Intro"
+import SeriesIntro from "../../components/gatsby-seo-series/series-intro"
+import CompletedProjectedLinks from "../../components/gatsby-seo-series/completed-project-links"
+import ProjectTreePartFour from "./components/project-tree"
 
 <Intro>
 
-This is a 4 part series of posts about building SEO-optimized Gatsby blog with [theme-ui](https://theme-ui.com/getting-started) and [MDX](https://mdxjs.com).
-
-- Part 1: [How to configure `gatsby-config.js` and `gatsby-node.js`](/)
-- Part 2: [How to add Page components and keep them DRY with GraphQL fragments](/)
-- Part 3: [How to add Twitter, Open Graph, and Schema.org markup with SEO component](/)
-- Part 4: How to generate `sitemap.xml` and `robots.txt`
+{" "}
+<SeriesIntro part="4" />
 
 In part #4, we will learn about `sitemap.xml` and `robots.txt` files.
 
-At any point of time feel free to checkout the source code in [GitHub](https://github/iamskok/gatsby-seo) or
-the [live blog](https://gatsby-seo-draft.netlify.com) example.
+{" "}
+<CompletedProjectedLinks />
+
+Make yourself familiar with the folder structure and the files we will update in part 4.
+
+{" "}
+<ProjectTreePartFour />
 
 </Intro>
 
@@ -45,7 +48,7 @@ yarn add gatsby-plugin-sitemap
 
 Add `gatsby-plugin-sitemap` in `gatsby-config.js`.
 
-```js
+```js fileName=gatsby-config.js
 // ✂️
 module.exports = {
   plugins: [
@@ -57,7 +60,7 @@ module.exports = {
 
 `gatsby-plugin-sitemap` by default expects site URL from `siteMetadata.siteUrl`, so we don't need to do anything else. It's important to note that this plugin generates sitemap files only in `production` mode. To validate generated `sitemap.xml` file you will need to build and serve the site.
 
-```sh
+```
 gatsby build && gatsby serve
 ```
 
@@ -107,7 +110,7 @@ I did some reading and it turns out `changefreq` and `priority` are not used by 
 We can safely remove this bloat from `sitemap.xml` and add what's actually important - last modified date `lastmod`.
 Let's update `gatsby-config.js` file.
 
-```jsx
+```jsx fileName=gatsby-config.js
 const path = require("path")
 const siteMetadata = require("./site-metadata")
 const slashify = require("./src/helpers/slashify")
@@ -205,13 +208,13 @@ To instruct search engines how to crawl pages on your website there is `robots.t
 
 To generate `robots.txt` install [gatsby-plugin-robots-txt](https://www.gatsbyjs.com/plugins/gatsby-plugin-robots-txt/):
 
-```sh
+```
 yarn add gatsby-plugin-robots-txt
 ```
 
 Update `gatsby-config.js`:
 
-```js
+```js fileName=gatsby-config.js
 // ✂️
 const {
   NODE_ENV,
@@ -236,14 +239,18 @@ module.exports = {
           },
           "branch-deploy": {
             policy: [{ userAgent: `*`, disallow: [`/`] }],
+            sitemap: null,
+            host: null,
           },
           "deploy-preview": {
             policy: [{ userAgent: `*`, disallow: [`/`] }],
+            sitemap: null,
+            host: null,
           },
         },
       },
     },
-    // ...
+    // ✂️
   ],
 }
 ```
@@ -253,7 +260,8 @@ Will can rely on `NETLIFY_ENV` environment variable. When `NETLIFY_ENV` value is
 agents to access all URLs. When `NETLIFY_ENV` value is `branch-deploy` or `deploy-preview` we deny access
 to all URLs and user agents.
 
-With this configuration your production `robots.txt` will look, like:
+`robots.txt` is generated in the root of your website `http://<SITE_URL>/robots.txt`. With the above configuration your production
+`robots.txt` will look, like:
 
 ```
 User-agent: *
@@ -261,20 +269,9 @@ Sitemap: https://gatsby-seo.netlify.app/sitemap/sitemap-index.xml
 Host: https://gatsby-seo.netlify.app
 ```
 
-Branch deploy `NETLIFY_ENV`:
+In non production environments:
 
 ```
 User-agent: *
 Disallow: /
-Sitemap: https://new-feature--gatsby-seo.netlify.app/sitemap/sitemap-index.xml
-Host: https://new-feature--gatsby-seo.netlify.app
-```
-
-Deploy preview `NETLIFY_ENV`:
-
-```
-User-agent: *
-Disallow: /
-Sitemap: https://deploy-preview-77--gatsby-seo.netlify.app/sitemap/sitemap-index.xml
-Host: https://deploy-preview-77--gatsby-seo.netlify.app
 ```
