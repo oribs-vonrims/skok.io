@@ -8,6 +8,7 @@ const Select = ({ onChange }) => {
       sx={{
         display: `flex`,
         flexDirection: `column`,
+        marginBottom: 4,
       }}
     >
       <span>Select Page Template:</span>

@@ -46,7 +46,7 @@ const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
           id,
           fields: { slug },
           tableOfContents: { items: tableOfContentsItems },
-          frontmatter: { hasIntro: hasTableOfContentsInto },
+          frontmatter: { hasIntro: hasTableOfContentsIntro },
         },
       },
       index
@@ -57,7 +57,7 @@ const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
 
       const tableOfContents = getTableOfContents(
         tableOfContentsItems,
-        hasTableOfContentsInto
+        hasTableOfContentsIntro
       )
 
       const { previous: previousPost, next: nextPost } = getNearbyPosts(
