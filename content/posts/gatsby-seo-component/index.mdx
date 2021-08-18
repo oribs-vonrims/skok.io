@@ -605,8 +605,8 @@ export default SchemaOrg
 > copied into the public folder. E.g. if you add a file named `dog.jpg` to the static folder,
 > it’ll be copied to `public/dog.jpg` and will be available at `https://<SITE_URL>/dog.jpg` URL.
 
-Once we are done with smaller pieces we can start working on the page type schema. It will be a reusable schema that will handle `WebPage`, `Blog`, `ContactPage`, `AboutPage`, and `Article` schemas altogether. Here is the list of properties that
-are shared in all of the above schemas:
+Once we are done with smaller pieces we can start working on the generic page schema. It will generate `WebPage`, `Blog`, `ContactPage`, `AboutPage`, and `Article` schemas. Here is the list of properties that
+are shared in all of the page schemas:
 
 - `type`
 - `name`
@@ -619,9 +619,9 @@ are shared in all of the above schemas:
 - `mainEntityOfPage`
 - `image`
 
-The rest of the properties we will be added conditionally depending on the page type. For the article page it will be `datePublished`, and `dateModified`. And the blog page is the only one that can't contain `speakable` field.
+The rest of the properties we will be added conditionally depending on the page type. For the article page it will be `datePublished`, and `dateModified`. And the blog page is the only schema that contains `speakable` field.
 
-To conditionally add properties to the object we are leveraging `Object.assign`. In order not to define `dateModified` that will be the same as `datePublished` in the frontmatter for every new blog post we check if `dateModified` exists and then apply it, otherwise, we reuse `datePublished` value (`datePublished` and `dateModified` are the required property on the `Article` schema).
+To conditionally add properties to the object we leverage `Object.assign` method. In order not to define `dateModified` that will be the same as `datePublished` in the frontmatter for every new blog post we check if `dateModified` exists and then apply it, otherwise, we reuse `datePublished` value (`datePublished` and `dateModified` are the required property on the `Article` schema).
 
 `BreadcrumbList` schema is independent and doesn't appear to be a part of any other schema. It consists of a chain of linked web pages. The position property is used to order the items and starts with `1`. The very first item is always going to be the home page, that's the reason why we define `breadcrumbList` with `siteUrl` right away. The second level is a blog, contact, or about pages. The third level is an article and we know that it will always go after the blog page, that's why we push both of the values to the `breadcrumbList` array at once.
 
