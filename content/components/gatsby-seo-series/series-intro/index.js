@@ -6,12 +6,11 @@ import slashify from "../../../../src/utils/slashify"
 const SeriesIntro = ({ part }) => (
   <Fragment>
     <Themed.p>
-      This is post {part} of a 4 part series about building SEO-optimized Gatsby
-      blog with <Link href="https://mdxjs.com">MDX</Link>.
+      This is a 4 part series about building{` `}
+      <Themed.strong>SEO-optimized Gatsby blog</Themed.strong>.
     </Themed.p>
-    <Themed.ul>
+    <Themed.ol>
       <Themed.li>
-        Part 1:{` `}
         <Box
           as={Number(part) === 1 ? `span` : Link}
           to={slashify(`blog`, `gatsby-node-and-config-files`)}
@@ -20,7 +19,6 @@ const SeriesIntro = ({ part }) => (
         </Box>
       </Themed.li>
       <Themed.li>
-        Part 2:{` `}
         <Box
           as={Number(part) === 2 ? `span` : Link}
           to={slashify(`blog`, `gatsby-graphql-fragments`)}
@@ -29,7 +27,6 @@ const SeriesIntro = ({ part }) => (
         </Box>
       </Themed.li>
       <Themed.li>
-        Part 3:{` `}
         <Box
           as={Number(part) === 3 ? `span` : Link}
           to={slashify(`blog`, `gatsby-seo-component`)}
@@ -38,7 +35,6 @@ const SeriesIntro = ({ part }) => (
         </Box>
       </Themed.li>
       <Themed.li>
-        Part 4:{` `}
         <Box
           as={Number(part) === 4 ? `span` : Link}
           to={slashify(`blog`, `gatsby-sitemap-and-robots-txt-files`)}
@@ -46,7 +42,15 @@ const SeriesIntro = ({ part }) => (
           sitemap.xml and robots.txt
         </Box>
       </Themed.li>
-    </Themed.ul>
+    </Themed.ol>
+
+    <Themed.p>
+      Throughout the series we will be using{` `}
+      <Link href="https://mdxjs.com">MDX</Link> and{` `}
+      <Link href="http://theme-ui.com">Theme UI</Link>. In case you are not
+      familiar with these libraries, please do not worry you will still be able
+      to follow along.
+    </Themed.p>
   </Fragment>
 )
 

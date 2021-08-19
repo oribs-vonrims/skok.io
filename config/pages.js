@@ -12,7 +12,7 @@ const pages = {
   blog: {
     id: `blog`,
     pathName: `blog`,
-    title: `Blog`,
+    title: `Blog | Vladimir Skok`,
     description: `Thoughts on software engineering`,
     image: `blog.jpg`,
     imageAlt: `Blog image`,

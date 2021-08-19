@@ -1,11 +1,12 @@
 ---
-title: gatsby-config.js & gatsby-node.js file
-description: How to configure `gatsby-config.js`, `gatsby-node.js`, and `useSiteMetadata` hook
+title: gatsby-config.js & gatsby-node.js files
+description: How to setup the foundation for any Gatsby project
 datePublished: 2021-08-15
 dateModified: 2021-08-15
 image: ./cover.jpg
 imageAlt: Husky doggo
-# Gatsby can't infer the type of this field automatically so we have to do it once manually.
+# Gatsby cant infer the type of optinal field automatically
+# so we have to add it at lease once.
 hasIntro: true
 ---
 
@@ -22,15 +23,14 @@ import { ProjectTreePartOne, SlashifyTable } from "./components"
 
 <SeriesIntro part="1" />
 
-In part #1, we will prepare the foundation for the whole project. It consists of installing plugins,
-and configuring them in `gatsby-config.js`. We will create `useSiteMetadata`
-react hook for retrieving SEO-related data from `gatsby-config.js`. After this
-we will create `gatsby-node.js` file that will take care of generating blog post pages and a few other things.
-And lastly, we will create a utility function that will help us deal with URL trailing slashes.
+In part #1, we prepare the foundation for the whole project. Kicking it off with installing and configuring
+plugins in `gatsby-config.js`. Then adding `useSiteMetadata` react hook for fetching data from `gatsby-config.js`.
+After this we configure `gatsby-node.js` file that takes care of generating blog posts and pages from MDX files.
+And lastly, learn about the dangers of inconsistant URL trailing slashes and how to deal with them.
 
 <CompletedProjectedLinks />
 
-Make yourself familiar with the folder structure and the files we will create in part 1:
+Take a few moments to get familiar with the project structure (click on the folder to expand it).
 
 <ProjectTreePartOne />
 
@@ -43,7 +43,7 @@ Make yourself familiar with the folder structure and the files we will create in
 
 ## Dependencies
 
-First things first, let's install project dependencies:
+First things first, install project dependencies.
 
 ```
 yarn add \
@@ -64,7 +64,7 @@ yarn add \
 
 ## Site Metadata
 
-Let's start with creating `./site-metadata.js`. It will be a central place for keeping all SEO-related data.
+Add `./site-metadata.js` that will be a central place for storing all SEO-related data.
 
 ```js fileName=site-metadata.js
 module.exports = {
@@ -136,19 +136,20 @@ module.exports = {
 }
 ```
 
-- `speakableSelector` is a selector that will tell search engines and other assistive technologies that a particular section of the page is "[speakable](https://developers.google.com/search/docs/data-types/speakable)".
-- `pathName` is a URL pathname without slash `/`.
-- `breadcrumb` is a breadcrumb title that will be displayed in SERP.
-- `image` is the relative path to the cover image of the page.
-- `imageAlt` is the text description for the cover image.
-- `language` the language of your content. Has to have a format of `language_TERRITORY`.
-- `type` is schema.org page type (don't worry too much about it just yet, we will cover it later).
+- `speakableSelector` tells search engines and other assistive technologies that a particular section of the page is "[speakable](https://developers.google.com/search/docs/data-types/speakable)"
+- `pathName` URL pathname. Trailing slash (`/`) is not included
+- `breadcrumb` title that will be displayed in search engine results page aka SERP
+- `image` relative path to the page cover image
+- `imageAlt` text description for the cover image
+- `language` the language of your content. Follows `<language>_<TERRITORY>` format
+- `type` schema.org page type (this topic will be covered in [Gatsby SEO component](/blog/gatsby-seo-component/#what-is-schemaorg) part of the series)
 
-Go ahead and replace all the values with your personal information. Don't forget to create `static` folder in the root of the project and add the desired logo image inside of it.
+Replace all the values with your own information. Create `static` folder in the root of the project and
+add desired logo image `logo.jpg` to it.
 
 ## `gatsby-config.js`
 
-The next step will be to configure all the installed plugins in `gatsby-config.js`.
+`gatsby-config.js` file defines site's metadata, plugins, and other general configuration.
 
 ```js fileName=gatsby-config.js
 const path = require("path")
@@ -203,9 +204,12 @@ module.exports = {
 }
 ```
 
-To keep `gatsby-config.js` file concise we scoped all SEO related data in a sepatate file `site-metadata.js`. Now we need to require it and spread all of it's properties under `siteMetadata` key. This way we will be able to query this data using GraphQL.
+To keep `gatsby-config.js` file concise we moved SEO related data in a separate
+file `site-metadata.js`. Now its time to import and spread it's content under `siteMetadata` key.
 
-Require `path` and `dotenv` packages. Based on the environment we will use different `siteUrl` value. This will make local debugging much easier. Go ahead and create `.env.development` with `SITE_URL` of `http://localhost:8000` and `.env.production` with `SITE_URL` of `https://gatsby-seo.netlify.app` in the root of the project.
+Import `path` and `dotenv` packages. Based on the `NODE_ENV` we will swap `siteUrl` value.
+Create `.env.development` and `.env.production` files with `SITE_URL` of `http://localhost:8000`
+and `https://<YOUR_PRODUCTION_URL>` in the root of the project.
 
 ```js fileName=gatsby-config.js
 // ✂️
@@ -221,18 +225,24 @@ const siteUrl = isNetlifyProduction ? NETLIFY_SITE_URL : NETLIFY_DEPLOY_URL
 // ✂️
 ```
 
-The above block of code is required for Netlify deployments. It's going to replace `siteUrl` value with Netlify URLs, which are autogenerated on PR preview or branch deployments. You can read more about Netlify Deploy URLs and environment variables in their [documentation](https://docs.netlify.com/configure-builds/environment-variables/#deploy-urls-and-metadata).
+The above code is required for Netlify deployments. It's going to replace
+`siteUrl` value with Netlify URLs, that are autogenerated on PR preview or
+branch deployments. You can read more about Netlify Deploy URLs and environment
+variables in their [documentation](https://docs.netlify.com/configure-builds/environment-variables/#deploy-urls-and-metadata).
 
-- [gatsby-source-filesystem](https://www.gatsbyjs.com/plugins/gatsby-source-filesystem/) plugin is used to source data from local filesystem, so we are configuring it for `./articles` and `./images` directories.
-- [gatsby-plugin-sharp](https://www.gatsbyjs.com/plugins/gatsby-plugin-sharp/) exposes image processing functions of Sharp (Node.js image processing package for resizing JPEG, PNG, WebP, AVIF and TIFF images).
+- [gatsby-source-filesystem](https://www.gatsbyjs.com/plugins/gatsby-source-filesystem/) plugin is used to source data from local filesystem. We configured it to access `./articles` and `./images` directories.
+- [gatsby-plugin-sharp](https://www.gatsbyjs.com/plugins/gatsby-plugin-sharp/) exposes image processing functions of Sharp. Its Node.js image processing package for resizing JPEG, PNG, WebP, AVIF and TIFF images.
 - [gatsby-transformer-sharp](https://www.gatsbyjs.com/plugins/gatsby-transformer-sharp/) creates `ImageSharp` nodes from images that are supported by the Sharp library and provides GraphQL fields for resizing, cropping, and creating responsive images.
 - [gatsby-plugin-image](https://www.gatsbyjs.com/plugins/gatsby-plugin-image/) produces responsive images in multiple sizes and formats.
 - [gatsby-plugin-mdx](https://www.gatsbyjs.com/plugins/gatsby-plugin-mdx/) adds MDX support.
-- [gatsby-plugin-theme-ui](https://theme-ui.com/packages/gatsby-plugin/) adds Theme UI support (Theme UI is a library for creating themeable user interfaces based on constraint-based design principles).
+- [gatsby-plugin-theme-ui](https://theme-ui.com/packages/gatsby-plugin/) adds Theme UI support (library for creating themeable user interfaces based on constraint-based design principles).
 
 ## useSiteMetadata hook
 
-We have already defined all the required SEO data in `site-metadata.js` and now we need a conviniet way to retrieve it from React components. For this purpose Gatsby has `useStaticQuery` hook that takes a GraphQL query and returns back the data. Create `useSiteMetadata.js` in `./src/hooks`:
+All SEO data is defined in `site-metadata.js` and now we need a conviniet way to retrieve it from React components.
+For this purpose Gatsby has `useStaticQuery` hook that takes a GraphQL query and returns back the data.
+
+Create `useSiteMetadata.js` in `./src/hooks` directory:
 
 ```js fileName=src/hooks/useSiteMetadata.js
 import { useStaticQuery, graphql } from "gatsby"
@@ -319,7 +329,7 @@ const useSiteMetadata = () => {
 export default useSiteMetadata
 ```
 
-We listed every property from `gatsby-config.js` `siteMetadata` object and now we can use it in every react component, like so:
+`useSiteMetadata` hook can be used in every react component like so:
 
 ```jsx
 const Welcome = () => {
@@ -335,11 +345,16 @@ const Welcome = () => {
 
 ## gatsby-node.js
 
-Gatsby exposes multiple APIs that are accessible from `gatsby-node.js`. Code in `gatsby-node.js` is execute only once during the build of the site. We will do three things here:
+Gatsby exposes multiple NodeJS APIs that are accessible from `gatsby-node.js`. Code from
+`gatsby-node.js` is execute only once during the build of the site.
+
+`gatsby-node.js` will do three things for us:
 
 1. Generate slugs for article pages based on the MDX file paths.
 2. Dynamically create article pages from MDX files.
-3. Pass absolute image paths from `siteMetadata` in page component `context`. (This way will be able to access it from page queries. It will become handy when we will be resizing images for social media cards.)
+3. Pass absolute image paths from `siteMetadata` to page components. This will allow us to
+   use GraphQL to crop images in [Gatsby GraphQL Fragments](/blog/gatsby-graphql-fragments/#imageurlfields-graphql-fragment)
+   part of the series.
 
 ```js fileName=gatsby-node.js
 const path = require("path")
@@ -413,9 +428,11 @@ exports.onCreatePage = ({ page, actions: { createPage, deletePage } }) => {
 
 ### onCreateNode API
 
-[onCreateNode](https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateNode) is called when a new node is created. We will use this hook to extend the existing MDX node with the `slug` field.
-
-We start with sorting out all nodes of `Mdx` type. [createFilePath](https://www.gatsbyjs.com/plugins/gatsby-source-filesystem/#createfilepath) from `gatsby-source-filesystem` plugin is used to retrieve the file path of the node. Then we need to remove all slashes (adding slashes to all URLs and file paths will be handled by `slashify` helper function). Once we formatted the file path we need to add a `slug` field to the current MDX node by calling [createNodeField](https://www.gatsbyjs.com/docs/reference/config-files/actions/#createNodeField).
+[onCreateNode](https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateNode) is
+called when a new node is created. We start with filtering out all `Mdx` nodes.
+[createFilePath](https://www.gatsbyjs.com/plugins/gatsby-source-filesystem/#createfilepath) retrieves
+file path from the node and then we purge it from redundant slashes (`/`). [createNodeField](https://www.gatsbyjs.com/docs/reference/config-files/actions/#createNodeField)
+lets us extends current MDX node with a `slug` field.
 
 ### createPages API
 
