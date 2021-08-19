@@ -46,7 +46,7 @@ const createPages = async ({ actions: { createPage }, graphql, reporter }) => {
           id,
           fields: { slug },
           tableOfContents: { items: tableOfContentsItems },
-          frontmatter: { hasIntro: hasTableOfContentsIntro },
+          frontmatter: { hasIntro: hasTableOfContentsIntro = true },
         },
       },
       index
@@ -131,7 +131,10 @@ const getTableOfContents = (items = [], hasIntro) => {
     url: `#${introId}`,
     title: introTitle,
   }
-  const allItems = hasIntro ? [introItem, ...items] : items
+
+  // Add intro unless it's explicitly set to false
+  const shouldIncludeIntro = hasIntro === null ? true : hasIntro
+  const allItems = shouldIncludeIntro ? [introItem, ...items] : items
 
   return {
     ids: getHeaderIds(allItems),
