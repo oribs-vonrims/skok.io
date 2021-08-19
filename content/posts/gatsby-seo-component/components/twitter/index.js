@@ -2,7 +2,7 @@
 import { jsx } from "theme-ui"
 import { useState, useEffect, Fragment } from "react"
 import CodeBlock from "../../../../../src/components/code-block"
-import Select from "../common/select"
+import PageSelector from "../common/page-selector"
 import { REGEX_PATTERN, SITE_METADATA } from "../common/constants"
 
 const { creator, pages } = SITE_METADATA
@@ -35,7 +35,7 @@ const TwitterPlayground = () => {
 
   return (
     <Fragment>
-      <Select onChange={handlePageSelection} />
+      <PageSelector onChange={handlePageSelection} />
       <CodeBlock className="language-html">{renderContent(state)}</CodeBlock>
     </Fragment>
   )

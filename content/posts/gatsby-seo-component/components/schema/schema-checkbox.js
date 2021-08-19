@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx, Flex } from "theme-ui"
-import DefaultCheckbox from "../../../../../src/components/checkbox"
+import Checkbox from "../../../../../src/components/checkbox"
 
-const Checkbox = ({ label, onChange, isChecked }) => {
+const SchemaCheckbox = ({ label, onChange, isChecked }) => {
   return (
     <Flex
       as="label"
@@ -10,7 +10,7 @@ const Checkbox = ({ label, onChange, isChecked }) => {
         alignItems: `center`,
       }}
     >
-      <DefaultCheckbox
+      <Checkbox
         onChange={onChange}
         defaultChecked={isChecked}
         sx={{
@@ -30,7 +30,7 @@ const Checkbox = ({ label, onChange, isChecked }) => {
   )
 }
 
-const checkboxList = [
+const SchemaCheckboxList = [
   {
     label: `Address Schema`,
     type: `address`,
@@ -58,4 +58,4 @@ const checkboxList = [
   },
 ]
 
-export { Checkbox, checkboxList }
+export { SchemaCheckbox, SchemaCheckboxList }

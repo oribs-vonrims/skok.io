@@ -2,8 +2,8 @@
 import { jsx } from "theme-ui"
 import { useState, useReducer, Fragment } from "react"
 import CodeBlock from "../../../../../src/components/code-block"
-import Select from "../common/select"
-import { Checkbox, checkboxList } from "./checkbox"
+import PageSelector from "../common/page-selector"
+import { SchemaCheckbox, SchemaCheckboxList } from "./schema-checkbox"
 import {
   breadcrumbs,
   person,
@@ -196,14 +196,14 @@ const SchemaOrgPlayground = () => {
 
   return (
     <Fragment>
-      <Select onChange={handlePageSelection} />
-      {checkboxList
+      <PageSelector onChange={handlePageSelection} />
+      {SchemaCheckboxList
         /* Hide breadcrumbs selector for Home schema */
         .filter(
           ({ type }) => !(type === `breadcrumbs` && currentSchema === `home`)
         )
         .map(({ label, type, isChecked }) => (
-          <Checkbox
+          <SchemaCheckbox
             key={type}
             label={label}
             onChange={() => dispatch({ type })}

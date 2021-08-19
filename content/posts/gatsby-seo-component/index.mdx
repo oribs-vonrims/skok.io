@@ -84,7 +84,13 @@ const SEO = ({
 
   const imageUrls = getImageUrls({ images, siteUrl })
   const activePages = getActivePages({ pages, pageId })
-  const url = getCurrentUrl({ siteUrl, pathName, slug, pages, activePages })
+  const url = getCurrentUrl({
+    siteUrl,
+    pathName,
+    slug,
+    pages,
+    activePages,
+  })
 
   const defaultMeta = {
     title,

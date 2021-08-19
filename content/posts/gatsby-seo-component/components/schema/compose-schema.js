@@ -1,4 +1,4 @@
-const composeSchema = ({
+const composeSchemas = ({
   showPage,
   showAddress,
   showPerson,
@@ -16,4 +16,4 @@ const composeSchema = ({
   ].filter(Boolean),
 })
 
-export default composeSchema
+export default composeSchemas
