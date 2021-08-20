@@ -5,7 +5,7 @@ import { useBreakpointIndex } from "@theme-ui/match-media"
 
 const GraphiQLIframe = ({
   title = `Gatsby GraphiQL playground`,
-  url = `https://graphiql.linte.rs/___graphql?query=`,
+  url = `https://gatsby-seo.skok.dev/___graphql?query=`,
   query,
 }) => {
   const isMobile = useBreakpointIndex() === 0
