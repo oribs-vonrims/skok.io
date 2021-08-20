@@ -41,12 +41,7 @@ const Home = ({
             margin: 0,
           }}
         >
-          Hi{` `}
-          <span role="img" aria-label="Waving hand emoji">
-            👋
-          </span>
-          {` `}
-          My name is Vladimir.
+          Hi! My name is Vladimir.
         </Themed.h1>
 
         <Themed.h2
