@@ -1,4 +1,4 @@
-const config = require("./config")
+const siteMetadata = require("./config")
 const forceFileLoader = require("./gatsby/config/force-file-loader")
 const robotsTxt = require("./gatsby/config/robots-txt")
 const manifest = require("./gatsby/config/manifest")
@@ -10,7 +10,7 @@ const sourceImages = require("./gatsby/config/source-images")
 const sitemap = require("./gatsby/config/sitemap")
 
 module.exports = {
-  siteMetadata: { ...config },
+  siteMetadata,
   plugins: [
     sourceImages,
     sourcePosts,

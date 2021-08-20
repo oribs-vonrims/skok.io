@@ -436,35 +436,56 @@ lets us extends current MDX node with a `slug` field.
 
 ### createPages API
 
-[createPages](https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#createPages) API is used to generate article pages. We shouldn't worry about the rest of the pages, because Gatsby will automatically do it for all of the components located in `./src/pages` directory.
+With [createPages](https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#createPages) API we generate
+article pages. The rest of the pages will be generated automatically by Gatsby, because they are located in
+`src/pages` directory.
 
-Gatsby API passes a collection of actions that can be individually extracted by using ES6 object destructuring. To generate pages we will need to destructure `graphql`, and `createPage` from the `actions` object.
+Gatsby API exposes a collection of actions that can be extracted via object destructuring. To generate articles
+we first need to query for `slug` and `id` from every MDX node. Then we loop over each item in the `data` array
+and call `createPage` with:
 
-We query `slug` and `id` from every MDX node and loop over the items in the `data` array. For every item we call `createPage` with:
+- `path` is a relative path starting with a forward slash e.g. `/blog/pug/`
+  ([slashify helper function](/blog/gatsby-node-and-config-files/#slashify-code-block) takes care of formatting)
+- `component` absolute path of the article component
+- `context` extra data that will be accessible as `pageContext` prop in article component as well as an argument in
+  graphql query.
 
-- `path` that has to be a valid URL starting with a forward slash (`slashify` takes care of it). E.g. `/blog/pug/`
-- `component` the absolute path to the component for this page
-- `context` context data for this page. It will be accessible as `pageContext` prop in the React page component as well as an argument in the graphql query.
-
-[AllMdx GraphiQL query](http://localhost:8000/___graphql?query=query%20AllMdx%20%7B%0A%20%20allMdx%20%7B%0A%20%20%20%20edges%20%7B%0A%20%20%20%20%20%20node%20%7B%0A%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20fields%20%7B%0A%20%20%20%20%20%20%20%20%20%20slug%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A&operationName=AllMdx&explorerIsOpen=false)
+<GraphiQLIframe
+  title="AllMdx GraphiQL query example"
+  query="query%20AllMdx%20%7B%0A%20%20allMdx%20%7B%0A%20%20%20%20edges%20%7B%0A%20%20%20%20%20%20node%20%7B%0A%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20fields%20%7B%0A%20%20%20%20%20%20%20%20%20%20slug%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A&operationName=AllMdx&explorerIsOpen=false"
+/>
 
 ### onCreatePage API
 
-[onCreatePage](https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreatePage) is a hook that's called when a new page is created. As I mentioned before Gatsby will automatically create pages for the components located in `./src/pages`, so in order to modify their context we will have to delete the originally generated page and create it again with the data we need.
+[onCreatePage](https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreatePage) is a hook thats called when
+a new page is created. As I mentioned before Gatsby will automatically create pages for the components
+located in `./src/pages`, so in order to modify their context we will have to delete the originally generated page
+and create it again by passing extra data.
 
-To make it happen we are destructuring `page` (object that contains original page data), `createPage`, and `deletePage` functions from the `actions`. Then we create `pagesMetadata` which is an array of tuples from `siteMetadata.pages` that contains of `pathName` and `image`. After that we loop over all of the tuples and check if the current page path matches one of the `pagesMetadata` paths. When it matches we delete this page and re-create it again with `page` data and `context` that contains an absolute image path from `siteMetadata.pages`.
+To make it happen we destructure `page` (object that contains original page data), `createPage`, and `deletePage`
+functions from the `actions`. Then we create `pagesMetadata` which is an array of tuples from `siteMetadata.pages`
+that contains of `pathName` and `image`. After that we loop over all of the tuples and check if the current page
+path matches one of the `pagesMetadata` paths. When it matches we delete this page and re-create it again with
+`page` data and `context` that contains an absolute image path from `siteMetadata.pages`.
 
 ## URL Trailing Slashes
 
-A trailing slash is a forward slash `/` placed at the end of a URL. The trailing slash is used to distinguish a directory `/blog/` from a file `/blog/index.html`. This is a standard behavior of a web-server, but depending on the web server it can handle trailing slashes differently. To enforce this behavior in Netlify make sure that [Pretty URLs](https://docs.netlify.com/routing/redirects/redirect-options/#trailing-slash) option is enabled.
+A trailing slash is a forward slash `/` placed at the end of a URL. The trailing slash is used to distinguish a
+directory `/blog/` from a file `/blog/index.html`. This is a standard behavior of a web-server, but depending on
+the web server it can handle trailing slashes differently. To enforce this behavior in Netlify make sure that
+[Pretty URLs](https://docs.netlify.com/routing/redirects/redirect-options/#trailing-slash) option is enabled.
 
-Inconsistent trailing slashes means that you are able to access a version of a page like `/blog/` and `/blog` without being redirected. The issue with it is that Google treats these pages as two different instances.
+Inconsistent trailing slashes means that you are able to access a version of a page like `/blog/` and `/blog`
+without being redirected. Google treats these pages as two different instances and can penalize your site for
+duplicate content.
 
-To address this issue we are going to write `./src/helpers/slashify.js` helper function and we will use it in all times when we contruct URLs, file paths or pathnames.
+To address this problem we are going to add `./src/helpers/slashify.js`. This function will be used to format
+all URLs, file paths or pathnames.
 
-`slashify` has to take any number of arguments and it needs a way to identify a difference between a URL, a pathname and a file pathname.
+`slashify` has to take any number of arguments and it needs a way to identify a difference between a URL,
+a pathname and a file pathname.
 
-```js fileName=src/helpers/slashify.js
+```js fileName=src/helpers/slashify.js id=slashify-code-block
 const isHttpUrl = str => {
   try {
     return new URL(str) && Boolean(str.match(/http(s?):\/\//))
@@ -523,7 +544,7 @@ const slashify = (...items) => {
 module.exports = slashify
 ```
 
-To verify that a string is a valid URL we will leverage [`URL` constructor](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL).
+To verify that a string is a valid URL we will leverage [URL constructor](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL).
 
 ```js fileName=src/helpers/slashify.js
 const isHttpUrl = str => {
@@ -535,25 +556,20 @@ const isHttpUrl = str => {
 }
 ```
 
-> [Optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) operator that we are using in `isFilePathName` function is supported in Node.js 14 and above.
-> At the time of publishing this post Netlify by default executes code in Node.js 12. The easiest way to change Node.js version will be to create `.nvmrc` file wuth the desired version at the root of the project.
+> [Optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) operator that
+> is used in `isFilePathName` function is supported in NodeJS 14 and above. At the time of publishing this post Netlify's
+> default NodeJS version is 12. The easiest way to bump Netlify's NodeJS version is to create `.nvmrc` file with the desired
+> version at the root of the project.
 >
 > ```
 > echo "16.3.0" > .nvmrc
 > ```
 
-`isHttpUrl` takes a string that is passed in the URL constructor and when it's not valid the constructor will throw an error that will fall in the `catch` block. `.match` is required to make sure that the URL starts with `http` or `https` as well as it includes `//` part. The reason for doing it is because `new URL(`http:example.com`)` will not throw an error.
-
-`isFilePathName` is used to validate a file pathname. `str?` handles `undefined` argument being passed to the function. `.filter(Boolean)` makes sure that the pathname does not end with a (`.`). `"example.".split(".")` will return `["example", ""]`
-
-Once we have `isHttpUrl` and `isFilePathName` in place we can compose `slashify` function that will cover:
-
-- `/`
-- Single pathname
-- Pathname + pathname
-- Site URL + file pathname
-- Site URL + pathname
-- Site URL + pathname + pathname
+- `isHttpUrl` takes a string that is passed in the URL constructor. When the string is not a valid URL
+  the constructor will throw an error and will be caught in the `catch` block. `.match` makes sure that
+  the URL starts with `http` or `https` as well as it includes `//`.
+- `isFilePathName` is used to validate a file pathname. `str?` handles `undefined` values. `.filter(Boolean)`
+  makes sure that the pathname does not end with a (`.`).
 
 Usage examples:
 

@@ -14,40 +14,52 @@ const SlashifyTable = () => (
       </thead>
       <tbody>
         <Themed.tr>
+          <Themed.td>/</Themed.td>
+          <Themed.td>
+            <Themed.inlineCode>slashify(`/`)</Themed.inlineCode>
+          </Themed.td>
+          <Themed.td>/</Themed.td>
+        </Themed.tr>
+        <Themed.tr>
           <Themed.td>Pathname</Themed.td>
-          <Themed.td>slashify(`blog`)</Themed.td>
+          <Themed.td>
+            <Themed.inlineCode>slashify(`blog`)</Themed.inlineCode>
+          </Themed.td>
           <Themed.td>/blog/</Themed.td>
         </Themed.tr>
         <Themed.tr>
           <Themed.td>Pathname + pathname</Themed.td>
-          <Themed.td>slashify(`blog`, `article`)</Themed.td>
+          <Themed.td>
+            <Themed.inlineCode>slashify(`blog`, `article`)</Themed.inlineCode>
+          </Themed.td>
           <Themed.td>/blog/article/</Themed.td>
         </Themed.tr>
         <Themed.tr>
           <Themed.td>URL + file pathname</Themed.td>
           <Themed.td>
-            slashify(`https://gatsby-seo.netlify.app`, `cover.jpg`)
+            <Themed.inlineCode>
+              slashify(`https://gatsby-seo.netlify.app`, `cover.jpg`)
+            </Themed.inlineCode>
           </Themed.td>
           <Themed.td>https://gatsby-seo.netlify.app/cover.jpg</Themed.td>
         </Themed.tr>
         <Themed.tr>
           <Themed.td>URL + pathname</Themed.td>
           <Themed.td>
-            slashify(`https://gatsby-seo.netlify.app`, `blog`)
+            <Themed.inlineCode>
+              slashify(`https://gatsby-seo.netlify.app`, `blog`)
+            </Themed.inlineCode>
           </Themed.td>
           <Themed.td>https://gatsby-seo.netlify.app/blog/</Themed.td>
         </Themed.tr>
         <Themed.tr>
           <Themed.td>URL + pathname + pathname</Themed.td>
           <Themed.td>
-            slashify(`https://gatsby-seo.netlify.app`, `blog`, `article`)
+            <Themed.inlineCode>
+              slashify(`https://gatsby-seo.netlify.app`, `blog`, `article`)
+            </Themed.inlineCode>
           </Themed.td>
           <Themed.td>https://gatsby-seo.netlify.app/blog/article/</Themed.td>
-        </Themed.tr>
-        <Themed.tr>
-          <Themed.td>/</Themed.td>
-          <Themed.td>slashify(`/`)</Themed.td>
-          <Themed.td>/</Themed.td>
         </Themed.tr>
       </tbody>
     </Themed.table>

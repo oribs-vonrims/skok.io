@@ -18,27 +18,37 @@ const PageComponentsTable = () => (
           <Themed.td>
             <Themed.code>/</Themed.code>
           </Themed.td>
-          <Themed.td>src/pages/index.jsx</Themed.td>
+          <Themed.td>
+            <Themed.inlineCode>src/pages/index.jsx</Themed.inlineCode>
+          </Themed.td>
         </Themed.tr>
         <Themed.tr>
           <Themed.td>Blog</Themed.td>
           <Themed.td>/blog/</Themed.td>
-          <Themed.td>src/pages/blog.jsx</Themed.td>
+          <Themed.td>
+            <Themed.inlineCode>src/pages/blog.jsx</Themed.inlineCode>
+          </Themed.td>
         </Themed.tr>
         <Themed.tr>
           <Themed.td>Article</Themed.td>
           <Themed.td>/article/</Themed.td>
-          <Themed.td>src/templates/article.jsx</Themed.td>
+          <Themed.td>
+            <Themed.inlineCode>src/templates/article.jsx</Themed.inlineCode>
+          </Themed.td>
         </Themed.tr>
         <Themed.tr>
           <Themed.td>Contact</Themed.td>
           <Themed.td>/contact/</Themed.td>
-          <Themed.td>src/pages/contact.jsx</Themed.td>
+          <Themed.td>
+            <Themed.inlineCode>src/pages/contact.jsx</Themed.inlineCode>
+          </Themed.td>
         </Themed.tr>
         <Themed.tr>
           <Themed.td>About</Themed.td>
           <Themed.td>/about/</Themed.td>
-          <Themed.td>src/pages/about.jsx</Themed.td>
+          <Themed.td>
+            <Themed.inlineCode>src/pages/about.jsx</Themed.inlineCode>
+          </Themed.td>
         </Themed.tr>
       </tbody>
     </Themed.table>
