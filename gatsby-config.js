@@ -22,6 +22,7 @@ module.exports = {
     robotsTxt,
     forceFileLoader,
     `gatsby-plugin-image`,
+    `gatsby-remark-images`,
     `gatsby-plugin-offline`,
     `gatsby-plugin-theme-ui`,
     `gatsby-transformer-sharp`,
