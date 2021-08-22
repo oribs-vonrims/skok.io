@@ -1,5 +1,7 @@
 /** @jsx jsx */
+import { Fragment } from "react"
 import { jsx, useThemeUI } from "theme-ui"
+import { useBreakpointIndex } from "@theme-ui/match-media"
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import IconLink from "../IconLink"
@@ -28,7 +30,11 @@ const Icon = ({ id, ariaLabel, threshold = 0.1, triggerOnce = true }) => {
     },
   }
 
-  return (
+  const isMobile = useBreakpointIndex() === 0
+
+  return isMobile ? (
+    <Fragment />
+  ) : (
     <span ref={ref}>
       <IconLink
         target=""
