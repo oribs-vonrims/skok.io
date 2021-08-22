@@ -13,7 +13,6 @@ const mdx = {
           withWebp: true,
           quality: 100,
           loading: `lazy`,
-          linkImagesToOriginal: true,
         },
       },
     ],
