@@ -13,10 +13,7 @@ const Details = ({ children }) => (
         },
       }}
     >
-      Table of Contents{` `}
-      <span role="img" aria-label="Opened book emoji">
-        📖
-      </span>
+      Table of Contents
     </summary>
 
     {children}
