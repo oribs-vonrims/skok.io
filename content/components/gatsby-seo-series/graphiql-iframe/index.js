@@ -16,6 +16,10 @@ const GraphiQLIframe = ({
     <Box
       sx={{
         display: [`none`, `block`],
+        width: `100vw`,
+        position: `relative`,
+        left: `50%`,
+        marginLeft: `-50vw`,
       }}
     >
       <Embed title={title} src={`${url}${query}`} loading="lazy" />
