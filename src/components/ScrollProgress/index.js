@@ -8,7 +8,7 @@ const ScrollProgress = () => {
   const [opacity, setOpacity] = useState(0)
 
   useEffect(() => {
-    setOpacity(scrollProgress > 0 ? 1 : 0)
+    setOpacity(Number(scrollProgress > 0))
   }, [scrollProgress])
 
   return (
