@@ -21,7 +21,13 @@ const Link = ({ href, to, ...rest }) => {
   const isExternal = isAbsoluteURL(url)
 
   return isExternal ? (
-    <OutboundLink href={url} sx={styles} {...rest} />
+    <OutboundLink
+      href={url}
+      sx={styles}
+      rel="noopener"
+      target="_blank"
+      {...rest}
+    />
   ) : (
     <InternalLink to={url} sx={styles} {...rest} />
   )

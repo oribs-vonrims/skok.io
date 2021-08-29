@@ -15,7 +15,8 @@ const SeriesIntro = ({ part }) => (
           as={Number(part) === 1 ? `span` : Link}
           to={slashify(`blog`, `gatsby-node-and-config-files`)}
         >
-          gatsby-config.js and gatsby-node.js files
+          <Themed.inlineCode>gatsby-config.js</Themed.inlineCode> and{` `}
+          <Themed.inlineCode>gatsby-node.js</Themed.inlineCode> files
         </Box>
       </Themed.li>
       <Themed.li>
@@ -39,18 +40,11 @@ const SeriesIntro = ({ part }) => (
           as={Number(part) === 4 ? `span` : Link}
           to={slashify(`blog`, `gatsby-sitemap-and-robots-txt-files`)}
         >
-          sitemap.xml and robots.txt
+          <Themed.inlineCode>sitemap.xml</Themed.inlineCode> and{` `}
+          <Themed.inlineCode>robots.txt</Themed.inlineCode>
         </Box>
       </Themed.li>
     </Themed.ol>
-
-    <Themed.p>
-      Throughout the series we will be using{` `}
-      <Link href="https://mdxjs.com">MDX</Link> and{` `}
-      <Link href="http://theme-ui.com">Theme UI</Link>. In case you are not
-      familiar with these libraries, please do not worry you will still be able
-      to follow along.
-    </Themed.p>
   </Fragment>
 )
 

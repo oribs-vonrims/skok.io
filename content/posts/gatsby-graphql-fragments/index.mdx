@@ -9,6 +9,7 @@ imageAlt: Husky doggo
 
 import TableOfContents from "../../../src/components/TableOfContents"
 import Intro from "../../../src/components/Intro"
+import { Underline } from "../../../src/components/Notation"
 import {
   SeriesIntro,
   GraphiQLIframe,
@@ -20,12 +21,12 @@ import { ProjectTreePartTwo, PageComponentsTable } from "./components"
 
 <SeriesIntro part="2" />
 
-In part #2, we will create five page components and will learn about GraphQL fragments and aliases.
-We will also create `Layout`, `Nav` components and MDX blog posts with frontmatter.
+In part #2, we will create five page components and learn about GraphQL fragments and aliases.
+We will also create `Layout`, `Nav` components, and MDX blog posts with frontmatter.
 
 <CompletedProjectedLinks />
 
-Take a few moments to get familiar with the project structure (click on the folder to expand it).
+Take a few moments to get familiar with the project structure.
 
 <ProjectTreePartTwo />
 
@@ -38,13 +39,13 @@ Take a few moments to get familiar with the project structure (click on the fold
 
 ## Page components and URL structure overview
 
-The blog we are building consist of 5 pages:
+The blog we are building consists of five pages:
 
 <PageComponentsTable />
 
 Each one of these pages will include Open Graph, Twitter, and Schema.org markup
 that will be rendered by [`SEO` component](/blog/gatsby-seo-component/) (will be
-covered in the next part of the series). Every blog post has its own folder with
+covered in the next part of the series). Every blog post has its folder with
 `index.mdx` and a cover image.
 
 ## Home Page Component
@@ -97,13 +98,15 @@ export const query = graphql`
 export default Home
 ```
 
-We import `graphql` from `gatsby` and then we `export` a new constant called `query` (its name can be anything).
-`graphql` is a tagged template function and isnt executed the same way as a typical JavaScript code. During the
-build step Gatsby converts the source code to an abstract syntax tree (AST) and removes `graphql`-tagged templates
-from the original source code. For these reasons we can't use expression interpolation, but we can still pass
-variables to the queries via `context` argument of `createPages` action (This is exactly what we did earlier
-with [`image` absolute file path in `gatsby-node.js`](/blog/gatsby-node-and-config-files/#gatsby-nodejs) and now
-it's available as `$image` inside of the query). Keep in mind that you can only have one GraphQL query per file.
+We import `graphql` from `gatsby`, and then we `export` a new constant called `query`
+(its name can be anything). <Underline>`graphql` is a tagged template function and isn't executed
+the same way as a typical JavaScript code</Underline>. During the build step, Gatsby converts the source code to an
+[abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST) and removes `graphql`-tagged
+templates from the original source code. For these reasons, we can't use expression interpolation. However, we
+can still pass variables to the queries via `context` argument of `createPages` action. This is exactly what we
+did earlier with [`image` absolute file path](/blog/gatsby-node-and-config-files/#gatsby-nodejs) in `gatsby-node.js`.
+That's the reason why it's available as `$image` inside of the query. <Underline>Keep in mind that you can only
+have one GraphQL query per file.</Underline>
 
 `ImageUrlFields` is the GraphQL fragment. GraphQL fragments are logical chunks of code that can be shared between
 multiple queries. Every fragment includes a subset of fields that belong to its associated type. GraphQL fragment
@@ -116,13 +119,13 @@ data is retrieved from [`site-metadata.js`](/blog/gatsby-node-and-config-files/#
 
 ## ImageUrlFields GraphQL fragment
 
-Facebook, Twitter, Google all of them have different requirements for the size and aspect ratio for their cover images:
+Facebook, Twitter, Google all have different requirements for the size and aspect ratio for their cover images:
 
 - [Facebook](https://developers.facebook.com/docs/sharing/webmasters/images/) recommends images to be at least 1200x630 pixels.
 - [Twitter](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image)
   recommends an aspect ratio of 2:1 with minimum dimensions of 300x157 pixels.
-- [Google](https://developers.google.com/search/docs/data-types/article) recommends images to be at least 696 pixels wide
-  and suggests to provide images with 16x9, 4x3, and 1x1 aspect ratios.
+- [Google](https://developers.google.com/search/docs/data-types/article) recommends images to be at least 696 pixels
+  wide and suggests providing images with 16x9, 4x3, and 1x1 aspect ratios.
 
 We are going to use 1600 pixels as our width baseline.
 
@@ -169,12 +172,12 @@ export const ImageUrlFields = graphql`
 
 `twitter`, `openGraph`, `schemaOrg1x1`, `schemaOrg4x3` and `schemaOrg16x9` are GraphQL aliases. Aliases are used
 to rename the returned data fields. Since the result object fields will match the name of the field (`gatsbyImageData`)
-we can't query for the same field with different arguments. The solution is to alias them to different names, this
-way we can get all results in one request.
+we can't query for the same field with different arguments. The solution is to alias them to different names. This
+way, we can get all results in one request.
 
-To create a fragment, define it in a query and export it as a named `export`, that makes it globally available
-(there is no need to import fragments before using them) regardless of its location in the project. All fragments
-must have unique names.
+To create a fragment, define it in a query and export it as a named `export`, which makes it globally available
+(there is no need to import fragments before using them) regardless of its location in the project. <Underline>All
+fragments must have unique names.</Underline>
 
 <GraphiQLIframe
   title="ImageUrlFields GraphQL fragment example"
@@ -289,9 +292,9 @@ export default About
 
 ## Blog Page component
 
-In the `Blog` page component we first need to get all MDX nodes (our articles) and
+In the `Blog` page component, we first need to get all MDX nodes (our articles) and
 [sort](https://www.gatsbyjs.com/docs/graphql-reference/#sort) them in the descending order by the
-`frontmatter___published` field (its defined in the article's frontmatter). After this we query for
+`frontmatter___published` field (it's defined in the article's frontmatter). After this, we query for
 `slug` node and [`FrontmatterFields` (GraphQL fragment) fields](/blog/gatsby-graphql-fragments/#frontmatterfields-graphql-fragment)
 of the MDX nodes and loop over them to generate a list of all articles.
 
@@ -394,7 +397,7 @@ export default Blog
 
 ## FrontmatterFields GraphQL Fragment
 
-`FrontmatterFields` is the reusable piece of code that contains all frontmatter fields of an MDX articles. Here is the
+`FrontmatterFields` is the reusable piece of code that contains all frontmatter fields of an MDX article. Here is the
 example of the article's frontmatter:
 
 ```mdx fileName=/articles/golden-retriever/index.mdx id=frontmatter-code-block
@@ -433,22 +436,22 @@ export const FrontmatterFields = graphql`
 `
 ```
 
-`published` and `modified` fields have a type of `Date`, thus we can apply `formatString` function.
+`published` and `modified` fields have a type of `Date`. Thus we can apply the `formatString` function.
 You can use [Moment.js](https://momentjs.com/docs/#/displaying/format/) syntax to format date strings.
 
-`image` is a file path that was converted to a GraphQL `File` node and because its an image we can access
-`childImageSharp` field. To configure image sizes, loading effect and file formats we pass arguments inside
-of `gatsbyImageData` resolver. By setting the `width` we are limiting the maximum image size. Gatsby image
-components are lazy-loaded by default and to ensure that the layout does not jump around, a placeholder is
-displayed before the image loads. `BLURRED` option generates a low-resolution version of the source image
-and displays it as a blurred background. [Gatsby Image plugin](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image/#image-options)
-supports four output formats: JPEG, PNG, WebP and AVIF. `AUTO` means the plugin will generate images in the
-same format as the source image. Then we also specify `WebP` and a new `AVIF` format (Currently `AVIF` has a
+`image` is a file path that was converted to a GraphQL `File` node, and because its an image, we can access
+`childImageSharp` field. To configure image sizes, loading effect, and file formats, we pass arguments inside
+of the `gatsbyImageData` resolver. By setting the `width`, we are limiting the maximum image size. Gatsby image
+components are lazy-loaded by default. To ensure that the layout does not jump around, a placeholder is displayed
+before the image loads. `BLURRED` option generates a low-resolution version of the source image and displays it as
+a blurred background. [Gatsby Image plugin](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image/#image-options)
+supports four output formats: JPEG, PNG, WebP, and AVIF. `AUTO` means the plugin will generate images in the
+same format as the source image. Then we also specify `WebP` and a new `AVIF` format (Currently, `AVIF` has a
 [limited browser support](https://caniuse.com/avif)).
 
 ## Article Page Component
 
-`Article` component receives MDX file and renders it.
+`Article` component receives the MDX file and renders it.
 
 ```jsx fileName=src/templates/article.js
 /** @jsx jsx */
@@ -529,11 +532,8 @@ the [`context`](/blog/gatsby-node-and-config-files/#createpages-api)). Then we s
 `frontmatter` node to get every frontmatter field. To get SEO images we spread `ImageUrlFields` fragment in the
 `childImageSharp` node. The rest of the data is queried with [`useSiteMetadata` hook](/blog/gatsby-node-and-config-files/#usesitemetadata-hook).
 
-In `Article` component we pass `body` (all MDX file content without frontmatter data) to the `MDXRenderer`. It's a
-component that takes compiled MDX content and renders it.
-
-<!-- UPDATE MDX NODE ID -->
-<!-- ID NODES ARE REGENERATED EACH TIME -->
+In the `Article` component, we pass `body` (all MDX file content without frontmatter data) to the `MDXRenderer`. It's a
+the component that takes compiled MDX content and renders it.
 
 <GraphiQLIframe
   title="Article GraphQL query example"
@@ -594,12 +594,13 @@ const Layout = ({
 export default Layout
 ```
 
-Not every page will require `SEO` component. If you ever decide to add a 404 page make sure that `SEO` component is not
-rendered there. That's why we are using `pageId` prop from [`site-metadata.js`](/blog/gatsby-node-and-config-files/#site-metadata)
-that is defined for every page that contains `SEO` component.
+Not every page will require an `SEO` component. If you ever decide to add a 404 page, ensure
+that the `SEO` component is not rendered there. That's why we are using `pageId` prop from
+[`site-metadata.js`](/blog/gatsby-node-and-config-files/#site-metadata) that is defined for
+every page that contains `SEO` component.
 
-`data-speakable="true"` is appended to the `main` tag to let assistive technologies know that the content inside of it is
-good for the Text-to-Speech interpretation.
+`data-speakable="true"` is appended to the `main` tag to let assistive technologies know
+that the content inside of it is suitable for the Text-to-Speech interpretation.
 
 ## Nav component
 
@@ -648,4 +649,6 @@ export default Nav
 ## MDX articles
 
 The very last step is to create a few MDX files that will be used to render the articles. Don't forget to add
-[frontmatter](/blog/gatsby-graphql-fragments/#frontmatter-code-block) to the top of each file.
+[frontmatter](/blog/gatsby-graphql-fragments/#frontmatter-code-block) to the top of each file and cover images.
+As a reference, you can see the [Pug Article](https://github.com/iamskok/gatsby-seo/blob/master/articles/pug/index.mdx)
+file.

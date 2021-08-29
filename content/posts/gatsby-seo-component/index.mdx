@@ -9,6 +9,7 @@ imageAlt: Husky doggo
 
 import TableOfContents from "../../../src/components/TableOfContents"
 import Intro from "../../../src/components/Intro"
+import { Underline, BracketX } from "../../../src/components/Notation"
 import {
   SeriesIntro,
   CompletedProjectedLinks,
@@ -24,12 +25,12 @@ import {
 
 <SeriesIntro part="3" />
 
-In part #3, we will create `SEO` component. It will render Twitter, Open Graph, and Schema.org meta tags.
+In part #3, we will create an `SEO` component. It will render Twitter, Open Graph, and Schema.org meta tags.
 Then will cover all the necessary tools for validating the markup.
 
 <CompletedProjectedLinks />
 
-Take a few moments to get familiar with the project structure (click on the folder to expand it).
+Take a few moments to get familiar with the project structure.
 
 <ProjectTreePartThree />
 
@@ -42,8 +43,8 @@ Take a few moments to get familiar with the project structure (click on the fold
 
 ## SEO component
 
-`SEO` component receives data from every page and acts as a wrapper for other smaller components. Based on the
-received data it constructs `imageUrls`, `activePages` objects, and `url` string that are passed down the
+The `SEO` component receives data from every page and acts as a wrapper for other smaller components. Based on the
+received data it constructs `imageUrls`, `activePages` objects, and `url` string that is passed down the
 components tree to `DefaultMeta`, `Twitter`, `OpenGraph`, and `SchemaOrg`.
 
 ```jsx fileName=src/components/SEO/index.js
@@ -162,9 +163,9 @@ export default SEO
 
 ### getImageUrls helper function
 
-After appling [`ImageUrlFields` fragment](/blog/gatsby-graphql-fragments/#imageurlfields-graphql-fragment) on a File node
-we get back a deeply nested object with multiple relative paths. The purpose of `getImageUrls` function is to generate a
-URL for every path and pack it in a consice object.
+After applying [`ImageUrlFields` fragment](/blog/gatsby-graphql-fragments/#imageurlfields-graphql-fragment)
+on a File node we get back a deeply nested object with multiple relative paths. The purpose of `getImageUrls`
+function is to generate a URL for every path and pack it in a concise object.
 
 ```js fileName=src/components/SEO/getImageUrls.js
 const getImageUrls = ({ images, siteUrl }) =>
@@ -188,13 +189,15 @@ export default getImageUrls
 
 ### getActivePages helper function
 
-All page types have different markup templates. E.g. `/contact` page corresponds to [ContactPage](https://schema.org/ContactPage)
-schema and `/blog/pug/` page corresponds to [Article](https://schema.org/Article) schema, but there
-is no mechanism within `SEO` component to distinguish between these two pages thus no way to know which template to use.
+All page types have different markup templates. E.g. `/contact` page corresponds to
+[ContactPage](https://schema.org/ContactPage) schema and `/blog/pug/` page correspond to
+[article](https://schema.org/Article) schema, but there is no mechanism within the `SEO`
+component to distinguish between these two pages; thus, no way to know which template to use.
 
-`getActivePages` helper takes care of identifing page type of the received data. It does that by checking for
-`pageId` prop against a list of all pages defined in [`site-metadata.js`](/blog/gatsby-node-and-config-files/#site-metadata).
-Later on we will rely on it's output to map pages with their corresponding templates.
+`getActivePages` helper takes care of identifying the page type of the received data. It does
+that by checking for `pageId` prop against a list of all pages defined in
+[`site-metadata.js`](/blog/gatsby-node-and-config-files/#site-metadata). Later on, we will rely
+on it's output to map pages with their corresponding templates.
 
 ```js fileName=src/components/SEO/getActivePages.js id=get-active-pages-code-block
 const getActivePages = ({ pages, pageId }) =>
@@ -281,10 +284,8 @@ export default DefaultMeta
 
 ### Twitter component
 
-`Twitter` component contains twitter specific meta tags. When the URL on your blog we be shared via
-twitter it will be expanded in attractive summary card with a large image.
-
-<!-- Add screenshot of https://cards-dev.twitter.com/validator -->
+`Twitter` component contains twitter specific meta tags. When the URL on your blog
+is shared via Twitter, it will be expanded in an attractive summary card with a large image.
 
 ```jsx fileName=src/components/SEO/Twitter.js
 import React from "react"
@@ -313,19 +314,21 @@ const Twitter = ({
 export default Twitter
 ```
 
-- `twitter:card` is a type of card. We are using "Summary Large Image" that features a large, full-width prominent image alongside a tweet.
-- `twitter:creator` is the person who wrote the content. It's value has to be a Twitter handle starting with `@` symbol.
+- `twitter:card` is a type of card. We use "Summary Large Image" that features a large,
+  full-width prominent image alongside a tweet.
+- `twitter:creator` is the person who wrote the content. Its value has to be a Twitter
+  handle starting with `@` symbol.
 
-To learn more about twitter cards check out their [documentation](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/markup)
+To learn more about Twitter cards, check out their [documentation](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/markup).
 
 <TwitterPlayground />
 
 ### OpenGraph component
 
-The Open Graph protocol is supported by a wide range of social media platforms that includes Facebook
-(it also created this protocol in 2010), LinkedIn, Pinterest, Twitter (when Twitter can't find twitter
-meta tags it will fall back to using Open Graph), and others. To learn more about it you can have a look at
-[Open Graph protocol documention](https://ogp.me/)
+The Open Graph protocol is supported by a wide range of social media platforms, including Facebook
+(it also created this protocol in 2010), LinkedIn, Pinterest, and Twitter (when Twitter cant find Twitter
+meta tags, it will fall back to using Open Graph), and others. To learn more about it, you can have a look at
+[Open Graph protocol documention](https://ogp.me/).
 
 `OpenGraph` component renderes markup based on the provided page type. This is when [`getActivePages`](/blog/gatsby-seo-component/#get-active-pages-code-block)
 becomes handy.
@@ -374,7 +377,7 @@ export default OpenGraph
 ```
 
 - `og:type` the type of object that is represented in Open Graph (can be music, video, website, profile, article,
-  and others). Its going to be article if renderred inside of the [`Article` page component](/blog/gatsby-graphql-fragments/#article-page-component),
+  and others). Its going to be article if rendered inside of the [`Article` page component](/blog/gatsby-graphql-fragments/#article-page-component),
   and website for the rest of the pages
 - `og:url` is the canonical URL of the object
 - `og:locale` the language of the content (when not specified defaults to `en_US`)
@@ -389,25 +392,23 @@ These tags will be rendered only in the `Article` template:
 
 ### What is Schema.org?
 
-Schema.org is a structured data markup, that helps search engines interpret the content of web pages. It was initially
-launched in 2011 by Google, Yahoo, and Bing. Once added to a webpage it conveys the contextual meaning to search engines
-by using a hierarchical set of schemas.
+Schema.org is a structured data markup that helps search engines interpret the content of web pages. It was initially
+launched in 2011 by Google, Yahoo, and Bing. Once added to a webpage, <Underline>it conveys the contextual meaning to search engines
+by using a hierarchical set of schemas.</Underline>
 
-<!-- Add schema hierarchicy image https://upload.wikimedia.org/wikipedia/commons/8/8e/Schema.org_%285925660995%29.png -->
-
-HTML cannot provide a meaning of what a text string means. E.g. a webpage can include a header of `<h1>Apple</h1>` and it
+HTML cannot provide a meaning of what a text string means. E.g., a webpage can include a header of `<h1>Apple</h1>`, and it
 can refer to a fruit or a company. This is when schema.org comes into play and provides semantical meaning to search engines.
 
-[Schema.org vocabulary](https://schema.org/docs/full.html) is vast and in order to be practical we are going to focus
-only on the schemas, that are officially supported by Google. This way we are going to help search engines as well as
+[Schema.org vocabulary](https://schema.org/docs/full.html) is vast, and to be practical, we will focus
+only on the schemas that Google officially supports. This way, we are going to help search engines as well as
 benefit from rich results (aka [rich snippets](https://developers.google.com/search/docs/guides/search-gallery) that
 are normal Google search results with additional data displayed). Rich snippets stand out from the other search
 results, look more appealing, and have a higher click-through rate.
 
-<!-- Add rich snippets example image -->
+![Screenshot of pizza recipies rich snippets](rich-snippets.png)
 
-Before jumping straight to the code I would like to explain what node identifiers are. Its a unique `@id` property,
-that gets attached to a schema and then can be referenced inside of another schema. This is extremely useful for
+Before jumping straight to the code, I would like to explain what node identifiers are. It's a unique `@id` property
+that gets attached to a schema and can be referenced inside another schema. This is extremely useful for
 keeping the code DRY and readable.
 
 Take a look at this example:
@@ -454,11 +455,11 @@ Take a look at this example:
 </script>
 ```
 
-In the above example we created `PostalAddress` schema and then referenced it inside of the `Person` and
-`Organization` schemas by passing its node identifier ID. If we don't take advantage of node identifiers we end up
-duplicating the whole `PostalAddress` object inside of the `Person` and `Organization` schemas.
+In the above example, we created `PostalAddress` schema and then referenced it inside of the `Person` and
+`Organization` schemas by passing its node identifier ID. If we don't take advantage of node identifiers, we end up
+duplicating the whole `PostalAddress` object inside the `Person` and `Organization` schemas.
 
-Node identifier value can be pretty much anything, but the common practice is to use the domain name and
+Node identifier value can be pretty much anything, but the standard practice is to use the domain name and
 the hash with a schema type name `https://example.com/#schema`.
 
 ### SchemaOrg component
@@ -645,11 +646,15 @@ export default SchemaOrg
 - `Person` consists of `name`, `url` (root URL), `sameAs` (list of social media profiles) and `address` fields
 - `Organization` consists of `url`, `name`, `address` (reference to the `PostalAddress` schema), and `logo` fields
 
-> Add `logo.jpg` image in `./static` directory. Every file you put into that folder will be
-> copied into the public folder. E.g. if you add a file named `dog.jpg` to the static folder,
-> it’ll be copied to `public/dog.jpg` and will be available at `https://<SITE_URL>/dog.jpg` URL.
+<BracketX>
 
-Once we are done with smaller pieces we can move to the generic page schema. It will generate `WebPage`,
+Add `logo.jpg` image in `./static` directory. Every file you put into that folder will be
+copied into the public folder. E.g., if you add a file named `dog.jpg` to the static folder,
+it’ll be copied to `public/dog.jpg` and will be available at `https://<SITE_URL>/dog.jpg` URL.
+
+</BracketX>
+
+Once we are done with smaller pieces, we can move to the generic page schema. It will generate `WebPage`,
 `Blog`, `ContactPage`, `AboutPage`, and `Article` schemas. Here is the list of properties that
 are shared in all of these schemas:
 
@@ -664,23 +669,23 @@ are shared in all of these schemas:
 - `mainEntityOfPage`
 - `image`
 
-The rest of the properties we will be added conditionally depending on the page type. Article schema requires
+The rest of the properties will be added conditionally depending on the page type. Article schema requires
 `datePublished`, and `dateModified` and blog schema contains `speakable` field.
 
-To conditionally add properties to the object we leverage `Object.assign` method. To avoid duplication of
+To conditionally add properties to the object, we leverage `Object.assign` method. To avoid duplication of
 `datePublished` value in `dateModified` for every new blog post we check if `dateModified` exists and then apply
-it, otherwise, we reuse `datePublished` value as `dateModified`.
+it. Otherwise, we reuse `datePublished` value as `dateModified`.
 
-`BreadcrumbList` schema doesnt appear to be a part of any other schema. It consists of a chain of linked web pages.
-The position property is used to order the items and starts with `1`. Home page will always be the first item, that's
+`BreadcrumbList` schema doesn't appear to be a part of any other schema. It consists of a chain of linked web pages.
+The position property is used to order the items and starts with `1`. The home page will always be the first item, that's
 the reason why we define `breadcrumbList` with `siteUrl` right away. The second level is a blog, contact, or about page.
-With our [URL structure](/blog/gatsby-graphql-fragments/#page-components-and-url-structure-overview) third level will always
-be an article and it will always go after the blog page. That's why we push both of these values to the `breadcrumbList`
+With our [URL structure](/blog/gatsby-graphql-fragments/#page-components-and-url-structure-overview), the third level will always
+be an article and always go after the blog page. That's why we push both of these values to the `breadcrumbList`
 array at once.
 
-Once all the schemas are constructed we are creating a node array using `@graph` and fill it in with schemas. The only
-edge case we need to handle is `BreadcrumbList` on the home page. There is no reason to have to so it needs to be excluded by
-checking `isHome`.
+Once all the schemas are constructed, we create a node array using `@graph` and fill it in with schemas. The only
+edge case we need to handle is `BreadcrumbList` on the home page. There is no reason to have to, so it needs to be excluded by
+checking `isHome` variable.
 
 Check out [Schema.org documentation](https://schema.org/docs/full.html) if you want to learn more about the schemas.
 
@@ -688,21 +693,21 @@ Check out [Schema.org documentation](https://schema.org/docs/full.html) if you w
 
 ## SEO Component Validation
 
-To validate Twitter meta tags use [Twitter Card Validator](https://cards-dev.twitter.com/validator) tool. Make sure
+To validate Twitter meta tags, use [Twitter Card Validator](https://cards-dev.twitter.com/validator) tool. Make sure
 that you are testing production URLs, because this tool respects [`robots.txt` settings](/blog/gatsby-sitemap-and-robots-txt-files/#robotstxt).
 
 ![Screenshot of Twitter Card Validator tool](article-page-twitter-card-validator.png)
 
-For Open Graph validation use [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug) (requires
-Facebook account). Facebook sharing debugger caches the results, so if you don't see the latest changes click
-"Scrape Again" button fetch the latest version of the page. Most likely after clicking debug button you will see a
+For Open Graph validation, use [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug) (requires
+Facebook account). Facebook sharing debugger caches the results, so if you don't see the latest changes, click
+"Scrape Again" button to fetch the latest version of the page. After clicking the debug button, you will most likely see a
 warning - "The following required properties are missing: `fb:app_id`". Though don't you worry. The `fb:app_id`
-meta tag is not required and it doesn’t do anything nowadays.
+meta tag is not required, and it doesn’t do anything nowadays.
 
 ![Screenshot of Facebook Sharing Debugger tool](article-page-fb-sharing-debugger.png)
 
-For schema.org validation I recommend to use [Google Rich Results](https://search.google.com/test/rich-results) and
-[Schema.org Validator](https://validator.schema.org/) in conjunction. In my experience there cases when
-Google Rich Results will not find certain issues while Schema.org Validator will and vice versa.
+For schema.org validation, I recommend using [Google Rich Results](https://search.google.com/test/rich-results) and
+[Schema.org Validator](https://validator.schema.org/) in conjunction. In my experience, there cases when
+Google Rich Results will not find specific issues while Schema.org Validator will and vice versa.
 
 ![Screenshot of Google Rich Results tool](article-page-google-rich-results.png)

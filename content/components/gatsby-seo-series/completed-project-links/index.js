@@ -2,7 +2,7 @@ import React from "react"
 import { Themed } from "theme-ui"
 import Link from "../../../../src/components/Link"
 
-const GITHUB_URL = `https://github/iamskok/gatsby-seo`
+const GITHUB_URL = `https://github.com/iamskok/gatsby-seo`
 const LIVE_BLOG_URL = `https://gatsby-seo-draft.netlify.com`
 
 const CompletedProjectLinks = () => (
