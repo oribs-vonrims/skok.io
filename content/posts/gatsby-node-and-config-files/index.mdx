@@ -5,7 +5,7 @@ datePublished: 2021-08-15
 dateModified: 2021-08-15
 image: ./cover.jpg
 imageAlt: Husky doggo
-# Gatsby cant infer the type of optinal field automatically
+# Gatsby cant infer the type of optional field automatically
 # so we have to add it at lease once.
 hasIntro: true
 ---
@@ -24,15 +24,15 @@ import { ProjectTreePartOne, SlashifyTable } from "./components"
 
 <SeriesIntro part="1" />
 
-In part #1, we create the foundation for the whole project. We start with installing and configuring
-plugins in `gatsby-config.js`. Then add `useSiteMetadata` react hook for fetching data from `gatsby-config.js`.
-After this, we configure `gatsby-node.js` file that takes care of generating blog posts and pages from
-[MDX](https://mdxjs.com/) files. And lastly, learn about the dangers of inconsistent URL trailing slashes
+In Part 1, we create the foundation for the whole project. We start by installing and configuring
+plugins in `gatsby-config.js`, then add a `useSiteMetadata` React Hook for fetching data from `gatsby-config.js`.
+After this, we configure the `gatsby-node.js` file which will generate blog posts and pages from
+[MDX](https://mdxjs.com/) files. Lastly, we will learn about the dangers of inconsistent URL trailing slashes
 and how to deal with them.
 
 <CompletedProjectedLinks />
 
-Take a few moments to get familiar with the project structure.
+Let's take a few moments to familiarize ourselves with the project structure.
 
 <ProjectTreePartOne />
 
@@ -45,7 +45,7 @@ Take a few moments to get familiar with the project structure.
 
 ## Dependencies
 
-First things first, install project dependencies.
+First thing's first: we have to install project dependencies.
 
 ```
 yarn add \
@@ -66,7 +66,7 @@ yarn add \
 
 ## Site Metadata
 
-Add `./site-metadata.js` that will be a central place for storing all SEO-related data.
+Next we add `./site-metadata.js` to have a central location for storing all SEO-related data.
 
 ```js fileName=site-metadata.js
 module.exports = {
@@ -138,20 +138,20 @@ module.exports = {
 }
 ```
 
-- `speakableSelector` tells search engines and other assistive technologies that a particular section of the page is "[speakable](https://developers.google.com/search/docs/data-types/speakable)"
-- `pathName` URL pathname. <Underline>Trailing slash (`/`) is ommited</Underline>
-- `breadcrumb` title that will be displayed on search engine results page aka SERP
-- `image` relative path to the page cover image
-- `imageAlt` text description for the cover image
-- `language` is the language of your content. Follows `<language>_<TERRITORY>` format
-- `type` schema.org page type (this topic will be covered in [Gatsby SEO component](/blog/gatsby-seo-component/#what-is-schemaorg) part of the series)
+- `speakableSelector` tells search engines and other assistive technologies that a particular section of the page is "[speakable](https://developers.google.com/search/docs/data-types/speakable)."
+- `pathName` is the URL pathname. <Underline>The trailing slash (`/`) is ommited</Underline>.
+- `breadcrumb` is the title that will be displayed on the search engine results page (aka "SERP").
+- `image` is the relative path to the page cover image.
+- `imageAlt` is the text description for the cover image.
+- `language` is the language of your content. It follows the `<language>_<TERRITORY>` format.
+- `type` is the schema.org page type (this topic will be covered in the [Gatsby SEO component](/blog/gatsby-seo-component/#what-is-schemaorg) part of the series).
 
 Replace all the values with your information. Create a `static` folder at the root of the project and
 add the desired logo image `logo.jpg`.
 
 ## `gatsby-config.js`
 
-`gatsby-config.js` file defines the site's metadata, plugins, and other general configuration.
+The `gatsby-config.js` file defines the site's metadata, plugins, and other aspects of its general configuration.
 
 ```js fileName=gatsby-config.js
 const path = require("path")
@@ -206,10 +206,10 @@ module.exports = {
 }
 ```
 
-To keep `gatsby-config.js` file concise, we moved SEO-related data in a separate
-file, `site-metadata.js`. Now it's time to import and spread its content under the `siteMetadata` key.
+To keep the `gatsby-config.js` file concise, we moved the SEO-related data to a separate
+file called `site-metadata.js`. Now it's time to import and spread its content under the `siteMetadata` key.
 
-Import `path` and `dotenv` packages. Based on the `NODE_ENV` we will swap `siteUrl` value.
+Import the `path` and `dotenv` packages. Based on the `NODE_ENV` we will swap `siteUrl` value.
 Create `.env.development` and `.env.production` files with `SITE_URL` of `http://localhost:8000`
 and `https://<YOUR_PRODUCTION_URL>` in the root of the project.
 
